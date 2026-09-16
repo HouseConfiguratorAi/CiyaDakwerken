@@ -14,7 +14,7 @@ import { site } from '../../data/site';
 import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
 
 import bestelwagen from '../../assets/images/ciya-dakwerken-bestelwagen-werf.jpg';
-import opHetDak from '../../assets/images/ciya-ismet-op-het-dak.jpg';
+import roofingZon from '../../assets/images/plat-dak-nieuwe-roofing-zon.jpg';
 
 const title = 'Over Ciya Dakwerken | Dakwerker in Lokeren';
 const description =
@@ -62,11 +62,11 @@ const jsonLd = [
 			</div>
 			<div class="intro__media">
 				<Frame
-					image={opHetDak}
-					alt="Ciya Ismet op een hellende dakconstructie tijdens de werken"
+					image={bestelwagen}
+					alt="Bestelwagen van Ciya Dakwerken op een werf bij een nieuwe garage"
 					loading="eager"
 					fetchpriority="high"
-					widths={[480, 640, 800]}
+					widths={[480, 640, 880, 1200]}
 					sizes="(min-width: 1024px) 440px, 90vw"
 				/>
 			</div>
@@ -143,7 +143,7 @@ const jsonLd = [
 	<section class="section section--tight">
 		<div class="container facts">
 			<div class="facts__media">
-				<Frame image={bestelwagen} alt="Bestelwagen van Ciya Dakwerken op een werf bij een nieuwe garage" black widths={[480, 640, 760]} sizes="(min-width: 1024px) 380px, 90vw" />
+				<Frame image={roofingZon} alt="Nieuwe roofing op een plat dak met afgewerkte dakrand" black widths={[480, 640, 760]} sizes="(min-width: 1024px) 380px, 90vw" />
 			</div>
 			<div class="facts__block">
 				<SectionHeading level="h2" eyebrow="Gegevens" title="Bedrijfsgegevens" />

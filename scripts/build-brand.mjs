@@ -14,14 +14,21 @@ const BLACK = '#0A0A0A';
 const WHITE = '#FFFFFF';
 const CHARCOAL = '#1C1C1C';
 
-// --- The small mark: echoes the client logo's C-roof concept (BRIEF §2). ---
-// viewBox 0 0 64 64. Gable stroke is always red; the "C" stroke swaps colour per variant.
-function markSvg({ cColor, padding = 0 }) {
+// --- The small mark: a bold "C" under the red roofline with chimney — echoes the client logo. ---
+// viewBox 0 0 64 64. Roof + chimney are always red; the "C" swaps colour per variant.
+const MARK_ROOF = `<path d="M4 36 L34 10 L61 30" fill="none" stroke="${RED}" stroke-width="7.5" stroke-linejoin="miter" stroke-linecap="butt"/>
+	<rect x="13.5" y="16" width="7.5" height="12" fill="${RED}"/>`;
+function markC(color, cls = '') {
+	return `<path d="M50 30 A18 18 0 1 0 50 52" fill="none" stroke="${color}" stroke-width="12" stroke-linecap="butt"${cls ? ` class="${cls}"` : ''}/>`;
+}
+function markSvg({ cColor, padding = 0, tile = false }) {
 	const size = 64 + padding * 2;
 	const offset = -padding;
+	const bg = tile ? `<rect x="${offset}" y="${offset}" width="${size}" height="${size}" rx="${Math.round(size * 0.18)}" fill="${WHITE}"/>` : '';
 	return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${offset} ${offset} ${size} ${size}">
-	<path d="M55 27 L33 8 L11 27" fill="none" stroke="${RED}" stroke-width="10" stroke-linejoin="miter" stroke-miterlimit="6"/>
-	<path d="M16 24 V56 H52" fill="none" stroke="${cColor}" stroke-width="10" stroke-linejoin="miter"/>
+	${bg}
+	${MARK_ROOF}
+	${markC(cColor)}
 </svg>`;
 }
 
@@ -185,10 +192,10 @@ async function main() {
 	await writeSvg(path.join(brandDir, 'mark.svg'), markDark);
 	await writeSvg(path.join(brandDir, 'mark-white.svg'), markLight);
 
-	// 2. public/favicon.svg — mark with 6px padding, colour-scheme aware via CSS.
-	const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 76 76">
-	<path d="M55 27 L33 8 L11 27" fill="none" stroke="${RED}" stroke-width="10" stroke-linejoin="miter" stroke-miterlimit="6"/>
-	<path d="M16 24 V56 H52" fill="none" stroke="${BLACK}" stroke-width="10" stroke-linejoin="miter" class="favicon-c"/>
+	// 2. public/favicon.svg — mark with 4px padding, colour-scheme aware (white C on dark tab bars).
+	const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -4 72 72">
+	${MARK_ROOF}
+	${markC(BLACK, 'favicon-c')}
 	<style>
 		@media (prefers-color-scheme: dark) {
 			.favicon-c { stroke: ${WHITE}; }
@@ -199,7 +206,7 @@ async function main() {
 	console.log('wrote', path.relative(root, path.join(root, 'public/favicon.svg')));
 
 	// 3. public/favicon.ico — 32px PNG (transparent) wrapped in a minimal ICO container.
-	const faviconPng = await svgToPng(markSvg({ cColor: BLACK, padding: 6 }), 32, null);
+	const faviconPng = await svgToPng(markSvg({ cColor: BLACK, padding: 6, tile: true }), 32, null);
 	const ico = pngToIco(faviconPng, 32);
 	await writeFile(path.join(root, 'public/favicon.ico'), ico);
 	console.log('wrote', path.relative(root, path.join(root, 'public/favicon.ico')));

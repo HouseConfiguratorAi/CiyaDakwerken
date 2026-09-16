@@ -26,7 +26,6 @@ import huisAanbouw from '../assets/images/huis-nieuw-plat-dak-aanbouw-velux.jpg'
 import constructie from '../assets/images/dakconstructie-houten-balken.jpg';
 import dakterras from '../assets/images/dakterras-houten-vlonders.jpg';
 import bestelwagen from '../assets/images/ciya-dakwerken-bestelwagen-werf.jpg';
-import brandenPlatDak from '../assets/images/roofing-branden-plat-dak.jpg';
 import opDakconstructie from '../assets/images/ciya-ismet-aan-het-werk-dakconstructie.jpg';
 
 export interface BeforeAfterProject {
@@ -157,8 +156,6 @@ export interface GalleryItem {
 }
 
 export const gallery: GalleryItem[] = [
-	{ image: brandenPlatDak, alt: 'Ciya Ismet brandt roofing op een plat dak met een gasbrander', caption: 'Roofing branden op een plat dak', service: 'roofing' },
-	{ image: opDakconstructie, alt: 'Ciya Ismet zit op een hellende dakconstructie met onderdak en panlatten, onder een blauwe lucht', caption: 'Aan het werk op een dakconstructie', service: 'dakherstellingen' },
 	{ image: huisAanbouw, alt: 'Woning met nieuw plat dak op de aanbouw en twee dakramen in het hellende dak', caption: 'Nieuw plat dak op een aanbouw', service: 'platte-daken' },
 	{ image: roofingZon, alt: 'Nieuwe roofing op een plat dak met afgewerkte dakrand', caption: 'Nieuwe roofing, afgewerkte dakrand', service: 'roofing' },
 	{ image: isolatieDetail, alt: 'Isolatieplaten op een plat dak, aangesloten op de opstand', caption: 'Dakisolatie voor de nieuwe dakbedekking', service: 'dakisolatie' },
@@ -169,6 +166,7 @@ export const gallery: GalleryItem[] = [
 	{ image: isolatieUitvoering, alt: 'Plat dak in uitvoering: isolatieplaten naast al afgewerkte roofing', caption: 'Isolatie en roofing in uitvoering', service: 'dakisolatie' },
 	{ image: roofingAfwerking, alt: 'Plat dak met nieuwe roofing en afgewerkte opstand', caption: 'Roofing met afgewerkte opstand', service: 'roofing' },
 	{ image: dakterras, alt: 'Dakterras met houten vlonders na afwerking van het dak', caption: 'Dakterras na afwerking', service: 'platte-daken' },
+	{ image: opDakconstructie, alt: 'Ciya Ismet op een hellende dakconstructie met onderdak en panlatten, onder een blauwe lucht', caption: 'Aan het werk op een dakconstructie', service: 'dakherstellingen' },
 ];
 
 export const teamOnSite = {
