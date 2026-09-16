@@ -1,0 +1,378 @@
+/* ---------- Motion system ----------
+   Everything here is GPU-friendly (transform/opacity only), gated on prefers-reduced-motion,
+   and pointer-aware (hover effects only where a mouse exists). No libraries. */
+
+/* Hero: drifting roofline shapes in the dark background */
+.section--dark > .hero-shapes,
+.hero-shapes {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 0;
+}
+
+.hero-shapes svg {
+	position: absolute;
+	width: var(--s, 320px);
+	height: auto;
+	opacity: var(--o, 0.08);
+	color: var(--white);
+	animation: drift var(--d, 18s) ease-in-out infinite alternate;
+	animation-delay: var(--delay, 0s);
+	will-change: transform;
+}
+
+.hero-shapes svg:nth-child(1) {
+	--s: 520px;
+	--o: 0.1;
+	--d: 22s;
+	left: -160px;
+	top: -120px;
+}
+
+.hero-shapes svg:nth-child(2) {
+	--s: 300px;
+	--o: 0.16;
+	--d: 17s;
+	--delay: -6s;
+	right: 8%;
+	top: -60px;
+	color: var(--red-500);
+}
+
+.hero-shapes svg:nth-child(3) {
+	--s: 220px;
+	--o: 0.12;
+	--d: 14s;
+	--delay: -11s;
+	left: 38%;
+	bottom: -70px;
+}
+
+@keyframes drift {
+	from {
+		transform: translate3d(0, 0, 0) rotate(0deg);
+	}
+	to {
+		transform: translate3d(28px, 18px, 0) rotate(2deg);
+	}
+}
+
+/* Hero: gentle float on the photo composition + parallax hook */
+.float-slow {
+	animation: float-y 8s ease-in-out infinite;
+	will-change: transform;
+}
+
+.float-slow--delay {
+	animation-delay: -3.5s;
+}
+
+@keyframes float-y {
+	0%,
+	100% {
+		transform: translate3d(0, 0, 0);
+	}
+	50% {
+		transform: translate3d(0, -8px, 0);
+	}
+}
+
+/* Parallax (JS sets --px/--py in [-1,1] on the hero for fine pointers) */
+.parallax-1 {
+	transform: translate3d(calc(var(--px, 0) * 6px), calc(var(--py, 0) * 6px), 0);
+	transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.parallax-2 {
+	transform: translate3d(calc(var(--px, 0) * 14px), calc(var(--py, 0) * 12px), 0);
+	transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Hero text: staggered entrance on load */
+.enter {
+	animation: enter-up 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+	animation-delay: calc(var(--e, 0) * 90ms);
+}
+
+@keyframes enter-up {
+	from {
+		opacity: 0;
+		transform: translate3d(0, 18px, 0);
+	}
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+/* Eyebrow rule draws in when its section reveals */
+html.js .reveal .eyebrow::after,
+html.js .reveal-group .eyebrow::after {
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1) 150ms;
+}
+
+html.js .reveal.is-in .eyebrow::after,
+html.js .reveal-group .is-in .eyebrow::after {
+	transform: scaleX(1);
+}
+
+/* Buttons: red sweep on hover (mouse only) */
+@media (hover: hover) and (pointer: fine) {
+	.btn {
+		position: relative;
+		overflow: hidden;
+		isolation: isolate;
+	}
+
+	.btn::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.18) 50%, transparent 60%);
+		transform: translateX(-120%);
+		z-index: -1;
+	}
+
+	.btn:hover::after {
+		transform: translateX(120%);
+		transition: transform 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+}
+
+/* Cards: subtle 3D tilt (JS sets --rx/--ry) */
+.tilt {
+	transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0);
+	transition: transform 400ms cubic-bezier(0.2, 0.8, 0.2, 1), border-top-color var(--dur-base) var(--ease);
+	will-change: transform;
+}
+
+/* Tap feedback on touch devices */
+@media (hover: none) {
+	a.problem-card:active,
+	a.service-row:active,
+	.gallery__link:active,
+	.story__step:active,
+	.btn:active {
+		transform: scale(0.985);
+		transition: transform 80ms ease-out;
+	}
+}
+
+/* Horizontal snap-scroll on phones for step/gallery rows */
+@media (max-width: 639px) {
+	.snap-row {
+		display: flex !important;
+		gap: 1rem !important;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scroll-padding-inline: var(--gutter);
+		-webkit-overflow-scrolling: touch;
+		padding-bottom: 0.75rem;
+		margin-inline: calc(var(--gutter) * -1);
+		padding-inline: var(--gutter);
+		scrollbar-width: none;
+	}
+
+	.snap-row::-webkit-scrollbar {
+		display: none;
+	}
+
+	.snap-row > * {
+		flex: 0 0 82%;
+		scroll-snap-align: start;
+		scroll-snap-stop: always;
+	}
+
+	.snap-row::after {
+		/* end spacer so the last card can snap fully into view */
+		content: '';
+		flex: 0 0 calc(var(--gutter) - 1rem);
+	}
+
+	.snap-hint {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 0.25rem;
+		font-size: 0.8rem;
+		color: var(--grey-500);
+	}
+
+	.snap-hint::before {
+		content: '';
+		width: 28px;
+		height: 2px;
+		background: var(--red-600);
+		animation: hint-slide 1.6s ease-in-out infinite;
+	}
+
+	@keyframes hint-slide {
+		0%,
+		100% {
+			transform: translateX(0);
+		}
+		50% {
+			transform: translateX(10px);
+		}
+	}
+}
+
+@media (min-width: 640px) {
+	.snap-hint {
+		display: none;
+	}
+}
+
+/* Photo band parallax (JS sets --shift on the image, desktop only) */
+.band__img {
+	transform: translate3d(0, var(--shift, 0px), 0) scale(1.12);
+	will-change: transform;
+}
+
+/* Mobile drawer: staggered link entrance */
+.drawer:not([hidden]) .drawer__nav > ul > li {
+	animation: enter-up 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+	animation-delay: calc(var(--e, 0) * 60ms);
+}
+
+/* Sticky bar: active cell feedback */
+.sticky-bar__cell:active {
+	filter: brightness(1.25);
+}
+
+/* Reduced motion: switch everything off */
+@media (prefers-reduced-motion: reduce) {
+	.hero-shapes svg,
+	.float-slow,
+	.snap-hint::before {
+		animation: none !important;
+	}
+
+	.enter {
+		animation: none !important;
+		opacity: 1 !important;
+		transform: none !important;
+	}
+
+	.parallax-1,
+	.parallax-2,
+	.tilt,
+	.band__img {
+		transform: none !important;
+		transition: none !important;
+	}
+
+	.btn::after {
+		display: none;
+	}
+}
+
+
+/* Lazy images fade in; their containers show a quiet skeleton until then */
+html.js img[loading='lazy'] {
+	opacity: 0;
+	transition: opacity 500ms var(--ease);
+}
+
+html.js img[loading='lazy'].is-loaded {
+	opacity: 1;
+}
+
+.gallery__media,
+.story__media,
+.ba-slider__frame,
+.frame {
+	background-image: linear-gradient(100deg, var(--grey-100) 40%, var(--grey-200) 50%, var(--grey-100) 60%);
+	background-size: 250% 100%;
+	animation: skeleton 1.6s linear infinite;
+}
+
+@keyframes skeleton {
+	from {
+		background-position: 120% 0;
+	}
+	to {
+		background-position: -20% 0;
+	}
+}
+
+/* Scroll progress (thin red line above the header) */
+.progress {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3px;
+	z-index: 300;
+	background: var(--red-600);
+	transform-origin: left;
+	transform: scaleX(var(--progress, 0));
+	pointer-events: none;
+}
+
+/* Desktop quick actions — appear after the hero, hidden on contact/offerte pages */
+.quick {
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	z-index: 90;
+	display: none;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background: var(--charcoal);
+	color: var(--white);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: var(--radius);
+	box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+	transform: translateY(16px);
+	opacity: 0;
+	pointer-events: none;
+	transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 320ms var(--ease);
+}
+
+@media (min-width: 1024px) {
+	.quick {
+		display: flex;
+	}
+}
+
+.quick.is-visible {
+	transform: none;
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.quick .btn {
+	height: 44px;
+	padding: 0 18px;
+	font-size: 13px;
+}
+
+.quick .btn--ghost {
+	color: var(--white);
+	border-color: rgba(255, 255, 255, 0.55);
+}
+
+.quick .btn--ghost:hover {
+	background: var(--white);
+	color: var(--black);
+	border-color: var(--white);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.gallery__media,
+	.story__media,
+	.ba-slider__frame,
+	.frame {
+		animation: none;
+	}
+
+	html.js img[loading='lazy'] {
+		opacity: 1;
+		transition: none;
+	}
+}

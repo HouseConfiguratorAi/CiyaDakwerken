@@ -1,0 +1,157 @@
+---
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Frame from '../../components/Frame.astro';
+import BeforeAfter from '../../components/BeforeAfter.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import ProjectStory from '../../components/ProjectStory.astro';
+import Gallery from '../../components/Gallery.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { beforeAfterProjects, singleProjects, gallery } from '../../data/projects';
+import { getService } from '../../data/services';
+import { site } from '../../data/site';
+import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+
+const title = 'Realisaties | Ciya Dakwerken';
+const description = 'Realisaties van Ciya Dakwerken: renovatie van platte daken met isolatie, roofing, Velux dakramen, lichtkoepels en zinkwerk — voor en na, eigen foto’s.';
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Projecten', url: `${site.siteUrl}/projecten/` },
+	]),
+];
+---
+
+<Base {title} {description} path="/projecten/" {jsonLd} ogImage="/brand/og-projecten.jpg">
+	<section class="section">
+		<div class="container">
+			<Eyebrow>Eigen werk</Eyebrow>
+			<h1>Realisaties</h1>
+			<p class="intro">
+				Een selectie van uitgevoerde werken. Alle foto's zijn van eigen realisaties — geen stockbeelden.
+				Schuif over de foto's om voor en na te vergelijken.
+			</p>
+		</div>
+	</section>
+
+	<section class="section section--tight story-section">
+		<div class="container">
+			<ProjectStory cta={false} />
+		</div>
+	</section>
+
+	<section class="section section--tight">
+		<div class="container">
+			<SectionHeading eyebrow="Voor en na" title="Vergelijk zelf" />
+			<div class="projects-grid">
+				{
+					beforeAfterProjects.map((project) => {
+						const service = getService(project.service);
+						return (
+							<div class="project-card">
+								<BeforeAfter
+									id={project.slug}
+									before={project.before}
+									beforeAlt={project.beforeAlt}
+									after={project.after}
+									afterAlt={project.afterAlt}
+									label={project.title}
+								/>
+								<div class="project-card__footer">
+									<p>{project.note}</p>
+									{service && <a href={`/diensten/${service.slug}/`}>{service.name} →</a>}
+								</div>
+							</div>
+						);
+					})
+				}
+			</div>
+
+			{
+				singleProjects.length > 0 && (
+					<div class="single-projects">
+						{singleProjects.map((project) => {
+							const service = getService(project.service);
+							return (
+								<div class="single-project">
+									<Frame image={project.single} alt={project.singleAlt} sizes="(min-width: 1024px) 460px, 90vw" />
+									<div class="project-card__footer">
+										<p>{project.note}</p>
+										{service && <a href={`/diensten/${service.slug}/`}>{service.name} →</a>}
+									</div>
+								</div>
+							);
+						})}
+					</div>
+				)
+			}
+		</div>
+	</section>
+
+	<section class="section section--tight gallery-section">
+		<div class="container">
+			<SectionHeading eyebrow="Eigen werk" title="Meer realisaties" />
+			<Gallery items={gallery} />
+		</div>
+	</section>
+
+	<CtaBand />
+</Base>
+
+<style>
+	.intro {
+		margin-top: 1.25rem;
+		max-width: 40rem;
+		font-size: 1.125rem;
+		color: var(--grey-500);
+	}
+
+	.projects-grid {
+		display: grid;
+		gap: 3rem 2.5rem;
+	}
+
+	.story-section {
+		border-top: var(--border-light);
+		border-bottom: var(--border-light);
+	}
+
+	.gallery-section {
+		border-top: var(--border-light);
+	}
+
+	@media (min-width: 768px) {
+		.projects-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.project-card__footer {
+		margin-top: 1rem;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	.project-card__footer p {
+		color: var(--grey-500);
+		font-size: 0.95rem;
+	}
+
+	.project-card__footer a {
+		font-weight: 700;
+		color: var(--red-600);
+		white-space: nowrap;
+	}
+
+	.single-projects {
+		margin-top: 3rem;
+		display: grid;
+		gap: 2.5rem;
+		max-width: 460px;
+	}
+</style>

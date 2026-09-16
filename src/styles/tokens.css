@@ -1,0 +1,54 @@
+:root {
+	/* Reds */
+	--red-900: #3a0b10;
+	--red-800: #651018;
+	--red-700: #8f111b;
+	--red-600: #c51f2a;
+	--red-500: #d9323c;
+
+	/* Neutrals */
+	--black: #0a0a0a;
+	--ink: #111111;
+	--charcoal: #1c1c1c;
+	--grey-800: #2a2a2a;
+	--grey-700: #3d3d3d;
+	--grey-500: #6b6b6b;
+	--grey-400: #8f8f8c;
+	--grey-300: #c9c9c6;
+	--grey-200: #e6e6e3;
+	--grey-100: #f4f4f1;
+	--white: #ffffff;
+
+	/* Radius */
+	--radius: 2px;
+
+	/* Borders */
+	--border-light: 1px solid var(--grey-200);
+	--border-dark: 1px solid rgba(255, 255, 255, 0.12);
+
+	/* Type scale (fluid) */
+	--fs-display: clamp(2.75rem, 2rem + 3.2vw, 5.5rem);
+	--fs-h1: clamp(2.5rem, 1.9rem + 2.6vw, 4.5rem);
+	--fs-h2: clamp(2rem, 1.6rem + 1.8vw, 3.25rem);
+	--fs-h3: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
+	--fs-body: 1.0625rem;
+	--fs-small: 0.875rem;
+	--fs-eyebrow: 0.8125rem;
+
+	/* Spacing */
+	--space-section: clamp(3.5rem, 3rem + 2.5vw, 7rem);
+	--space-block: clamp(2rem, 1.7rem + 1.2vw, 3.5rem);
+	--container: 1240px;
+	--gutter: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
+
+	/* Motion */
+	--ease: cubic-bezier(0.4, 0, 0.2, 1);
+	--dur-fast: 120ms;
+	--dur-base: 200ms;
+	--dur-reveal: 400ms;
+
+	/* Sticky bar */
+	--stickybar-height: 64px;
+
+	color-scheme: light;
+}

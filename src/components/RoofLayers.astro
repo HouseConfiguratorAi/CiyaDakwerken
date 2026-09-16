@@ -1,0 +1,432 @@
+---
+// Interactive isometric "dakopbouw" — the build-up of an insulated flat roof as floating CSS-3D layers.
+// Pure CSS transforms + ~50 lines of JS. Layers separate when scrolled into view; hover/tap a layer or
+// its label to highlight it. Colours stay within the brand palette. Respects prefers-reduced-motion.
+interface Layer {
+	id: string;
+	name: string;
+	text: string;
+	tone: 'concrete' | 'dark' | 'insulation' | 'membrane' | 'edge';
+}
+
+interface Props {
+	/** Layer id to highlight initially (default: dakbedekking). */
+	highlight?: string;
+}
+const { highlight = 'dakbedekking' } = Astro.props;
+
+const layers: Layer[] = [
+	{ id: 'ondergrond', name: 'Ondergrond', text: 'Beton, hout of een bestaand dak — droog, stabiel en vlak. Hier begint elk goed dak.', tone: 'concrete' },
+	{ id: 'dampscherm', name: 'Dampscherm', text: 'Houdt vocht van binnen weg uit de isolatie, zodat die blijft doen wat ze moet doen.', tone: 'dark' },
+	{ id: 'isolatie', name: 'Isolatie', text: 'Isolatieplaten over het volledige dakvlak: minder energieverlies, meer comfort.', tone: 'insulation' },
+	{ id: 'dakbedekking', name: 'Dakbedekking', text: 'Roofing of EPDM, zorgvuldig gelast of gekleefd. Dit is de laag die het dak dicht houdt.', tone: 'membrane' },
+	{ id: 'dakrand', name: 'Dakrand & afwerking', text: 'Dakranden, opstanden en doorvoeren netjes afgewerkt — daar ontstaan anders de lekken.', tone: 'edge' },
+];
+---
+
+<div class="roof3d" data-roof3d data-highlight={highlight}>
+	<div class="roof3d__stage" aria-hidden="true">
+		<div class="roof3d__float">
+			<div class="roof3d__stack" data-roof3d-stack>
+				{
+					layers.map((layer, i) => (
+						<div
+							class={`roof3d__layer roof3d__layer--${layer.tone}`}
+							style={`--i:${i}`}
+							data-layer={layer.id}
+						>
+							<span class="roof3d__num">{String(i + 1).padStart(2, '0')}</span>
+						</div>
+					))
+				}
+			</div>
+			<div class="roof3d__shadow"></div>
+		</div>
+	</div>
+
+	<ol class="roof3d__legend" data-roof3d-legend>
+		{
+			layers.map((layer, i) => (
+				<li>
+					<button type="button" class="roof3d__item" data-layer-btn={layer.id} aria-pressed={layer.id === highlight ? 'true' : 'false'}>
+						<span class="roof3d__item-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+						<span class="roof3d__item-text">
+							<span class="roof3d__item-name">{layer.name}</span>
+							<span class="roof3d__item-desc">{layer.text}</span>
+						</span>
+					</button>
+				</li>
+			))
+		}
+	</ol>
+</div>
+
+<style>
+	.roof3d {
+		display: grid;
+		gap: 2.5rem;
+		align-items: center;
+	}
+
+	@media (min-width: 900px) {
+		.roof3d {
+			grid-template-columns: 1.1fr 1fr;
+			gap: 3rem;
+		}
+	}
+
+	/* ---------- 3D stage ---------- */
+	.roof3d__stage {
+		position: relative;
+		height: 460px;
+		padding-top: 120px;
+		perspective: 1400px;
+		perspective-origin: 50% 30%;
+		display: grid;
+		place-items: center;
+		overflow: visible;
+	}
+
+	@media (min-width: 640px) {
+		.roof3d__stage {
+			height: 520px;
+			padding-top: 100px;
+		}
+	}
+
+	.roof3d__float {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		display: grid;
+		place-items: center;
+		animation: roof-float 7s ease-in-out infinite;
+		transform-style: preserve-3d;
+	}
+
+	@keyframes roof-float {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
+	}
+
+	.roof3d__stack {
+		position: relative;
+		width: 220px;
+		height: 220px;
+		transform-style: preserve-3d;
+		transform: rotateX(58deg) rotateZ(-42deg);
+		transition: transform 900ms var(--ease);
+	}
+
+	@media (min-width: 640px) {
+		.roof3d__stack {
+			width: 260px;
+			height: 260px;
+		}
+	}
+
+	.roof3d__layer {
+		position: absolute;
+		inset: 0;
+		border-radius: 3px;
+		transform-style: preserve-3d;
+		/* collapsed: all layers almost flat on each other; .is-open explodes them */
+		transform: translateZ(calc(var(--i) * 6px));
+		transition: transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 300ms var(--ease), outline-color 300ms var(--ease);
+		transition-delay: calc(var(--i) * 70ms);
+		outline: 2px solid transparent;
+		outline-offset: 4px;
+		box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12) inset;
+	}
+
+	.roof3d.is-open .roof3d__layer {
+		transform: translateZ(calc(var(--i) * 46px));
+	}
+
+	@media (min-width: 640px) {
+		.roof3d.is-open .roof3d__layer {
+			transform: translateZ(calc(var(--i) * 54px));
+		}
+	}
+
+	/* thickness: a darker face along two edges via pseudo elements */
+	.roof3d__layer::before,
+	.roof3d__layer::after {
+		content: '';
+		position: absolute;
+		background: var(--edge, rgba(0, 0, 0, 0.35));
+	}
+
+	.roof3d__layer::before {
+		/* front-left edge */
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: var(--t, 14px);
+		transform-origin: bottom;
+		transform: rotateX(-90deg) translateY(var(--t, 14px));
+	}
+
+	.roof3d__layer::after {
+		/* front-right edge */
+		top: 0;
+		bottom: 0;
+		right: 0;
+		width: var(--t, 14px);
+		transform-origin: right;
+		transform: rotateY(90deg) translateX(var(--t, 14px));
+	}
+
+	.roof3d__layer--concrete {
+		--t: 22px;
+		--edge: #a9a9a5;
+		background: repeating-linear-gradient(45deg, #d4d4d0 0 2px, #cfcfcb 2px 4px), #d4d4d0;
+	}
+
+	.roof3d__layer--dark {
+		--t: 6px;
+		--edge: #1c1c1c;
+		background: #2a2a2a;
+	}
+
+	.roof3d__layer--insulation {
+		--t: 26px;
+		--edge: #bdbdb9;
+		background:
+			linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px) 0 0 / 52px 100%,
+			linear-gradient(0deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px) 0 0 / 100% 52px,
+			#e6e6e3;
+	}
+
+	.roof3d__layer--membrane {
+		--t: 8px;
+		--edge: #050505;
+		background:
+			repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 34px),
+			#0f0f0f;
+	}
+
+	.roof3d__layer--edge {
+		--t: 6px;
+		--edge: #8f111b;
+		background: transparent;
+		box-shadow: inset 0 0 0 14px #c51f2a;
+	}
+
+	.roof3d__layer--edge::before,
+	.roof3d__layer--edge::after {
+		display: none;
+	}
+
+	.roof3d__layer.is-active {
+		outline-color: var(--red-600);
+	}
+
+	.roof3d.is-open .roof3d__layer.is-active {
+		transform: translateZ(calc(var(--i) * 46px + 14px));
+	}
+
+	@media (min-width: 640px) {
+		.roof3d.is-open .roof3d__layer.is-active {
+			transform: translateZ(calc(var(--i) * 54px + 16px));
+		}
+	}
+
+	.roof3d__num {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%) rotateZ(42deg) rotateX(-58deg);
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: 1.6rem;
+		color: var(--white);
+		text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+		opacity: 0;
+		transition: opacity 300ms var(--ease);
+	}
+
+	.roof3d.is-open .roof3d__layer.is-active .roof3d__num {
+		opacity: 1;
+	}
+
+	.roof3d__shadow {
+		position: absolute;
+		left: 50%;
+		bottom: 8px;
+		width: 240px;
+		height: 40px;
+		transform: translateX(-50%);
+		background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.28), transparent 70%);
+		animation: roof-shadow 7s ease-in-out infinite;
+	}
+
+	@keyframes roof-shadow {
+		0%,
+		100% {
+			transform: translateX(-50%) scale(1);
+			opacity: 1;
+		}
+		50% {
+			transform: translateX(-50%) scale(0.92);
+			opacity: 0.75;
+		}
+	}
+
+	/* ---------- legend ---------- */
+	.roof3d__legend {
+		display: grid;
+		gap: 0.25rem;
+	}
+
+	.roof3d__item {
+		display: flex;
+		gap: 1rem;
+		align-items: flex-start;
+		width: 100%;
+		text-align: left;
+		padding: 0.9rem 1rem;
+		border-left: 3px solid var(--grey-200);
+		border-radius: var(--radius);
+		transition: border-color var(--dur-base) var(--ease), background var(--dur-base) var(--ease);
+	}
+
+	.roof3d__item:hover,
+	.roof3d__item:focus-visible,
+	.roof3d__item[aria-pressed='true'] {
+		border-left-color: var(--red-600);
+		background: var(--grey-100);
+	}
+
+	.roof3d__item-num {
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: 1.5rem;
+		line-height: 1;
+		color: var(--grey-300);
+		min-width: 2ch;
+		transition: color var(--dur-base) var(--ease);
+	}
+
+	.roof3d__item[aria-pressed='true'] .roof3d__item-num {
+		color: var(--red-600);
+	}
+
+	.roof3d__item-text {
+		display: grid;
+		gap: 0.2rem;
+	}
+
+	.roof3d__item-name {
+		font-weight: 600;
+	}
+
+	.roof3d__item-desc {
+		font-size: 0.92rem;
+		color: var(--grey-500);
+	}
+
+	/* dark section variant */
+	:global(.section--dark) .roof3d__item {
+		border-left-color: rgba(255, 255, 255, 0.14);
+	}
+
+	:global(.section--dark) .roof3d__item:hover,
+	:global(.section--dark) .roof3d__item:focus-visible,
+	:global(.section--dark) .roof3d__item[aria-pressed='true'] {
+		background: rgba(255, 255, 255, 0.05);
+	}
+
+	:global(.section--dark) .roof3d__item-name {
+		color: var(--white);
+	}
+
+	:global(.section--dark) .roof3d__item-desc {
+		color: rgba(255, 255, 255, 0.7);
+	}
+
+	:global(.section--dark) .roof3d__item-num {
+		color: var(--grey-700);
+	}
+
+	:global(.section--dark) .roof3d__shadow {
+		background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.7), transparent 70%);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.roof3d__float,
+		.roof3d__shadow {
+			animation: none;
+		}
+
+		.roof3d__layer {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	function initRoof3d() {
+		document.querySelectorAll<HTMLElement>('[data-roof3d]').forEach((root) => {
+			if (root.dataset.ready) return;
+			root.dataset.ready = '1';
+			const layers = [...root.querySelectorAll<HTMLElement>('[data-layer]')];
+			const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-layer-btn]')];
+			const stack = root.querySelector<HTMLElement>('[data-roof3d-stack]');
+
+			const activate = (id: string) => {
+				layers.forEach((l) => l.classList.toggle('is-active', l.dataset.layer === id));
+				buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.layerBtn === id)));
+			};
+			activate(root.dataset.highlight || 'dakbedekking');
+
+			buttons.forEach((b) => {
+				b.addEventListener('click', () => activate(b.dataset.layerBtn!));
+				b.addEventListener('mouseenter', () => activate(b.dataset.layerBtn!));
+			});
+			layers.forEach((l) => {
+				l.addEventListener('mouseenter', () => activate(l.dataset.layer!));
+				l.addEventListener('click', () => activate(l.dataset.layer!));
+			});
+
+			// Explode when scrolled into view (once), collapse/expand toggling on tap of the stage.
+			const open = () => root.classList.add('is-open');
+			if ('IntersectionObserver' in window) {
+				const io = new IntersectionObserver(
+					(entries) => {
+						if (entries.some((e) => e.isIntersecting)) {
+							setTimeout(open, 250);
+							io.disconnect();
+						}
+					},
+					{ threshold: 0.35 },
+				);
+				io.observe(root);
+			} else {
+				open();
+			}
+			root.querySelector('.roof3d__stage')?.addEventListener('click', () => root.classList.toggle('is-open'));
+
+			// Gentle mouse parallax on the stack (desktop, fine pointer only)
+			if (stack && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+				const stage = root.querySelector<HTMLElement>('.roof3d__stage')!;
+				stage.addEventListener('mousemove', (e) => {
+					const r = stage.getBoundingClientRect();
+					const x = (e.clientX - r.left) / r.width - 0.5;
+					const y = (e.clientY - r.top) / r.height - 0.5;
+					stack.style.transform = `rotateX(${58 - y * 10}deg) rotateZ(${-42 + x * 12}deg)`;
+				});
+				stage.addEventListener('mouseleave', () => {
+					stack.style.transform = '';
+				});
+			}
+		});
+	}
+
+	document.addEventListener('astro:page-load', initRoof3d);
+</script>

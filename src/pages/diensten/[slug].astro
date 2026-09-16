@@ -1,0 +1,558 @@
+---
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+import Frame from '../../components/Frame.astro';
+import Icon from '../../components/Icon.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceRow from '../../components/ServiceRow.astro';
+import BeforeAfter from '../../components/BeforeAfter.astro';
+import ProcessSteps from '../../components/ProcessSteps.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import TrustStrip from '../../components/TrustStrip.astro';
+import RoofLayers from '../../components/RoofLayers.astro';
+import Gallery from '../../components/Gallery.astro';
+import Compare from '../../components/Compare.astro';
+import { gallery } from '../../data/projects';
+import { services, getService, getRelatedServices } from '../../data/services';
+import { site } from '../../data/site';
+import { localBusinessJsonLd, serviceJsonLd, breadcrumbJsonLd, faqJsonLd } from '../../lib/seo';
+
+export function getStaticPaths() {
+	return services.map((service) => ({
+		params: { slug: service.slug },
+		props: { service },
+	}));
+}
+
+const { service } = Astro.props;
+const related = getRelatedServices(service);
+
+// Which layer of the flat-roof build-up this service is about (shown as the 3D section), if any.
+const roofHighlight: Record<string, string> = {
+	'platte-daken': 'dakbedekking',
+	roofing: 'dakbedekking',
+	epdm: 'dakbedekking',
+	dakisolatie: 'isolatie',
+	dakherstellingen: 'dakrand',
+	'vloeibare-dakbedekking': 'dakrand',
+};
+const highlight = roofHighlight[service.slug];
+const serviceGallery = gallery.filter((g) => g.service === service.slug);
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	serviceJsonLd(service),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Diensten', url: `${site.siteUrl}/diensten/` },
+		{ name: service.name, url: `${site.siteUrl}/diensten/${service.slug}/` },
+	]),
+	faqJsonLd(service.faq),
+];
+---
+
+<Base title={service.seo.title} description={service.seo.description} path={`/diensten/${service.slug}/`} {jsonLd} ogImage={`/brand/og-${service.slug}.jpg`}>
+	<nav class="breadcrumb" aria-label="Kruimelpad">
+		<div class="container">
+			<a href="/">Home</a>
+			<span aria-hidden="true">/</span>
+			<a href="/diensten/">Diensten</a>
+			<span aria-hidden="true">/</span>
+			<span aria-current="page">{service.name}</span>
+		</div>
+	</nav>
+
+	<section class="section section--tight hero-light">
+		<div class="container hero-light__inner">
+			<div class="hero-light__text">
+				<Eyebrow>{service.eyebrow}</Eyebrow>
+				<h1>{service.h1}</h1>
+				<p class="hero-light__intro">{service.intro}</p>
+				<div class="btn-row">
+					<Button href="/offerte/" variant="primary">Offerte aanvragen</Button>
+					<Button href={`tel:${site.phoneE164}`} variant="ghost" icon="phone">
+						Bel {site.phoneDisplay}
+					</Button>
+				</div>
+			</div>
+			{
+				service.images.hero && (
+					<div class="hero-light__media float-slow">
+						<Frame
+							image={service.images.hero}
+							alt={service.images.heroAlt ?? service.name}
+							loading="eager"
+							fetchpriority="high"
+							sizes="(min-width: 1024px) 440px, 90vw"
+						/>
+					</div>
+				)
+			}
+		</div>
+	</section>
+
+	<section class="section section--tight">
+		<div class="container two-col">
+			<div>
+				<SectionHeading level="h2" eyebrow="Herkenbaar?" title="Veelvoorkomende problemen" />
+				<ul class="icon-list">
+					{
+						service.problems.map((problem) => (
+							<li>
+								<Icon name="drop" />
+								<span>{problem}</span>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+			<div>
+				<SectionHeading level="h2" eyebrow="Waarom Ciya" title="Voordelen" />
+				<ul class="chevron-list">
+					{
+						service.benefits.map((benefit) => (
+							<li>
+								<Icon name="check" />
+								<span>{benefit}</span>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section--tight section--dark">
+		<div class="container">
+			<SectionHeading level="h2" eyebrow="Aanpak" title="Oplossingen en materialen" />
+			<ul class="chevron-list chevron-list--dark">
+				{
+					service.solutions.map((solution) => (
+						<li>
+							<Icon name="check" />
+							<span>{solution}</span>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	{
+		service.slug === 'platte-daken' && (
+			<section class="section section--tight">
+				<div class="container">
+					<Compare />
+				</div>
+			</section>
+		)
+	}
+
+	{
+		highlight && (
+			<section class="section section--dark roof-section">
+				<div class="container">
+					<SectionHeading level="h2" eyebrow="Hoe zit een plat dak in elkaar?" title="Waar deze laag in de opbouw zit" />
+					<p class="roof-section__intro">
+						Een plat dak is een opbouw van lagen die samen dicht, droog en geïsoleerd blijven. Beweeg over de lagen of tik erop.
+					</p>
+					<RoofLayers highlight={highlight} />
+				</div>
+			</section>
+		)
+	}
+
+	{
+		service.body && (
+			<section class="section section--tight">
+				<div class="container body-grid">
+					<div class="prose-block prose">
+						<SectionHeading level="h2" eyebrow="In de praktijk" title={`Meer over ${service.name}`} />
+						{service.body.map((paragraph) => (
+							<p>{paragraph}</p>
+						))}
+					</div>
+					<aside class="side-card" aria-label="Waarom Ciya Dakwerken">
+						<p class="side-card__title">Waarom Ciya Dakwerken</p>
+						<ul class="chevron-list">
+							<li>
+								<Icon name="check" />
+								<span>{site.experience}</span>
+							</li>
+							{site.trustPoints.map((point) => (
+								<li>
+									<Icon name="check" />
+									<span>{point}</span>
+								</li>
+							))}
+						</ul>
+						<div class="side-card__actions">
+							<Button href="/offerte/" variant="primary">Offerte aanvragen</Button>
+							<a class="side-card__phone" href={`tel:${site.phoneE164}`}>
+								<Icon name="phone" /> {site.phoneDisplay}
+							</a>
+						</div>
+					</aside>
+				</div>
+			</section>
+		)
+	}
+
+	<section class="section section--tight">
+		<div class="container">
+			<SectionHeading level="h2" eyebrow="Wat u kunt verwachten" title="Onze aanpak" />
+			<ProcessSteps steps={service.approach} />
+		</div>
+	</section>
+
+	{
+		service.images.beforeAfter && (
+			<section class="section section--tight">
+				<div class="container ba-grid">
+					<div class="ba-wrap">
+						<BeforeAfter
+							id={service.slug}
+							before={service.images.beforeAfter.before}
+							beforeAlt={service.images.beforeAfter.beforeAlt}
+							after={service.images.beforeAfter.after}
+							afterAlt={service.images.beforeAfter.afterAlt}
+							label={service.images.beforeAfter.label}
+						/>
+					</div>
+					<div class="ba-text">
+						<SectionHeading level="h2" eyebrow="Eigen werk" title="Realisatie" />
+						<p class="ba-text__label">{service.images.beforeAfter.label}</p>
+						<p>
+							Voor en na, uitgevoerd door Ciya Dakwerken. Schuif over de foto om het verschil te zien.
+							Alle foto's op deze website zijn van eigen realisaties.
+						</p>
+						<Button href="/projecten/" variant="ghost" icon="arrow" iconPosition="right">
+							Bekijk alle realisaties
+						</Button>
+					</div>
+				</div>
+			</section>
+		)
+	}
+
+	{
+		serviceGallery.length >= 2 && (
+			<section class="section section--tight service-gallery">
+				<div class="container">
+					<SectionHeading level="h2" eyebrow="Eigen werk" title={`${service.name} in beeld`} />
+					<Gallery items={serviceGallery} />
+				</div>
+			</section>
+		)
+	}
+
+	<section class="section section--tight">
+		<div class="container">
+			<SectionHeading level="h2" eyebrow="Vragen" title="Veelgestelde vragen" />
+			<Faq items={service.faq} schema={true} />
+		</div>
+	</section>
+
+	<section class="section section--tight">
+		<div class="container">
+			<SectionHeading level="h2" eyebrow="Vertrouwen" title="Waarom Ciya Dakwerken" />
+			<TrustStrip />
+		</div>
+	</section>
+
+	<section class="section section--tight dakcheck-band">
+		<div class="container dakcheck-band__inner">
+			<div>
+				<p class="eyebrow">
+					<svg class="eyebrow__chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3,17 12,7 21,17" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter" /></svg>
+					Twijfelt u?
+				</p>
+				<h2>Niet zeker of dit de juiste oplossing is?</h2>
+				<p>Doe de dakcheck: drie korte vragen en u weet welke dakwerken bij uw situatie passen.</p>
+			</div>
+			<Button href="/dakcheck/" variant="dark" icon="arrow" iconPosition="right">Start de dakcheck</Button>
+		</div>
+	</section>
+
+	<CtaBand />
+
+	{
+		related.length > 0 && (
+			<section class="section section--tight">
+				<div class="container">
+					<SectionHeading level="h2" eyebrow="Meer diensten" title="Gerelateerde diensten" />
+					<div class="related-grid">
+						{related.map((r) => (
+							<ServiceRow name={r.name} line={r.short} href={`/diensten/${r.slug}/`} icon={r.icon} />
+						))}
+					</div>
+				</div>
+			</section>
+		)
+	}
+</Base>
+
+<style>
+	.breadcrumb {
+		padding-block: 1rem;
+		border-bottom: var(--border-light);
+		font-size: 0.85rem;
+		color: var(--grey-500);
+	}
+
+	.breadcrumb .container {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	.breadcrumb a:hover {
+		color: var(--red-600);
+	}
+
+	.breadcrumb [aria-current='page'] {
+		color: var(--ink);
+		font-weight: 600;
+	}
+
+	.hero-light__inner {
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
+	}
+
+	@media (min-width: 1024px) {
+		.hero-light__inner {
+			flex-direction: row;
+			align-items: center;
+			gap: 3rem;
+		}
+
+		.hero-light__text {
+			flex: 7;
+		}
+
+		.hero-light__media {
+			flex: 5;
+		}
+	}
+
+	.hero-light__intro {
+		margin-top: 1.25rem;
+		max-width: 40rem;
+		font-size: 1.125rem;
+		color: var(--grey-500);
+	}
+
+	.hero-light__inner .btn-row {
+		margin-top: 2rem;
+	}
+
+	.hero-light__media {
+		max-width: 440px;
+		margin-inline: auto;
+	}
+
+	@media (min-width: 1024px) {
+		.hero-light__media {
+			margin-inline: 0;
+		}
+	}
+
+	.two-col {
+		display: grid;
+		gap: 3rem;
+	}
+
+	@media (min-width: 900px) {
+		.two-col {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	.icon-list {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.icon-list li {
+		display: flex;
+		gap: 0.75rem;
+		align-items: flex-start;
+		padding-block: 0.65rem;
+	}
+
+	.icon-list li + li {
+		border-top: var(--border-light);
+	}
+
+	.icon-list :global(.icon) {
+		color: var(--red-600);
+		margin-top: 2px;
+		flex: none;
+	}
+
+	.chevron-list--dark li + li {
+		border-top: var(--border-dark);
+	}
+
+	.chevron-list--dark :global(.icon) {
+		color: var(--red-500);
+	}
+
+	.dakcheck-band {
+		background: var(--grey-100);
+		border-top: var(--border-light);
+	}
+
+	.dakcheck-band__inner {
+		display: grid;
+		gap: 1.5rem;
+		align-items: center;
+	}
+
+	@media (min-width: 900px) {
+		.dakcheck-band__inner {
+			grid-template-columns: 1fr auto;
+			gap: 3rem;
+		}
+	}
+
+	.dakcheck-band h2 {
+		font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.4rem);
+	}
+
+	.dakcheck-band p:last-child {
+		margin-top: 0.75rem;
+		color: var(--grey-500);
+		max-width: 40rem;
+	}
+
+	.roof-section__intro {
+		margin-top: -0.5rem;
+		margin-bottom: 2.5rem;
+		max-width: 44rem;
+		color: rgba(255, 255, 255, 0.75);
+		font-size: 1.05rem;
+	}
+
+	.service-gallery {
+		border-top: var(--border-light);
+	}
+
+	.body-grid {
+		display: grid;
+		gap: 3rem;
+		align-items: start;
+	}
+
+	@media (min-width: 1024px) {
+		.body-grid {
+			grid-template-columns: minmax(0, 68ch) 320px;
+			gap: 4rem;
+		}
+	}
+
+	.prose-block {
+		max-width: 68ch;
+	}
+
+	.prose-block p {
+		margin-top: 1.25rem;
+	}
+
+	.side-card {
+		background: var(--grey-100);
+		border-top: 3px solid var(--red-600);
+		padding: 1.5rem;
+		border-radius: var(--radius);
+	}
+
+	@media (min-width: 1024px) {
+		.side-card {
+			position: sticky;
+			top: 96px;
+		}
+	}
+
+	.side-card__title {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		font-size: 1.25rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.side-card .chevron-list li + li {
+		border-top-color: var(--grey-200);
+	}
+
+	.side-card__actions {
+		margin-top: 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.9rem;
+	}
+
+	.side-card__phone {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: 600;
+	}
+
+	.side-card__phone :global(.icon) {
+		color: var(--red-600);
+	}
+
+	.side-card__phone:hover {
+		color: var(--red-700);
+	}
+
+	.ba-grid {
+		display: grid;
+		gap: 2.5rem;
+		align-items: center;
+	}
+
+	@media (min-width: 1024px) {
+		.ba-grid {
+			grid-template-columns: 520px 1fr;
+			gap: 4rem;
+		}
+	}
+
+	.ba-wrap {
+		max-width: 520px;
+	}
+
+	.ba-text__label {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		color: var(--red-700);
+		margin-bottom: 0.75rem;
+	}
+
+	.ba-text p + p {
+		color: var(--grey-500);
+		margin-bottom: 1.5rem;
+		max-width: 34rem;
+	}
+
+	.related-grid {
+		display: grid;
+		gap: 0 2.5rem;
+	}
+
+	@media (min-width: 768px) {
+		.related-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+</style>

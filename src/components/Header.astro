@@ -1,0 +1,573 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import Button from './Button.astro';
+import { site } from '../data/site';
+import { services } from '../data/services';
+
+const navLinks = [
+	{ href: '/projecten/', label: 'Projecten' },
+	{ href: '/over-ons/', label: 'Over ons' },
+	{ href: '/contact/', label: 'Contact' },
+];
+
+interface Props {
+	/** Transparent over a dark hero until scrolled (home). */
+	overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+const currentPath = Astro.url.pathname;
+const isDienstenActive = currentPath.startsWith('/diensten/') || currentPath === '/diensten';
+---
+
+<header class:list={['site-header', { 'site-header--overlay': overlay }]} data-header>
+	<div class="container site-header__inner">
+		<Logo variant="dark" loading="eager" class="site-header__logo site-header__logo--dark" />
+		{overlay && <Logo variant="light" loading="eager" class="site-header__logo site-header__logo--light" />}
+
+		<nav class="nav-desktop" aria-label="Hoofdnavigatie">
+			<ul>
+				<li class="nav-desktop__dropdown">
+					<button
+						type="button"
+						class="nav-desktop__trigger"
+						aria-expanded="false"
+						aria-controls="diensten-dropdown"
+						aria-current={isDienstenActive ? 'page' : undefined}
+						data-dropdown-trigger
+					>
+						Diensten
+						<Icon name="chevron-down" class="nav-desktop__caret" />
+					</button>
+					<div class="nav-desktop__panel" id="diensten-dropdown">
+						<ul>
+							{
+								services.map((service) => (
+									<li>
+										<a
+											href={`/diensten/${service.slug}/`}
+											aria-current={currentPath === `/diensten/${service.slug}/` ? 'page' : undefined}
+										>
+											{service.name}
+										</a>
+									</li>
+								))
+							}
+						</ul>
+						<a href="/diensten/" class="nav-desktop__all">Alle diensten →</a>
+					</div>
+				</li>
+				{
+					navLinks.map((link) => (
+						<li>
+							<a href={link.href} aria-current={currentPath === link.href ? 'page' : undefined}>
+								{link.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<div class="site-header__actions">
+			<a href={`tel:${site.phoneE164}`} class="site-header__phone">
+				<Icon name="phone" />
+				{site.phoneDisplay}
+			</a>
+			<Button href="/offerte/" variant="primary" class="site-header__cta">Offerte aanvragen</Button>
+			<button
+				type="button"
+				class="nav-toggle"
+				aria-expanded="false"
+				aria-controls="mobile-drawer"
+				data-drawer-trigger
+			>
+				<Icon name="menu" class="nav-toggle__open" />
+				<Icon name="close" class="nav-toggle__close" />
+				<span class="visually-hidden">Menu</span>
+			</button>
+		</div>
+	</div>
+</header>
+
+<div class="drawer" id="mobile-drawer" data-drawer hidden>
+	<div class="drawer__header">
+		<Logo variant="dark" loading="eager" height={36} />
+		<button type="button" class="nav-toggle nav-toggle--close" data-drawer-close>
+			<Icon name="close" />
+			<span class="visually-hidden">Sluit menu</span>
+		</button>
+	</div>
+	<nav class="drawer__nav" aria-label="Mobiele navigatie">
+		<ul>
+			<li style="--e:0">
+				<button
+					type="button"
+					class="drawer__services-trigger"
+					aria-expanded="false"
+					aria-controls="drawer-services"
+					aria-current={isDienstenActive ? 'page' : undefined}
+					data-drawer-services-trigger
+				>
+					Diensten
+					<Icon name="chevron-down" />
+				</button>
+				<ul class="drawer__services" id="drawer-services" hidden>
+					{
+						services.map((service) => (
+							<li>
+								<a
+									href={`/diensten/${service.slug}/`}
+									aria-current={currentPath === `/diensten/${service.slug}/` ? 'page' : undefined}
+								>
+									{service.name}
+								</a>
+							</li>
+						))
+					}
+					<li><a href="/diensten/">Alle diensten</a></li>
+				</ul>
+			</li>
+			{
+				[...navLinks, { href: '/dakcheck/', label: 'Dakcheck' }].map((link, i) => (
+					<li style={`--e:${i + 1}`}>
+						<a href={link.href} aria-current={currentPath === link.href ? 'page' : undefined}>
+							{link.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</nav>
+	<div class="drawer__actions">
+		<Button href={`tel:${site.phoneE164}`} variant="ghost" icon="phone">Bel {site.phoneDisplay}</Button>
+		<Button href="/offerte/" variant="primary">Offerte aanvragen</Button>
+	</div>
+</div>
+<div class="drawer__backdrop" data-drawer-backdrop hidden></div>
+
+<style>
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		background: var(--white);
+		border-bottom: var(--border-light);
+		transition: padding var(--dur-base) var(--ease);
+	}
+
+	.site-header__inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		padding-block: 14px;
+		transition: padding var(--dur-base) var(--ease);
+	}
+
+	.site-header.is-scrolled .site-header__inner {
+		padding-block: 8px;
+	}
+
+	/* Overlay variant (home): transparent over the dark hero until scrolled */
+	.site-header--overlay:not(.is-scrolled) {
+		background: transparent;
+		border-bottom-color: transparent;
+		color: var(--white);
+	}
+
+	.site-header--overlay {
+		transition: background var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease);
+	}
+
+	.site-header :global(.site-header__logo--light) {
+		display: none;
+	}
+
+	.site-header--overlay:not(.is-scrolled) :global(.site-header__logo--light) {
+		display: inline-flex;
+	}
+
+	.site-header--overlay:not(.is-scrolled) :global(.site-header__logo--dark) {
+		display: none;
+	}
+
+	.site-header--overlay:not(.is-scrolled) .nav-desktop a:hover,
+	.site-header--overlay:not(.is-scrolled) .nav-desktop__trigger:hover {
+		color: var(--red-500);
+	}
+
+	.site-header--overlay:not(.is-scrolled) .nav-desktop__panel {
+		color: var(--ink);
+	}
+
+	.site-header--overlay:not(.is-scrolled) .site-header__phone :global(.icon) {
+		color: var(--red-500);
+	}
+
+	.nav-desktop {
+		display: none;
+	}
+
+	@media (min-width: 1024px) {
+		.nav-desktop {
+			display: block;
+		}
+	}
+
+	.nav-desktop > ul {
+		display: flex;
+		align-items: center;
+		gap: 2rem;
+	}
+
+	.nav-desktop a,
+	.nav-desktop__trigger {
+		font-weight: 500;
+		font-size: 0.95rem;
+		padding: 0.5rem 0;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	.nav-desktop a:hover,
+	.nav-desktop__trigger:hover {
+		color: var(--red-600);
+	}
+
+	.nav-desktop__dropdown {
+		position: relative;
+	}
+
+	:global(.nav-desktop__caret) {
+		width: 14px;
+		height: 14px;
+		transition: transform var(--dur-base) var(--ease);
+	}
+
+	.nav-desktop__dropdown:focus-within :global(.nav-desktop__caret),
+	.nav-desktop__dropdown.is-open :global(.nav-desktop__caret) {
+		transform: rotate(180deg);
+	}
+
+	.nav-desktop__panel {
+		position: absolute;
+		top: 100%;
+		left: -1.25rem;
+		background: var(--white);
+		border: var(--border-light);
+		box-shadow: 0 12px 0 0 rgba(0, 0, 0, 0.04);
+		padding: 1.25rem 1.5rem 1.25rem;
+		min-width: 520px;
+		border-top: 3px solid var(--red-600);
+		display: grid;
+		gap: 0.25rem;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(6px);
+		transition: opacity var(--dur-base) var(--ease), transform var(--dur-base) var(--ease), visibility var(--dur-base);
+		z-index: 10;
+	}
+
+	.nav-desktop__dropdown:focus-within .nav-desktop__panel,
+	.nav-desktop__dropdown.is-open .nav-desktop__panel {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+	}
+
+	.nav-desktop__panel ul {
+		display: grid;
+		grid-template-columns: repeat(2, max-content);
+		gap: 0.15rem 2rem;
+	}
+
+	.nav-desktop__panel a {
+		display: block;
+		padding: 0.5rem 0.5rem;
+		font-size: 0.9rem;
+		border-radius: var(--radius);
+		white-space: nowrap;
+	}
+
+	.nav-desktop__panel a:hover,
+	.nav-desktop__panel a:focus-visible {
+		background: var(--grey-100);
+		color: var(--red-600);
+	}
+
+	.nav-desktop__all {
+		margin-top: 0.75rem;
+		padding-top: 0.75rem;
+		border-top: var(--border-light);
+		font-weight: 700;
+		font-size: 0.85rem;
+		color: var(--red-600);
+	}
+
+	.site-header__actions {
+		display: flex;
+		align-items: center;
+		gap: 1.25rem;
+	}
+
+	.site-header__phone {
+		display: none;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: 600;
+		font-size: 0.95rem;
+		white-space: nowrap;
+	}
+
+	.site-header__phone :global(.icon) {
+		width: 18px;
+		height: 18px;
+		color: var(--red-600);
+	}
+
+	@media (min-width: 1024px) {
+		.site-header__phone {
+			display: inline-flex;
+		}
+	}
+
+	.site-header__cta {
+		display: none;
+	}
+
+	@media (min-width: 1024px) {
+		.site-header__cta {
+			display: inline-flex;
+		}
+	}
+
+	.nav-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		border-radius: var(--radius);
+	}
+
+	.nav-toggle :global(.nav-toggle__close) {
+		display: none;
+	}
+
+	.nav-toggle[aria-expanded='true'] :global(.nav-toggle__open) {
+		display: none;
+	}
+
+	.nav-toggle[aria-expanded='true'] :global(.nav-toggle__close) {
+		display: block;
+	}
+
+	@media (min-width: 1024px) {
+		.nav-toggle {
+			display: none;
+		}
+	}
+
+	/* Mobile drawer */
+	.drawer {
+		position: fixed;
+		inset: 0;
+		z-index: 200;
+		background: var(--white);
+		display: flex;
+		flex-direction: column;
+		padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+			env(safe-area-inset-left);
+		overflow-y: auto;
+	}
+
+	.drawer[hidden] {
+		display: none;
+	}
+
+	@media (min-width: 1024px) {
+		.drawer,
+		.drawer__backdrop {
+			display: none !important;
+		}
+	}
+
+	.drawer__backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 190;
+		background: rgba(10, 10, 10, 0.5);
+	}
+
+	.drawer__backdrop[hidden] {
+		display: none;
+	}
+
+	.drawer__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1rem var(--gutter);
+		border-bottom: var(--border-light);
+	}
+
+	.drawer__nav {
+		padding: 1rem var(--gutter);
+		flex-grow: 1;
+	}
+
+	.drawer__nav > ul > li + li {
+		border-top: var(--border-light);
+	}
+
+	.drawer__nav > ul > li > a {
+		display: block;
+		padding: 1rem 0.25rem;
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		font-size: 1.1rem;
+	}
+
+	.drawer__services-trigger {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: 1rem 0.25rem;
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		font-size: 1.1rem;
+	}
+
+	.drawer__services-trigger :global(.icon) {
+		transition: transform var(--dur-base) var(--ease);
+	}
+
+	.drawer__services-trigger[aria-expanded='true'] :global(.icon) {
+		transform: rotate(180deg);
+	}
+
+	.drawer__services {
+		padding-bottom: 0.75rem;
+	}
+
+	.drawer__services[hidden] {
+		display: none;
+	}
+
+	.drawer__services a {
+		display: block;
+		padding: 0.6rem 0.25rem 0.6rem 1rem;
+		font-size: 0.95rem;
+		color: var(--grey-500);
+	}
+
+	.drawer__actions {
+		display: grid;
+		gap: 0.75rem;
+		padding: 1rem var(--gutter) 1.5rem;
+		border-top: var(--border-light);
+	}
+
+	.drawer__actions :global(.btn) {
+		width: 100%;
+	}
+</style>
+
+<script>
+	function initHeader() {
+		const header = document.querySelector<HTMLElement>('[data-header]');
+		if (header) {
+			const w = window as any;
+			if (w.__headerScroll) window.removeEventListener('scroll', w.__headerScroll);
+			w.__headerScroll = () => {
+				header.classList.toggle('is-scrolled', window.scrollY > 8);
+			};
+			w.__headerScroll();
+			window.addEventListener('scroll', w.__headerScroll, { passive: true });
+		}
+
+		// Desktop dropdown: click/touch support in addition to focus-within/hover.
+		const dropdownTrigger = document.querySelector<HTMLButtonElement>('[data-dropdown-trigger]');
+		const dropdown = dropdownTrigger?.closest('.nav-desktop__dropdown');
+		if (dropdownTrigger && dropdown) {
+			const setOpen = (open: boolean) => {
+				dropdown.classList.toggle('is-open', open);
+				dropdownTrigger.setAttribute('aria-expanded', String(open));
+			};
+			dropdownTrigger.addEventListener('click', () => setOpen(!dropdown.classList.contains('is-open')));
+			// Hover intent (mouse only): open after 120ms, close after leaving for 200ms.
+			let openTimer: number | undefined;
+			let closeTimer: number | undefined;
+			if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+				dropdown.addEventListener('mouseenter', () => {
+					window.clearTimeout(closeTimer);
+					openTimer = window.setTimeout(() => setOpen(true), 120);
+				});
+				dropdown.addEventListener('mouseleave', () => {
+					window.clearTimeout(openTimer);
+					closeTimer = window.setTimeout(() => setOpen(false), 200);
+				});
+			}
+			document.addEventListener('click', (e) => {
+				if (!dropdown.isConnected) return;
+				if (!dropdown.contains(e.target as Node)) setOpen(false);
+			});
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape' && dropdown.isConnected) setOpen(false);
+			});
+		}
+
+		// Mobile drawer
+		const drawerTrigger = document.querySelector<HTMLButtonElement>('[data-drawer-trigger]');
+		const drawerCloseBtn = document.querySelector<HTMLButtonElement>('[data-drawer-close]');
+		const drawer = document.querySelector<HTMLElement>('[data-drawer]');
+		const backdrop = document.querySelector<HTMLElement>('[data-drawer-backdrop]');
+
+		const openDrawer = () => {
+			drawer?.removeAttribute('hidden');
+			backdrop?.removeAttribute('hidden');
+			drawerTrigger?.setAttribute('aria-expanded', 'true');
+			document.body.style.overflow = 'hidden';
+		};
+		const closeDrawer = () => {
+			drawer?.setAttribute('hidden', '');
+			backdrop?.setAttribute('hidden', '');
+			drawerTrigger?.setAttribute('aria-expanded', 'false');
+			document.body.style.overflow = '';
+		};
+
+		drawerTrigger?.addEventListener('click', () => {
+			const isOpen = drawerTrigger.getAttribute('aria-expanded') === 'true';
+			isOpen ? closeDrawer() : openDrawer();
+		});
+		drawerCloseBtn?.addEventListener('click', closeDrawer);
+		backdrop?.addEventListener('click', closeDrawer);
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && drawer?.isConnected) closeDrawer();
+		});
+
+		// Drawer services expandable list
+		const servicesTrigger = document.querySelector<HTMLButtonElement>('[data-drawer-services-trigger]');
+		const servicesList = document.querySelector<HTMLElement>('#drawer-services');
+		servicesTrigger?.addEventListener('click', () => {
+			const isOpen = servicesTrigger.getAttribute('aria-expanded') === 'true';
+			servicesTrigger.setAttribute('aria-expanded', String(!isOpen));
+			if (isOpen) {
+				servicesList?.setAttribute('hidden', '');
+			} else {
+				servicesList?.removeAttribute('hidden');
+			}
+		});
+	}
+
+	document.addEventListener('astro:page-load', initHeader);
+	// Reset body scroll lock if a navigation happens while the drawer is open.
+	document.addEventListener('astro:before-swap', () => {
+		document.body.style.overflow = '';
+	});
+</script>

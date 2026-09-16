@@ -1,0 +1,47 @@
+---
+interface Props {
+	eyebrow?: string;
+	title: string;
+	level?: 'h2' | 'h3';
+	align?: 'left' | 'center';
+	lede?: string;
+}
+const { eyebrow, title, level: Tag = 'h2', align = 'left', lede } = Astro.props;
+---
+
+<div class={`section-heading section-heading--${align}`}>
+	{eyebrow && (
+		<p class="eyebrow">
+			<svg class="eyebrow__chevron" viewBox="0 0 24 24" aria-hidden="true">
+				<polyline points="3,17 12,7 21,17" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter" />
+			</svg>
+			{eyebrow}
+		</p>
+	)}
+	<Tag>{title}</Tag>
+	{lede && <p class="section-heading__lede">{lede}</p>}
+</div>
+
+<style>
+	.section-heading {
+		max-width: 46rem;
+		margin-bottom: var(--space-block);
+	}
+
+	.section-heading--center {
+		margin-inline: auto;
+		text-align: center;
+	}
+
+	.section-heading__lede {
+		margin-top: 1rem;
+		font-size: 1.125rem;
+		color: var(--grey-500);
+		max-width: 40rem;
+	}
+
+	.section--dark .section-heading__lede,
+	.section--red .section-heading__lede {
+		color: rgba(255, 255, 255, 0.75);
+	}
+</style>

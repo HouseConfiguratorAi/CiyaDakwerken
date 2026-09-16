@@ -1,0 +1,82 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+	icon?: string;
+	name: string;
+	line: string;
+	href: string;
+}
+const { icon = 'roof', name, line, href } = Astro.props;
+---
+
+<a class="service-row" href={href}>
+	<Icon name={icon as any} class="service-row__icon" />
+	<span class="service-row__text">
+		<span class="service-row__name">{name}</span>
+		<span class="service-row__line">{line}</span>
+	</span>
+	<Icon name="chevron" class="service-row__chevron" />
+</a>
+
+<style>
+	.service-row {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1.1rem 0.75rem 1.1rem 0.75rem;
+		border-bottom: var(--border-light);
+		border-left: 3px solid transparent;
+		transition: border-left-color var(--dur-base) var(--ease), background var(--dur-base) var(--ease);
+	}
+
+	.service-row:hover,
+	.service-row:focus-within {
+		border-left-color: var(--red-600);
+		background: var(--grey-100);
+	}
+
+	.section--dark .service-row {
+		border-bottom: var(--border-dark);
+	}
+
+	.service-row :global(.service-row__icon) {
+		color: var(--red-600);
+		flex: none;
+	}
+
+	.service-row__text {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+		min-width: 0;
+	}
+
+	.service-row__name {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		font-size: 1.05rem;
+	}
+
+	.service-row__line {
+		font-size: 0.875rem;
+		color: var(--grey-500);
+	}
+
+	.service-row :global(.service-row__chevron) {
+		width: 18px;
+		height: 18px;
+		flex: none;
+		transform: rotate(90deg);
+		color: var(--grey-400);
+		transition: transform var(--dur-base) var(--ease), color var(--dur-base) var(--ease);
+	}
+
+	.service-row:hover :global(.service-row__chevron),
+	.service-row:focus-visible :global(.service-row__chevron) {
+		color: var(--red-600);
+		transform: rotate(90deg) translateX(3px);
+	}
+</style>

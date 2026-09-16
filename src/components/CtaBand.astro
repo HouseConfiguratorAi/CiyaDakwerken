@@ -1,0 +1,49 @@
+---
+import Button from './Button.astro';
+import { site } from '../data/site';
+
+interface Props {
+	title?: string;
+	text?: string;
+}
+const { title = 'UW DAK VERDIENT VAKWERK.', text } = Astro.props;
+---
+
+<section class="cta-band section--red">
+	<div class="container cta-band__inner">
+		<div>
+			<h2>{title}</h2>
+			{text && <p>{text}</p>}
+		</div>
+		<div class="btn-row">
+			<Button href="/offerte/" variant="dark">Offerte aanvragen</Button>
+			<Button href={`tel:${site.phoneE164}`} variant="ghost" icon="phone">
+				Bel {site.phoneDisplay}
+			</Button>
+		</div>
+	</div>
+</section>
+
+<style>
+	.cta-band {
+		padding-block: var(--space-block);
+	}
+
+	.cta-band__inner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.75rem;
+	}
+
+	.cta-band h2 {
+		max-width: 20ch;
+	}
+
+	.cta-band p {
+		margin-top: 0.75rem;
+		color: rgba(255, 255, 255, 0.85);
+		max-width: 32rem;
+	}
+</style>

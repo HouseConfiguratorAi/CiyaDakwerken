@@ -1,0 +1,117 @@
+---
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import { site } from '../../data/site';
+import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+
+const title = 'Algemene voorwaarden | Ciya Dakwerken';
+const description = 'Algemene voorwaarden van Ciya Dakwerken (Ciya Ismet BV) uit Lokeren: identificatie, offertes, uitvoering, betaling, garantie en toepasselijk recht.';
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Algemene voorwaarden', url: `${site.siteUrl}/algemene-voorwaarden/` },
+	]),
+];
+---
+
+<Base {title} {description} path="/algemene-voorwaarden/" {jsonLd}>
+	<section class="section">
+		<div class="container legal">
+			<Eyebrow>Juridisch</Eyebrow>
+			<h1>Algemene voorwaarden</h1>
+
+			<div class="legal-block">
+				<h2>Identificatie</h2>
+				<p>
+					{site.legalName}, {site.address.street}, {site.address.postalCode} {site.address.city},
+					{site.vatDisplay}. Contact: <a href={`mailto:${site.email}`}>{site.email}</a> ·{' '}
+					<a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a>.
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Toepassingsgebied</h2>
+				<p>
+					[Aan te vullen door Ciya Ismet BV / juridisch adviseur: op welke overeenkomsten deze
+					voorwaarden van toepassing zijn.]
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Offertes</h2>
+				<p>
+					Offertes van Ciya Dakwerken zijn vrijblijvend. [Aan te vullen door Ciya Ismet BV /
+					juridisch adviseur: geldigheidsduur en eventuele voorwaarden.]
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Uitvoering van de werken</h2>
+				<p>
+					[Aan te vullen door Ciya Ismet BV / juridisch adviseur: afspraken rond planning,
+					toegankelijkheid van de werf en oplevering.]
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Betaling</h2>
+				<p>
+					[Aan te vullen door Ciya Ismet BV / juridisch adviseur: betalingsvoorwaarden en
+					-termijnen.]
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Garantie</h2>
+				<p>
+					Ciya Dakwerken geeft garantie op de uitgevoerde werkzaamheden. [Aan te vullen door Ciya
+					Ismet BV / juridisch adviseur: exacte garantietermijnen en -voorwaarden per type werk.]
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Aansprakelijkheid</h2>
+				<p>
+					[Aan te vullen door Ciya Ismet BV / juridisch adviseur.]
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Toepasselijk recht</h2>
+				<p>
+					Op overeenkomsten met {site.legalName} is het Belgisch recht van toepassing. [Aan te
+					vullen door Ciya Ismet BV / juridisch adviseur: bevoegde rechtbank.]
+				</p>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.legal {
+		max-width: 44rem;
+	}
+
+	.legal-block {
+		margin-top: var(--space-block);
+	}
+
+	.legal-block h2 {
+		font-family: var(--font-body);
+		font-weight: 600;
+		font-size: 1.2rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.legal-block p {
+		color: var(--grey-500);
+	}
+
+	.legal-block a {
+		color: var(--red-700);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+</style>

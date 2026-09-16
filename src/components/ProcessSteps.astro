@@ -1,0 +1,63 @@
+---
+interface Props {
+	steps: string[];
+	/** 'dark' when placed on a charcoal section (oversized numerals), 'light' on white pages. */
+	tone?: 'dark' | 'light';
+}
+const { steps, tone = 'light' } = Astro.props;
+---
+
+<ol class:list={['process', 'reveal-group', `process--${tone}`]}>
+	{
+		steps.map((step, i) => (
+			<li class="process__item reveal" style={`--stagger:${i}`}>
+				<span class="process__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+				<p>{step}</p>
+			</li>
+		))
+	}
+</ol>
+
+<style>
+	.process {
+		display: grid;
+		gap: 2rem;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		counter-reset: step;
+	}
+
+	.process__item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding-top: 0.75rem;
+		border-top: 3px solid var(--red-600);
+	}
+
+	.process__num {
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(2.5rem, 2rem + 2vw, 4rem);
+		line-height: 1;
+		color: var(--grey-300);
+	}
+
+	.process__item p {
+		color: var(--grey-700);
+		max-width: 22rem;
+	}
+
+	/* Dark variant (home) — oversized, quiet numerals */
+	.process--dark .process__item {
+		border-top-color: rgba(255, 255, 255, 0.14);
+	}
+
+	.process--dark .process__num {
+		font-size: clamp(3.5rem, 3rem + 3vw, 6rem);
+		color: var(--grey-700);
+	}
+
+	.process--dark .process__item p {
+		color: rgba(255, 255, 255, 0.82);
+	}
+</style>

@@ -1,0 +1,560 @@
+---
+// Dakcheck — three quick questions → the right service + a pre-filled quote request.
+// Pure client-side; nothing is sent. Result texts are general guidance, never promises.
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Icon from '../../components/Icon.astro';
+import Button from '../../components/Button.astro';
+import { site } from '../../data/site';
+import { services } from '../../data/services';
+import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+
+const title = 'Dakcheck: welke oplossing past bij uw dak? | Ciya Dakwerken';
+const description =
+	'Drie korte vragen over uw dak en u weet welke dakwerken passen — met een vooraf ingevulde offerteaanvraag. Vrijblijvend, in een halve minuut.';
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Dakcheck', url: `${site.siteUrl}/dakcheck/` },
+	]),
+];
+
+const q1 = [
+	{ id: 'plat', icon: 'roof', label: 'Plat dak', hint: 'Woning, aanbouw of garage' },
+	{ id: 'hellend', icon: 'window', label: 'Hellend dak', hint: 'Pannen of leien' },
+	{ id: 'bijgebouw', icon: 'corner', label: 'Aanbouw of bijgebouw', hint: 'Garage, tuinhuis, veranda' },
+	{ id: 'onbekend', icon: 'chat', label: 'Weet ik niet', hint: 'Geen probleem, we bekijken het samen' },
+];
+const q2 = [
+	{ id: 'lek', icon: 'drop', label: 'Lek of vochtplek', hint: 'Water binnen of vlekken op het plafond' },
+	{ id: 'oud', icon: 'roll', label: 'Dak is oud of versleten', hint: 'Blaren, scheuren, mos, verweerd' },
+	{ id: 'isolatie', icon: 'stack', label: 'Ik wil isoleren', hint: 'Minder energieverlies, meer comfort' },
+	{ id: 'licht', icon: 'sun', label: 'Meer daglicht', hint: 'Dakraam of lichtkoepel' },
+	{ id: 'goot', icon: 'gutter', label: 'Dakgoot of zinkwerk', hint: 'Lek, versleten of nieuw' },
+	{ id: 'onderhoud', icon: 'brush', label: 'Onderhoud of controle', hint: 'Reiniging, nazicht, na storm' },
+];
+const q3 = [
+	{ id: 'dringend', label: 'Dringend', hint: 'Er komt nu water binnen' },
+	{ id: 'weken', label: 'Binnen enkele weken', hint: 'Het mag vooruit gepland worden' },
+	{ id: 'verkennen', label: 'Ik verken de opties', hint: 'Advies en een offerte volstaan voorlopig' },
+];
+
+const serviceOptions = services.map((s) => ({ slug: s.slug, name: s.name }));
+---
+
+<Base {title} {description} path="/dakcheck/" {jsonLd} ogImage="/brand/og-dakcheck.jpg">
+	<section class="section check">
+		<div class="container check__wrap">
+			<header class="check__head">
+				<Eyebrow>Dakcheck</Eyebrow>
+				<h1>Welke oplossing past bij uw dak?</h1>
+				<p class="lede">Drie korte vragen. U krijgt meteen een eerlijke inschatting en een vooraf ingevulde offerteaanvraag.</p>
+			</header>
+
+			<div class="check__progress" aria-hidden="true">
+				<span class="check__bar" data-check-bar></span>
+			</div>
+			<p class="check__step-label" data-check-label>Vraag 1 van 3</p>
+
+			<form class="check__form" data-dakcheck novalidate>
+				<!-- Q1 -->
+				<fieldset class="check__step is-current" data-step="1">
+					<legend>Over welk dak gaat het?</legend>
+					<div class="check__options">
+						{
+							q1.map((o) => (
+								<label class="check__option">
+									<input type="radio" name="dak" value={o.id} data-label={o.label} />
+									<span class="check__card">
+										<Icon name={o.icon as any} />
+										<span class="check__card-text">
+											<strong>{o.label}</strong>
+											<small>{o.hint}</small>
+										</span>
+									</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<!-- Q2 -->
+				<fieldset class="check__step" data-step="2" hidden>
+					<legend>Wat is de situatie?</legend>
+					<div class="check__options check__options--3">
+						{
+							q2.map((o) => (
+								<label class="check__option">
+									<input type="radio" name="situatie" value={o.id} data-label={o.label} />
+									<span class="check__card">
+										<Icon name={o.icon as any} />
+										<span class="check__card-text">
+											<strong>{o.label}</strong>
+											<small>{o.hint}</small>
+										</span>
+									</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<!-- Q3 -->
+				<fieldset class="check__step" data-step="3" hidden>
+					<legend>Hoe dringend is het?</legend>
+					<div class="check__options check__options--3">
+						{
+							q3.map((o) => (
+								<label class="check__option">
+									<input type="radio" name="urgentie" value={o.id} data-label={o.label} />
+									<span class="check__card check__card--plain">
+										<span class="check__card-text">
+											<strong>{o.label}</strong>
+											<small>{o.hint}</small>
+										</span>
+									</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<div class="check__nav">
+					<button type="button" class="check__back" data-check-back hidden>
+						<Icon name="chevron" class="check__back-icon" /> Vorige
+					</button>
+				</div>
+			</form>
+
+			<!-- RESULT -->
+			<section class="check__result" data-check-result hidden aria-live="polite">
+				<div class="check__result-inner">
+					<p class="check__result-eyebrow">Onze inschatting</p>
+					<h2 class="check__result-title" data-result-title></h2>
+					<p class="check__result-text" data-result-text></p>
+					<ul class="check__result-services" data-result-services></ul>
+					<div class="check__result-urgent" data-result-urgent hidden>
+						<Icon name="phone" />
+						<p>Bij een actief lek belt u ons het best meteen — dan kunnen we de situatie snel inschatten. <a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a></p>
+					</div>
+					<div class="btn-row check__result-actions">
+						<a class="btn btn--primary" data-result-cta href="/offerte/">Offerte aanvragen met deze gegevens</a>
+						<Button href={`tel:${site.phoneE164}`} variant="ghost" icon="phone">Bel {site.phoneDisplay}</Button>
+					</div>
+					<button type="button" class="check__restart" data-check-restart>Opnieuw beginnen</button>
+				</div>
+			</section>
+
+			<p class="check__note">
+				Deze check vervangt geen plaatsbezoek. Wat er echt nodig is, bekijken we samen met u ter plaatse — vrijblijvend.
+			</p>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.check__wrap {
+		max-width: 60rem;
+	}
+
+	.lede {
+		margin-top: 1.25rem;
+		max-width: 40rem;
+		font-size: 1.125rem;
+		color: var(--grey-500);
+	}
+
+	.check__progress {
+		margin-top: 2.5rem;
+		height: 4px;
+		background: var(--grey-200);
+		border-radius: var(--radius);
+		overflow: hidden;
+	}
+
+	.check__bar {
+		display: block;
+		height: 100%;
+		width: 33%;
+		background: var(--red-600);
+		transition: width 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+
+	.check__step-label {
+		margin-top: 0.75rem;
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		font-size: 0.8rem;
+		color: var(--grey-500);
+	}
+
+	.check__form {
+		margin-top: 1.5rem;
+	}
+
+	.check__step {
+		border: 0;
+		padding: 0;
+		margin: 0;
+		animation: enter-up 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+	}
+
+	.check__step legend {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.4rem);
+		line-height: 1;
+		margin-bottom: 1.5rem;
+	}
+
+	.check__options {
+		display: grid;
+		gap: 0.9rem;
+	}
+
+	@media (min-width: 640px) {
+		.check__options {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.check__options--3 {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.check__option input {
+		position: absolute;
+		opacity: 0;
+		width: 1px;
+		height: 1px;
+	}
+
+	.check__card {
+		display: flex;
+		gap: 1rem;
+		align-items: flex-start;
+		min-height: 88px;
+		padding: 1.1rem 1.1rem;
+		background: var(--white);
+		border: 1.5px solid var(--grey-200);
+		border-radius: var(--radius);
+		cursor: pointer;
+		transition: border-color var(--dur-base) var(--ease), background var(--dur-base) var(--ease), transform 200ms var(--ease);
+	}
+
+	.check__card :global(.icon) {
+		color: var(--red-600);
+		flex: none;
+		margin-top: 2px;
+	}
+
+	.check__card-text {
+		display: grid;
+		gap: 0.15rem;
+	}
+
+	.check__card-text strong {
+		font-weight: 600;
+	}
+
+	.check__card-text small {
+		font-size: 0.85rem;
+		color: var(--grey-500);
+	}
+
+	.check__option:hover .check__card {
+		border-color: var(--ink);
+	}
+
+	.check__option input:focus-visible + .check__card {
+		outline: 3px solid var(--red-600);
+		outline-offset: 2px;
+	}
+
+	.check__option input:checked + .check__card {
+		border-color: var(--red-600);
+		background: var(--grey-100);
+		box-shadow: inset 3px 0 0 var(--red-600);
+	}
+
+	.check__option .check__card:active {
+		transform: scale(0.985);
+	}
+
+	.check__nav {
+		margin-top: 1.5rem;
+		min-height: 44px;
+	}
+
+	.check__back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-weight: 600;
+		color: var(--grey-500);
+		padding: 0.5rem 0;
+	}
+
+	.check__back:hover {
+		color: var(--ink);
+	}
+
+	.check__back :global(.check__back-icon) {
+		width: 18px;
+		height: 18px;
+		transform: rotate(-90deg);
+	}
+
+	/* Result */
+	.check__result {
+		margin-top: 1rem;
+		animation: enter-up 500ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+	}
+
+	.check__result-inner {
+		background: var(--charcoal);
+		color: var(--white);
+		padding: clamp(1.5rem, 1.2rem + 1.5vw, 2.75rem);
+		border-radius: var(--radius);
+		border-top: 4px solid var(--red-600);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.check__result-inner::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 9px);
+	}
+
+	.check__result-inner > * {
+		position: relative;
+	}
+
+	.check__result-eyebrow {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		font-size: 0.8rem;
+		color: var(--red-500);
+	}
+
+	.check__result-title {
+		margin-top: 0.75rem;
+		font-size: clamp(1.9rem, 1.5rem + 1.6vw, 3rem);
+	}
+
+	.check__result-text {
+		margin-top: 1rem;
+		color: rgba(255, 255, 255, 0.82);
+		max-width: 44rem;
+	}
+
+	.check__result-services {
+		margin-top: 1.5rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+
+	.check__result-services :global(a) {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.55rem 0.9rem;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		border-radius: var(--radius);
+		font-weight: 600;
+		font-size: 0.95rem;
+	}
+
+	.check__result-services :global(a:hover) {
+		border-color: var(--red-500);
+		color: var(--red-500);
+	}
+
+	.check__result-urgent {
+		margin-top: 1.5rem;
+		display: flex;
+		gap: 0.9rem;
+		align-items: flex-start;
+		padding: 1rem 1.1rem;
+		background: rgba(197, 31, 42, 0.18);
+		border-left: 3px solid var(--red-600);
+		border-radius: var(--radius);
+	}
+
+	.check__result-urgent :global(.icon) {
+		color: var(--red-500);
+		flex: none;
+	}
+
+	.check__result-urgent a {
+		font-weight: 700;
+		color: var(--white);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	.check__result-actions {
+		margin-top: 1.75rem;
+	}
+
+	.check__restart {
+		margin-top: 1.25rem;
+		font-size: 0.9rem;
+		color: rgba(255, 255, 255, 0.6);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	.check__restart:hover {
+		color: var(--white);
+	}
+
+	.check__note {
+		margin-top: 2rem;
+		font-size: 0.9rem;
+		color: var(--grey-500);
+		max-width: 44rem;
+	}
+</style>
+
+<script define:vars={{ serviceOptions }}>
+	// Result logic: maps answers to services and honest guidance. No prices, no timelines.
+	const S = Object.fromEntries(serviceOptions.map((s) => [s.slug, s.name]));
+
+	function decide(dak, situatie) {
+		const flat = dak === 'plat' || dak === 'bijgebouw' || dak === 'onbekend';
+		switch (situatie) {
+			case 'lek':
+				return {
+					title: 'Eerst de oorzaak vinden, dan gericht herstellen',
+					text: 'Een lek zit zelden waar het water binnenkomt. We zoeken de oorzaak — vaak een aansluiting, dakrand of doorvoer — en herstellen gericht. Is de dakbedekking in het algemeen versleten, dan zeggen we dat eerlijk en bekijken we een vernieuwing.',
+					services: flat ? ['dakherstellingen', 'platte-daken', 'vloeibare-dakbedekking'] : ['dakherstellingen', 'dakgoten', 'zinkwerken'],
+				};
+			case 'oud':
+				return flat
+					? {
+							title: 'Uw platte dak vernieuwen — met of zonder isolatie',
+							text: 'Een versleten plat dak vernieuwen is het moment om meteen te isoleren: de dakbedekking gaat er toch af. Roofing of EPDM, afhankelijk van vorm en ondergrond — we adviseren ter plaatse wat het beste past.',
+							services: ['platte-daken', 'roofing', 'epdm', 'dakisolatie'],
+						}
+					: {
+							title: 'We bekijken wat op uw hellende dak nodig is',
+							text: 'Op hellende daken werken we aan dakramen, dakgoten en zinkwerk en herstellen we lekken. Voor het volledig vernieuwen van een pannendak verwijzen we u eerlijk door als dat beter is.',
+							services: ['dakherstellingen', 'dakgoten', 'zinkwerken', 'velux-dakramen'],
+						};
+			case 'isolatie':
+				return {
+					title: 'Isoleren, het liefst samen met de dakbedekking',
+					text: 'Dakisolatie levert het meest op wanneer ze samen met een nieuwe of vernieuwde afdichting wordt geplaatst. We bekijken de opbouw van uw dak en adviseren wat haalbaar is.',
+					services: ['dakisolatie', 'platte-daken', 'epdm'],
+				};
+			case 'licht':
+				return {
+					title: 'Meer daglicht met een dakraam of lichtkoepel',
+					text: flat
+						? 'Op een plat dak is een lichtkoepel of vlakke lichtstraat de logische keuze. We werken hem waterdicht in de dakbedekking in.'
+						: 'In een hellend dak plaatsen we Velux dakramen, ook in een bestaand dak. De aansluiting op de pannen is het belangrijkste detail.',
+					services: flat ? ['lichtkoepels', 'platte-daken'] : ['velux-dakramen', 'dakherstellingen'],
+				};
+			case 'goot':
+				return {
+					title: 'Dakgoten en zinkwerk: herstellen of vernieuwen',
+					text: 'Een goot die overloopt of lekt, kan vaak hersteld worden; is het zink of de bevestiging versleten, dan is vernieuwen duurzamer. We bekijken het ter plaatse en adviseren eerlijk.',
+					services: ['dakgoten', 'zinkwerken', 'dakonderhoud'],
+				};
+			default:
+				return {
+					title: 'Een controle en onderhoud op maat van uw dak',
+					text: 'We controleren dakbedekking, aansluitingen en goten, reinigen waar nodig en melden wat we zien — met een eerlijke inschatting of iets dringend is of kan wachten.',
+					services: ['dakonderhoud', 'dakgoten', 'dakherstellingen'],
+				};
+		}
+	}
+
+	function initDakcheck() {
+		const form = document.querySelector('[data-dakcheck]');
+		if (!form || form.dataset.ready) return;
+		form.dataset.ready = '1';
+		const steps = [...form.querySelectorAll('[data-step]')];
+		const bar = document.querySelector('[data-check-bar]');
+		const label = document.querySelector('[data-check-label]');
+		const back = form.querySelector('[data-check-back]');
+		const result = document.querySelector('[data-check-result]');
+		let current = 1;
+
+		const show = (n) => {
+			current = n;
+			steps.forEach((s) => {
+				const isIt = Number(s.dataset.step) === n;
+				s.hidden = !isIt;
+				s.classList.toggle('is-current', isIt);
+				if (isIt) {
+					s.style.animation = 'none';
+					requestAnimationFrame(() => (s.style.animation = ''));
+				}
+			});
+			bar.style.width = `${(n / 3) * 100}%`;
+			label.textContent = `Vraag ${n} van 3`;
+			back.hidden = n === 1;
+			form.hidden = false;
+			result.hidden = true;
+			steps.find((s) => Number(s.dataset.step) === n)?.querySelector('legend')?.scrollIntoView({ block: 'nearest' });
+		};
+
+		const finish = () => {
+			const fd = new FormData(form);
+			const dak = fd.get('dak');
+			const situatie = fd.get('situatie');
+			const urgentie = fd.get('urgentie');
+			const labels = ['dak', 'situatie', 'urgentie'].map(
+				(n) => form.querySelector(`input[name="${n}"]:checked`)?.dataset.label ?? '',
+			);
+			const r = decide(dak, situatie);
+			result.querySelector('[data-result-title]').textContent = r.title;
+			result.querySelector('[data-result-text]').textContent = r.text;
+			const list = result.querySelector('[data-result-services]');
+			list.innerHTML = '';
+			r.services.forEach((slug) => {
+				const li = document.createElement('li');
+				const a = document.createElement('a');
+				a.href = `/diensten/${slug}/`;
+				a.textContent = S[slug] ?? slug;
+				li.appendChild(a);
+				list.appendChild(li);
+			});
+			result.querySelector('[data-result-urgent]').hidden = urgentie !== 'dringend';
+			const bericht = `Dakcheck: ${labels[0]} · ${labels[1]} · ${labels[2]}.`;
+			const cta = result.querySelector('[data-result-cta]');
+			cta.href = `/offerte/?type=${encodeURIComponent(r.services[0])}&bericht=${encodeURIComponent(bericht)}`;
+			bar.style.width = '100%';
+			label.textContent = 'Resultaat';
+			form.hidden = true;
+			result.hidden = false;
+			result.scrollIntoView({ block: 'start', behavior: 'smooth' });
+		};
+
+		form.addEventListener('change', (e) => {
+			const input = e.target;
+			if (!(input instanceof HTMLInputElement) || input.type !== 'radio') return;
+			setTimeout(() => (current < 3 ? show(current + 1) : finish()), 220);
+		});
+		back.addEventListener('click', () => show(Math.max(1, current - 1)));
+		result.querySelector('[data-check-restart]').addEventListener('click', () => {
+			form.reset();
+			show(1);
+		});
+		show(1);
+	}
+	document.addEventListener('astro:page-load', initDakcheck);
+</script>

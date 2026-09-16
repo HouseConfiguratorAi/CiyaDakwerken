@@ -1,0 +1,173 @@
+---
+// Portrait card for the owner. Renders nothing when no photo is configured (see data/owner.ts).
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import Button from './Button.astro';
+import { owner } from '../data/owner';
+import { site } from '../data/site';
+
+interface Props {
+	/** 'feature' = large split with statement (home/over-ons); 'compact' = small avatar row (side panels). */
+	variant?: 'feature' | 'compact';
+	eyebrow?: string;
+	title?: string;
+	text?: string;
+}
+const { variant = 'feature', eyebrow = 'De vakman achter Ciya', title = 'Persoonlijk, van offerte tot oplevering', text } = Astro.props;
+---
+
+{
+	owner.photo && variant === 'feature' && (
+		<div class="owner">
+			<div class="owner__media">
+				<div class="frame frame--offset">
+					<Image src={owner.photo} alt={owner.photoAlt} widths={[400, 600, 800, 1000]} sizes="(min-width: 1024px) 440px, 90vw" formats={['avif', 'webp']} loading="lazy" />
+				</div>
+				<div class="owner__badge">
+					<strong>{owner.name}</strong>
+					<span>{owner.role}</span>
+				</div>
+			</div>
+			<div class="owner__text">
+				<p class="eyebrow">
+					<svg class="eyebrow__chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3,17 12,7 21,17" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter" /></svg>
+					{eyebrow}
+				</p>
+				<h2>{title}</h2>
+				<p class="owner__lede">
+					{text ?? `${owner.experience}. Platte daken zijn de specialisatie: roofing, EPDM, lichtkoepels en isolatie — met eerlijk advies, een duidelijke offerte en garantie op het werk.`}
+				</p>
+				<ul class="chevron-list owner__points">
+					{site.trustPoints.map((p) => (
+						<li>
+							<Icon name="check" />
+							<span>{p}</span>
+						</li>
+					))}
+				</ul>
+				<div class="btn-row">
+					<Button href={`tel:${site.phoneE164}`} variant="dark" icon="phone">Bel {site.phoneDisplay}</Button>
+					<Button href="/offerte/" variant="ghost">Offerte aanvragen</Button>
+				</div>
+			</div>
+		</div>
+	)
+}
+
+{
+	owner.photo && variant === 'compact' && (
+		<div class="owner-compact">
+			<Image src={owner.portrait ?? owner.photo} alt={owner.photoAlt} width={72} height={72} widths={[72, 144]} sizes="72px" formats={['webp']} loading="lazy" class="owner-compact__img" />
+			<div>
+				<strong>{owner.name}</strong>
+				<span>{owner.role}</span>
+				<a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a>
+			</div>
+		</div>
+	)
+}
+
+<style>
+	.owner {
+		display: grid;
+		gap: 2.5rem;
+		align-items: center;
+	}
+
+	@media (min-width: 1024px) {
+		.owner {
+			grid-template-columns: 440px 1fr;
+			gap: 4rem;
+		}
+	}
+
+	.owner__media {
+		position: relative;
+		max-width: 440px;
+	}
+
+	.owner__media :global(img) {
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		width: 100%;
+		height: auto;
+	}
+
+	.owner__badge {
+		position: absolute;
+		z-index: 3;
+		left: -12px;
+		bottom: 24px;
+		display: grid;
+		gap: 0.1rem;
+		padding: 0.8rem 1.1rem;
+		background: var(--black);
+		color: var(--white);
+		border-left: 3px solid var(--red-600);
+		border-radius: var(--radius);
+	}
+
+	.owner__badge strong {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		font-size: 1.25rem;
+	}
+
+	.owner__badge span {
+		font-size: 0.85rem;
+		color: rgba(255, 255, 255, 0.75);
+	}
+
+	.owner__lede {
+		margin-top: 1.25rem;
+		font-size: 1.1rem;
+		color: var(--grey-700);
+		max-width: 38rem;
+	}
+
+	.owner__points {
+		margin-top: 1.25rem;
+		max-width: 30rem;
+	}
+
+	.owner__text .btn-row {
+		margin-top: 1.75rem;
+	}
+
+	.owner-compact {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+		padding: 1rem 0;
+		border-top: 1px solid var(--grey-200);
+	}
+
+	.owner-compact :global(.owner-compact__img) {
+		width: 72px;
+		height: 72px;
+		object-fit: cover;
+		border-radius: var(--radius);
+		flex: none;
+	}
+
+	.owner-compact div {
+		display: grid;
+		gap: 0.1rem;
+	}
+
+	.owner-compact strong {
+		font-weight: 600;
+	}
+
+	.owner-compact span {
+		font-size: 0.85rem;
+		color: var(--grey-500);
+	}
+
+	.owner-compact a {
+		font-weight: 700;
+		color: var(--red-700);
+	}
+</style>

@@ -1,0 +1,147 @@
+---
+interface FaqItem {
+	q: string;
+	a: string;
+}
+interface Props {
+	items: FaqItem[];
+	schema?: boolean;
+}
+const { items, schema = false } = Astro.props;
+
+const jsonLd = schema
+	? {
+			'@context': 'https://schema.org',
+			'@type': 'FAQPage',
+			mainEntity: items.map((item) => ({
+				'@type': 'Question',
+				name: item.q,
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: item.a,
+				},
+			})),
+		}
+	: null;
+---
+
+<div class="faq">
+	{
+		items.map((item) => (
+			<details class="faq__item" data-faq>
+				<summary>
+					<span>{item.q}</span>
+				</summary>
+				<div class="faq__body">
+					<p>{item.a}</p>
+				</div>
+			</details>
+		))
+	}
+</div>
+
+{schema && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+<style>
+	.faq {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.faq__item {
+		border-bottom: var(--border-light);
+	}
+
+	.section--dark .faq__item {
+		border-bottom: var(--border-dark);
+	}
+
+	.faq__item summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 1.25rem 0;
+		cursor: pointer;
+		font-weight: 600;
+		list-style: none;
+	}
+
+	.faq__item summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.faq__item summary::after {
+		content: '+';
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: var(--red-600);
+		flex: none;
+		transition: transform var(--dur-base) var(--ease);
+	}
+
+	.faq__item[open] summary::after {
+		transform: rotate(45deg);
+	}
+
+	.faq__item summary:hover {
+		color: var(--red-700);
+	}
+
+	.faq__body {
+		overflow: hidden;
+	}
+
+	.faq__item p {
+		padding-bottom: 1.25rem;
+		color: var(--grey-500);
+		max-width: 46rem;
+	}
+
+	/* animated open/close (JS drives height); no-JS still works via native details */
+	html.js .faq__body {
+		height: 0;
+		transition: height 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+
+	html.js .faq__item.is-open .faq__body {
+		height: var(--h);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		html.js .faq__body {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	function initFaq() {
+		document.querySelectorAll<HTMLDetailsElement>('[data-faq]').forEach((d) => {
+			if (d.dataset.ready) return;
+			d.dataset.ready = '1';
+			const summary = d.querySelector('summary')!;
+			const body = d.querySelector<HTMLElement>('.faq__body')!;
+			summary.addEventListener('click', (e) => {
+				e.preventDefault();
+				const opening = !d.classList.contains('is-open');
+				if (opening) {
+					d.open = true;
+					body.style.setProperty('--h', `${body.scrollHeight}px`);
+					requestAnimationFrame(() => d.classList.add('is-open'));
+				} else {
+					body.style.setProperty('--h', `${body.scrollHeight}px`);
+					d.classList.remove('is-open');
+					const onEnd = () => {
+						d.open = false;
+						body.removeEventListener('transitionend', onEnd);
+					};
+					body.addEventListener('transitionend', onEnd);
+					setTimeout(onEnd, 400);
+				}
+			});
+		});
+	}
+	document.addEventListener('astro:page-load', initFaq);
+</script>

@@ -1,0 +1,209 @@
+---
+import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+import { site } from '../data/site';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyBar from '../components/StickyBar.astro';
+import Lightbox from '../components/Lightbox.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	/** Path only, e.g. "/diensten/epdm/" — canonical is derived from site.siteUrl. */
+	path: string;
+	/** One or more JSON-LD objects to emit as separate <script> tags. */
+	jsonLd?: object | object[];
+	ogImage?: string;
+	/** Transparent header over a dark hero (home). */
+	headerOverlay?: boolean;
+}
+
+const { title, description, path, jsonLd, ogImage = '/brand/og-default.jpg', headerOverlay = false } = Astro.props;
+
+const canonical = new URL(path, site.siteUrl).toString();
+const ogImageUrl = new URL(ogImage, site.siteUrl).toString();
+const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+
+<!doctype html>
+<html lang="nl-BE">
+	<head>
+		<meta charset="utf-8" />
+		<script is:inline>document.documentElement.classList.add('js');</script>
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="32x32" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<meta name="theme-color" content="#0A0A0A" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={site.name} />
+		<meta property="og:locale" content="nl_BE" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageUrl} />
+
+		<meta name="generator" content={Astro.generator} />
+
+		<Font cssVariable="--font-display" preload />
+		<Font cssVariable="--font-body" preload />
+		<ClientRouter fallback="none" />
+
+		{
+			jsonLdList.map((entry) => (
+				<script type="application/ld+json" set:html={JSON.stringify(entry)} />
+			))
+		}
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Naar inhoud</a>
+		<div class="progress" data-progress aria-hidden="true"></div>
+		<Header overlay={headerOverlay} />
+		<main id="main">
+			<slot />
+		</main>
+		<Footer />
+		<StickyBar />
+		<Lightbox />
+		{
+			!['/offerte/', '/contact/'].includes(path) && (
+				<div class="quick" data-quick aria-label="Snelle acties">
+					<a class="btn btn--ghost" href={`tel:${site.phoneE164}`}>Bel {site.phoneDisplay}</a>
+					<a class="btn btn--primary" href="/offerte/">Offerte aanvragen</a>
+				</div>
+			)
+		}
+
+		<script>
+			function initPage() {
+				// Reveal-on-scroll: adds .is-in to .reveal elements. Hidden state only applies under html.js,
+				// so users without JS see everything. Reveals slightly before entering the viewport.
+				const revealAll = () => document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
+				const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+				if (prefersReduced || !('IntersectionObserver' in window)) {
+					revealAll();
+				} else {
+					const io = new IntersectionObserver(
+						(entries) => {
+							entries.forEach((entry) => {
+								if (entry.isIntersecting) {
+									entry.target.classList.add('is-in');
+									io.unobserve(entry.target);
+								}
+							});
+						},
+						{ threshold: 0, rootMargin: '0px 0px 15% 0px' },
+					);
+					document.querySelectorAll('.reveal').forEach((el) => {
+						const r = el.getBoundingClientRect();
+						if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('is-in');
+						else io.observe(el);
+					});
+					// Safety net: never leave content hidden.
+					setTimeout(revealAll, 2500);
+				}
+
+				// ---- Lazy image fade-in
+			document.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => {
+				const done = () => img.classList.add('is-loaded');
+				if (img.complete && img.naturalWidth > 0) done();
+				else {
+					img.addEventListener('load', done, { once: true });
+					img.addEventListener('error', done, { once: true });
+				}
+			});
+
+			// ---- Scroll progress + desktop quick actions (one rAF-throttled scroll handler)
+			{
+				const bar = document.querySelector<HTMLElement>('[data-progress]');
+				const quick = document.querySelector<HTMLElement>('[data-quick]');
+				const w = window as any;
+				if (w.__pageScroll) window.removeEventListener('scroll', w.__pageScroll);
+				let ticking = false;
+				const update = () => {
+					ticking = false;
+					const max = document.documentElement.scrollHeight - window.innerHeight;
+					const y = window.scrollY;
+					bar?.style.setProperty('--progress', max > window.innerHeight ? String(Math.min(1, y / max)) : '0');
+					quick?.classList.toggle('is-visible', y > 560 && y < max - 200);
+				};
+				w.__pageScroll = () => {
+					if (!ticking) {
+						ticking = true;
+						requestAnimationFrame(update);
+					}
+				};
+				window.addEventListener('scroll', w.__pageScroll, { passive: true });
+				update();
+			}
+
+			// ---- Pointer-driven motion (mouse only; touch devices get the CSS float/snap instead)
+				const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches && !prefersReduced;
+				if (finePointer) {
+					// Card tilt
+					document.querySelectorAll<HTMLElement>('.tilt').forEach((card) => {
+						card.addEventListener('mousemove', (e) => {
+							const r = card.getBoundingClientRect();
+							const x = (e.clientX - r.left) / r.width - 0.5;
+							const y = (e.clientY - r.top) / r.height - 0.5;
+							card.style.setProperty('--ry', `${x * 6}deg`);
+							card.style.setProperty('--rx', `${-y * 6}deg`);
+						});
+						card.addEventListener('mouseleave', () => {
+							card.style.setProperty('--ry', '0deg');
+							card.style.setProperty('--rx', '0deg');
+						});
+					});
+					// Hero parallax
+					const hero = document.querySelector<HTMLElement>('[data-parallax-root]');
+					hero?.addEventListener('mousemove', (e) => {
+						const r = hero.getBoundingClientRect();
+						hero.style.setProperty('--px', String(((e.clientX - r.left) / r.width - 0.5) * 2));
+						hero.style.setProperty('--py', String(((e.clientY - r.top) / r.height - 0.5) * 2));
+					});
+					hero?.addEventListener('mouseleave', () => {
+						hero.style.setProperty('--px', '0');
+						hero.style.setProperty('--py', '0');
+					});
+				}
+				// Photo band parallax on scroll (all pointer types, but not reduced motion; cheap rAF)
+				if (!prefersReduced) {
+					const bands = [...document.querySelectorAll<HTMLElement>('.band')];
+					if (bands.length) {
+						let ticking = false;
+						const update = () => {
+							ticking = false;
+							const vh = window.innerHeight;
+							bands.forEach((band) => {
+								const r = band.getBoundingClientRect();
+								if (r.bottom < 0 || r.top > vh) return;
+								const progress = (r.top + r.height / 2 - vh / 2) / vh; // -1..1
+								band.querySelector<HTMLElement>('.band__img')?.style.setProperty('--shift', `${progress * -40}px`);
+							});
+						};
+						window.addEventListener('scroll', () => {
+							if (!ticking) {
+								ticking = true;
+								requestAnimationFrame(update);
+							}
+						}, { passive: true });
+						update();
+					}
+				}
+
+			}
+			document.addEventListener('astro:page-load', initPage);
+		</script>
+	</body>
+</html>

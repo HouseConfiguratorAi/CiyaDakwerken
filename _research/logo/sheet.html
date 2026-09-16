@@ -1,0 +1,32 @@
+<!doctype html><meta charset="utf-8">
+<style>
+body{margin:0;font-family:-apple-system,sans-serif;background:#ddd}
+.row{display:flex;gap:24px;padding:24px;align-items:center;flex-wrap:wrap}
+.card{background:#fff;padding:24px;display:flex;align-items:center;justify-content:center}
+.dark{background:#0A0A0A}
+.tiny{display:flex;gap:12px;align-items:center;background:#fff;padding:12px}
+</style>
+<!-- Mark v1: C with gable top, red roof -->
+<svg id="mark" width="0" height="0" style="position:absolute">
+ <symbol id="c-roof" viewBox="0 0 64 64">
+  <polyline points="52,25 33,9 14,25 14,55 52,55" fill="none" stroke="#0A0A0A" stroke-width="11" stroke-linejoin="miter" stroke-linecap="butt" stroke-miterlimit="4"/>
+  <polyline points="52,25 33,9 14,25" fill="none" stroke="#C51F2A" stroke-width="11" stroke-linejoin="miter" stroke-linecap="butt" stroke-miterlimit="4"/>
+ </symbol>
+ <!-- v2: closed miter peak, eaves overhang slightly past vertical -->
+ <symbol id="c-roof2" viewBox="0 0 64 64">
+  <path d="M55 27 L33 8 L11 27" fill="none" stroke="#C51F2A" stroke-width="10" stroke-linejoin="miter" stroke-miterlimit="6"/>
+  <path d="M16 24 V56 H52" fill="none" stroke="#0A0A0A" stroke-width="10" stroke-linejoin="miter"/>
+ </symbol>
+ <!-- v3: solid geometric C with roof, filled shapes (no strokes), red ridge cap -->
+ <symbol id="c-roof3" viewBox="0 0 64 64">
+  <path d="M9 30 L32 9 L55 30 L48 30 L32 16 L18 29 L18 48 L52 48 L52 58 L9 58 Z" fill="#0A0A0A"/>
+  <path d="M9 30 L32 9 L55 30 L48 30 L32 16 L16 30 Z" fill="#C51F2A"/>
+ </symbol>
+</svg>
+<div class="row">
+ <div class="card"><svg width="160" height="160"><use href="#c-roof"/></svg></div>
+ <div class="card"><svg width="160" height="160"><use href="#c-roof2"/></svg></div>
+ <div class="card"><svg width="160" height="160"><use href="#c-roof3"/></svg></div>
+ <div class="tiny"><svg width="16" height="16"><use href="#c-roof"/></svg><svg width="16" height="16"><use href="#c-roof2"/></svg><svg width="16" height="16"><use href="#c-roof3"/></svg>
+ <svg width="32" height="32"><use href="#c-roof"/></svg><svg width="32" height="32"><use href="#c-roof2"/></svg><svg width="32" height="32"><use href="#c-roof3"/></svg></div>
+</div>

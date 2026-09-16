@@ -1,0 +1,160 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { services } from '../data/services';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+	<div class="container site-footer__grid">
+		<div class="site-footer__col site-footer__brand">
+			<Logo variant="light" loading="lazy" height={56} />
+			<p>Uw specialist in platte daken, in Lokeren en omgeving.</p>
+			<a class="site-footer__social" href={site.facebook} target="_blank" rel="noopener noreferrer">
+				<Icon name="facebook" />
+				<span>Facebook</span>
+			</a>
+		</div>
+
+		<div class="site-footer__col">
+			<h2>Diensten</h2>
+			<ul>
+				{
+					services.map((service) => (
+						<li>
+							<a href={`/diensten/${service.slug}/`}>{service.name}</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+
+		<div class="site-footer__col">
+			<h2>Contact</h2>
+			<ul>
+				<li>
+					<a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a>
+				</li>
+				<li>
+					<a href={`mailto:${site.email}`}>{site.email}</a>
+				</li>
+				<li>{site.address.street}</li>
+				<li>{site.address.postalCode} {site.address.city}</li>
+				<li>{site.vatDisplay}</li>
+			</ul>
+		</div>
+
+		<div class="site-footer__col">
+			<h2>Info</h2>
+			<ul>
+				<li><a href="/over-ons/">Over ons</a></li>
+				<li><a href="/dakcheck/">Dakcheck</a></li>
+				<li><a href="/projecten/">Projecten</a></li>
+				<li><a href="/privacy/">Privacy</a></li>
+				<li><a href="/cookies/">Cookies</a></li>
+				<li><a href="/algemene-voorwaarden/">Algemene voorwaarden</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="container site-footer__bottom">
+		<p>© {year} {site.legalName} · BTW {site.vatDisplay}</p>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		background: var(--black);
+		color: rgba(255, 255, 255, 0.85);
+		position: relative;
+	}
+
+	.site-footer::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 9px);
+	}
+
+	.site-footer__grid {
+		position: relative;
+		display: grid;
+		gap: 2.5rem;
+		padding-block: var(--space-block);
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 768px) {
+		.site-footer__grid {
+			grid-template-columns: 1.4fr 1fr 1fr 1fr;
+		}
+	}
+
+	.site-footer__brand p {
+		margin-top: 1rem;
+		max-width: 26rem;
+		font-size: 0.95rem;
+		color: rgba(255, 255, 255, 0.65);
+	}
+
+	.site-footer__social {
+		margin-top: 1.25rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: 600;
+		font-size: 0.9rem;
+	}
+
+	.site-footer__social :global(.icon) {
+		width: 20px;
+		height: 20px;
+		color: var(--red-500);
+	}
+
+	.site-footer__social:hover {
+		color: var(--red-500);
+	}
+
+	.site-footer h2 {
+		font-family: var(--font-display);
+		font-size: 0.95rem;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: var(--white);
+		margin-bottom: 1.1rem;
+	}
+
+	.site-footer__col ul {
+		display: grid;
+		gap: 0.65rem;
+	}
+
+	.site-footer__col a {
+		font-size: 0.9rem;
+		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.site-footer__col a:hover {
+		color: var(--red-500);
+	}
+
+	.site-footer__col li {
+		font-size: 0.9rem;
+		color: rgba(255, 255, 255, 0.55);
+	}
+
+	.site-footer__bottom {
+		position: relative;
+		border-top: var(--border-dark);
+		padding-block: 1.25rem;
+	}
+
+	.site-footer__bottom p {
+		font-size: 0.8rem;
+		color: rgba(255, 255, 255, 0.5);
+	}
+</style>

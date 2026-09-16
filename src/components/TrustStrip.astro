@@ -1,0 +1,52 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+const items: { icon: string; label: string }[] = [
+	{ icon: 'shield', label: site.experience },
+	{ icon: 'wrench', label: 'Persoonlijk advies en maatwerk' },
+	{ icon: 'layers', label: 'Hoogwaardige materialen' },
+	{ icon: 'check', label: 'Garantie op al onze werkzaamheden' },
+];
+---
+
+<ul class="trust-strip">
+	{
+		items.map((item) => (
+			<li>
+				<Icon name={item.icon} class="trust-strip__icon" />
+				<span>{item.label}</span>
+			</li>
+		))
+	}
+</ul>
+
+<style>
+	.trust-strip {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.5rem 1.25rem;
+	}
+
+	@media (min-width: 768px) {
+		.trust-strip {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+
+	.trust-strip li {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.trust-strip :global(.trust-strip__icon) {
+		color: var(--red-600);
+	}
+
+	.trust-strip span {
+		font-weight: 600;
+		font-size: 0.95rem;
+		line-height: 1.35;
+	}
+</style>

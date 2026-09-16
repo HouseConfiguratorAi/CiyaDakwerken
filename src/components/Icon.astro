@@ -1,0 +1,246 @@
+---
+// Hand-drawn line icon set. 24px grid, 1.75 stroke via .icon in global.css (currentColor).
+// Add new names here as needed — keep the visual language consistent (square caps, miter joins, no fills).
+interface Props {
+	name:
+		| 'roof'
+		| 'drop'
+		| 'window'
+		| 'sun'
+		| 'gutter'
+		| 'layers'
+		| 'wrench'
+		| 'brush'
+		| 'shield'
+		| 'phone'
+		| 'mail'
+		| 'chat'
+		| 'chevron'
+		| 'chevron-down'
+		| 'arrow'
+		| 'menu'
+		| 'close'
+		| 'pin'
+		| 'facebook'
+		| 'check'
+		| 'photo'
+		| 'clock'
+		| 'roll'
+		| 'dome'
+		| 'corner'
+		| 'stack';
+	class?: string;
+}
+
+const { name, class: className } = Astro.props;
+---
+
+{
+	name === 'roll' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M3 17h13" />
+			<path d="M3 20h13" />
+			<path d="M16 20a3.5 3.5 0 1 0 0-7" />
+			<path d="M16 13H8" />
+			<circle cx="16" cy="16.5" r="1.25" />
+			<path d="M5 13l9-7" />
+		</svg>
+	)
+}
+{
+	name === 'dome' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M4 15a8 8 0 0 1 16 0" />
+			<path d="M3 15h18v3H3z" />
+			<path d="M12 7v1" />
+		</svg>
+	)
+}
+{
+	name === 'corner' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M4 4v14h16" />
+			<path d="M8 4v10h12" />
+			<path d="M4 18l4-4" />
+			<path d="M20 18l0-4" />
+		</svg>
+	)
+}
+{
+	name === 'stack' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M3 7h18v3H3z" />
+			<path d="M3 14h18v3H3z" />
+			<path d="M6 10v4M10 10v4M14 10v4M18 10v4" />
+		</svg>
+	)
+}
+{
+	name === 'roof' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M3 13 12 5l9 8" />
+			<path d="M5 11v8h14v-8" />
+			<path d="M10 19v-5h4v5" />
+		</svg>
+	)
+}
+{
+	name === 'drop' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M12 3c3 4 6 7.8 6 11a6 6 0 0 1-12 0c0-3.2 3-7 6-11Z" />
+		</svg>
+	)
+}
+{
+	name === 'window' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<rect x="4" y="4" width="16" height="16" />
+			<path d="M12 4v16M4 12h16" />
+		</svg>
+	)
+}
+{
+	name === 'sun' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<circle cx="12" cy="12" r="4.5" />
+			<path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" />
+		</svg>
+	)
+}
+{
+	name === 'gutter' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M3 6h18" />
+			<path d="M4 6v3a4 4 0 0 0 8 0V6" />
+			<path d="M12 6v3a4 4 0 0 0 8 0V6" />
+			<path d="M8 13v8M8 21h3" />
+		</svg>
+	)
+}
+{
+	name === 'layers' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="m12 4 9 5-9 5-9-5 9-5Z" />
+			<path d="m3 13 9 5 9-5" />
+		</svg>
+	)
+}
+{
+	name === 'wrench' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M15.5 5.5a4.5 4.5 0 0 0-6 4.8L3 17v4h4l6.7-6.5a4.5 4.5 0 0 0 4.8-6L15 12l-3-3 3.5-3.5Z" />
+		</svg>
+	)
+}
+{
+	name === 'brush' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M18 3 21 6l-8 8-4-4 8-8Z" />
+			<path d="M11 12 6 17c-1 1-1 2-3 2 1-2-.5-3 1-5l5-4" />
+		</svg>
+	)
+}
+{
+	name === 'shield' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M12 3 5 6v5c0 5 3 8.5 7 10 4-1.5 7-5 7-10V6l-7-3Z" />
+			<path d="m9 12 2.2 2.2L15.5 10" />
+		</svg>
+	)
+}
+{
+	name === 'phone' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M5 4h3.5l1.5 4-2 1.5a11 11 0 0 0 5.5 5.5L15 13l4 1.5V18a2 2 0 0 1-2 2C10.5 20 4 13.5 4 6a2 2 0 0 1 1-2Z" />
+		</svg>
+	)
+}
+{
+	name === 'mail' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<rect x="3" y="5" width="18" height="14" />
+			<path d="m3.5 6 8.5 7 8.5-7" />
+		</svg>
+	)
+}
+{
+	name === 'chat' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M4 5h16v11H9l-5 4V5Z" />
+		</svg>
+	)
+}
+{
+	name === 'chevron' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M4 15 12 7l8 8" />
+		</svg>
+	)
+}
+{
+	name === 'chevron-down' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M4 9 12 17l8-8" />
+		</svg>
+	)
+}
+{
+	name === 'arrow' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M4 12h16M13 5l7 7-7 7" />
+		</svg>
+	)
+}
+{
+	name === 'menu' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M3 6h18M3 12h18M3 18h18" />
+		</svg>
+	)
+}
+{
+	name === 'close' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M5 5l14 14M19 5 5 19" />
+		</svg>
+	)
+}
+{
+	name === 'pin' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M12 21s7-6.4 7-12a7 7 0 0 0-14 0c0 5.6 7 12 7 12Z" />
+			<circle cx="12" cy="9" r="2.3" />
+		</svg>
+	)
+}
+{
+	name === 'facebook' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M14.5 21v-7.5H17l.5-3.3h-3V8.1c0-1 .3-1.7 1.8-1.7H17.6V3.4A18 18 0 0 0 15.2 3.2c-2.4 0-4 1.5-4 4.2v2.8H8.7v3.3h2.5V21" />
+		</svg>
+	)
+}
+{
+	name === 'check' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M4 12.5 9.5 18 20 6" />
+		</svg>
+	)
+}
+{
+	name === 'photo' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<rect x="3" y="5" width="18" height="14" />
+			<circle cx="9" cy="11" r="2" />
+			<path d="m5 17 4.5-4.5L13 16l2.5-2.5L21 17" />
+		</svg>
+	)
+}
+{
+	name === 'clock' && (
+		<svg class={`icon ${className ?? ''}`} viewBox="0 0 24 24" aria-hidden="true">
+			<circle cx="12" cy="12" r="8.5" />
+			<path d="M12 7v5l3.5 2" />
+		</svg>
+	)
+}

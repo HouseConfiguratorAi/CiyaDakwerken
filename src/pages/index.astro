@@ -1,0 +1,474 @@
+---
+import Base from '../layouts/Base.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Button from '../components/Button.astro';
+import Frame from '../components/Frame.astro';
+import ZigzagDivider from '../components/ZigzagDivider.astro';
+import TrustStrip from '../components/TrustStrip.astro';
+import ProblemCard from '../components/ProblemCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceRow from '../components/ServiceRow.astro';
+import BeforeAfter from '../components/BeforeAfter.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import ProjectStory from '../components/ProjectStory.astro';
+import PhotoBand from '../components/PhotoBand.astro';
+import Gallery from '../components/Gallery.astro';
+import RoofLayers from '../components/RoofLayers.astro';
+import Icon from '../components/Icon.astro';
+import OwnerCard from '../components/OwnerCard.astro';
+import { owner } from '../data/owner';
+import { site, homeFaq } from '../data/site';
+import { services } from '../data/services';
+import { beforeAfterProjects, gallery, teamOnSite } from '../data/projects';
+import { localBusinessJsonLd } from '../lib/seo';
+
+import huisAanbouw from '../assets/images/huis-nieuw-plat-dak-aanbouw-velux.jpg';
+import roofingDakrand from '../assets/images/plat-dak-nieuwe-roofing-dakrand.jpg';
+import roofingZon from '../assets/images/plat-dak-nieuwe-roofing-zon.jpg';
+import opDakconstructie from '../assets/images/ciya-ismet-aan-het-werk-dakconstructie.jpg';
+import veluxNa from '../assets/images/velux-dakraam-na.jpg';
+import veluxVoor from '../assets/images/velux-dakraam-voor.jpg';
+
+const renovatie = beforeAfterProjects.find((p) => p.slug === 'renovatie-plat-dak-isolatie')!;
+
+const problemCards = [
+	{ icon: 'drop', question: 'Lek in het dak?', line: 'Snel en eerlijk advies bij lekken en dakschade.', href: '/diensten/dakherstellingen/' },
+	{ icon: 'roof', question: 'Plat dak aan vernieuwing toe?', line: 'Roofing, EPDM en isolatie voor uw platte dak.', href: '/diensten/platte-daken/' },
+	{ icon: 'sun', question: 'Meer daglicht?', line: 'Velux dakramen en lichtkoepels op maat.', href: '/diensten/velux-dakramen/' },
+	{ icon: 'gutter', question: 'Dakgoten versleten of lek?', line: 'Plaatsing en herstelling van dakgoten.', href: '/diensten/dakgoten/' },
+	{ icon: 'layers', question: 'Dak isoleren?', line: 'Minder energieverlies, meer wooncomfort.', href: '/diensten/dakisolatie/' },
+	{ icon: 'brush', question: 'Onderhoud of reiniging?', line: 'Regelmatige controle en reiniging van uw dak.', href: '/diensten/dakonderhoud/' },
+];
+
+const processSteps = [
+	'U neemt contact op via telefoon of het offerteformulier.',
+	'Advies ter plaatse of telefonisch, op basis van uw situatie.',
+	'U ontvangt een vrijblijvende offerte, zonder verrassingen achteraf.',
+	'Na uw akkoord plannen we de werken in.',
+	'Uitvoering en oplevering, met aandacht voor een nette afwerking.',
+];
+
+const title = 'Ciya Dakwerken | Dakwerker in Lokeren – Specialist platte daken';
+const description = 'Specialist in platte daken in Lokeren en omgeving: roofing, EPDM, lichtkoepels, Velux, zink en dakgoten. Vraag een vrijblijvende offerte aan.';
+---
+
+<Base {title} {description} path="/" jsonLd={localBusinessJsonLd()} headerOverlay={true}>
+	<!-- HERO -->
+	<section class="hero section--dark" data-parallax-root>
+		<div class="hero-shapes" aria-hidden="true">
+			<svg viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="miter"><path d="M10 110 100 20l90 90M40 110V70l60-45 60 45v40" /></svg>
+			<svg viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"><path d="M5 100 100 15l95 85" /><path d="M30 100V78l70-55 70 55v22" /></svg>
+			<svg viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="miter"><path d="M0 95 100 10l100 85" /></svg>
+		</div>
+		<div class="container hero__inner">
+			<div class="hero__content">
+				<div class="enter" style="--e:0"><Eyebrow>Dakwerker · {site.serviceArea}</Eyebrow></div>
+				<h1 class="enter" style="--e:1">Uw specialist in platte daken</h1>
+				<p class="hero__sub enter" style="--e:2">
+					Roofing, EPDM, lichtkoepels, Velux, zink en dakgoten — bij nieuwbouw, renovatie en
+					onderhoud. {site.experience}.
+				</p>
+				<div class="btn-row hero__actions enter" style="--e:3">
+					<Button href="/offerte/" variant="primary">Offerte aanvragen</Button>
+					<Button href={`tel:${site.phoneE164}`} variant="ghost" icon="phone">
+						Bel {site.phoneDisplay}
+					</Button>
+				</div>
+				<p class="hero__note enter" style="--e:4">Persoonlijk advies · Kwaliteitsmaterialen · Garantie op ons werk</p>
+			</div>
+			<div class="hero__media enter" style="--e:2">
+				<div class="hero__layer parallax-1 float-slow">
+					<Frame
+						image={huisAanbouw}
+						alt="Woning met nieuw plat dak op de aanbouw en dakramen in het hellende dak"
+						tag="Realisatie · Plat dak op aanbouw"
+						loading="eager"
+						fetchpriority="high"
+						widths={[480, 640, 840, 1200]}
+						sizes="(min-width: 1024px) 420px, 90vw"
+						class="hero__frame-main"
+					/>
+				</div>
+				<div class="hero__layer hero__layer--secondary parallax-2 float-slow float-slow--delay">
+					<Frame
+						image={roofingDakrand}
+						alt="Afgewerkt plat dak met nieuwe roofing en strakke dakrand"
+						offset={false}
+						widths={[240, 380, 480]}
+						sizes="220px"
+						class="hero__frame-secondary"
+					/>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<ZigzagDivider />
+
+	<!-- TRUST STRIP -->
+	<section class="section section--tight">
+		<div class="container">
+			<TrustStrip />
+		</div>
+	</section>
+
+	<!-- PROBLEM CARDS -->
+	<section class="section section--tight">
+		<div class="container">
+			<SectionHeading eyebrow="Uw dak, uw vraag" title="Waar kunnen we u mee helpen?" />
+			<div class="problem-grid">
+				{problemCards.map((card) => <ProblemCard {...card} />)}
+			</div>
+		</div>
+	</section>
+
+	<!-- SERVICES -->
+	<section class="section section--tight">
+		<div class="container">
+			<SectionHeading eyebrow="Aanbod" title="Onze diensten" />
+			<div class="service-grid">
+				{
+					services.map((service) => (
+						<ServiceRow name={service.name} line={service.short} href={`/diensten/${service.slug}/`} icon={service.icon} />
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ROOF BUILD-UP (3D) -->
+	<section class="section section--dark roof-section">
+		<div class="container">
+			<SectionHeading eyebrow="Hoe zit een plat dak in elkaar?" title="De opbouw van een goed plat dak" />
+			<p class="roof-section__intro">
+				Vijf lagen, elk met een eigen taak. Beweeg over de lagen of tik erop om te zien wat ze doen — en waarom we
+				bij elke renovatie de volledige opbouw bekijken, niet alleen de bovenste laag.
+			</p>
+			<RoofLayers />
+		</div>
+	</section>
+
+	<!-- PROJECT STORY -->
+	<section class="section section--tight story-section">
+		<div class="container">
+			<ProjectStory />
+		</div>
+	</section>
+
+	<!-- PHOTO BAND -->
+	<PhotoBand
+		image={opDakconstructie}
+		alt="Ciya Ismet aan het werk op een dakconstructie onder een blauwe lucht"
+		eyebrow="Platte daken"
+		title="Een plat dak moet vooral één ding doen: dicht blijven."
+		text="Daarom kijken we eerst naar ondergrond, aansluitingen en dakranden — en pas daarna naar het materiaal. Roofing of EPDM, geïsoleerd of niet: u krijgt een eerlijk advies en een duidelijke offerte."
+		ctaHref="/offerte/"
+		ctaLabel="Offerte aanvragen"
+		position="center 30%"
+	/>
+
+	<!-- PROJECTS TEASER -->
+	<section class="section section--tight">
+		<div class="container">
+			<SectionHeading eyebrow="Eigen werk" title="Realisaties" />
+			<div class="projects-grid">
+				<div>
+					<BeforeAfter
+						id="home-renovatie"
+						before={renovatie.before}
+						beforeAlt={renovatie.beforeAlt}
+						after={renovatie.after}
+						afterAlt={renovatie.afterAlt}
+						label="Renovatie plat dak"
+					/>
+				</div>
+				<div>
+					<BeforeAfter
+						id="home-velux"
+						before={veluxVoor}
+						beforeAlt="Opening in hellend pannendak voorbereid voor een dakraam"
+						after={veluxNa}
+						afterAlt="Geplaatst Velux dakraam in pannendak"
+						label="Velux dakraam"
+					/>
+				</div>
+			</div>
+			<div class="gallery-teaser">
+				<Gallery items={gallery} limit={3} />
+			</div>
+			<div class="projects-teaser__link">
+				<Button href="/projecten/" variant="ghost" icon="arrow" iconPosition="right">
+					Bekijk alle realisaties
+				</Button>
+			</div>
+		</div>
+	</section>
+
+	<!-- PROCESS -->
+	<section class="section section--dark">
+		<div class="container">
+			<SectionHeading eyebrow="Wat u kunt verwachten" title="Zo werken we" />
+			<ProcessSteps steps={processSteps} tone="dark" />
+		</div>
+	</section>
+
+	<!-- ABOUT TEASER / OWNER -->
+	{
+		owner.photo ? (
+			<section class="section section--tight">
+				<div class="container">
+					<OwnerCard />
+				</div>
+			</section>
+		) : (
+			<section class="section section--tight">
+				<div class="container about-teaser">
+					<Frame image={teamOnSite.image} alt={teamOnSite.alt} black widths={[480, 640, 920, 1200]} sizes="(min-width: 1024px) 460px, 90vw" />
+					<div class="about-teaser__text">
+						<SectionHeading eyebrow="Over Ciya Dakwerken" title="Vakwerk, persoonlijk aangepakt" />
+						<p>{site.experience}. Platte daken zijn onze specialisatie, van roofing en EPDM tot lichtkoepels en isolatie.</p>
+						<p>We werken met hoogwaardige materialen en geven advies op maat van uw dak — niet het duurste, maar wat het beste past.</p>
+						<p>Persoonlijk contact staat voorop: één aanspreekpunt dat uw dak kent, van het eerste contact tot de oplevering.</p>
+						<Button href="/over-ons/" variant="ghost" icon="arrow" iconPosition="right">Meer over ons</Button>
+					</div>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- FAQ -->
+	<section class="section section--tight">
+		<div class="container">
+			<SectionHeading eyebrow="Vragen" title="Veelgestelde vragen" />
+			<Faq items={homeFaq} />
+		</div>
+	</section>
+
+	<CtaBand />
+</Base>
+
+<style>
+	.hero {
+		position: relative;
+		overflow: hidden;
+		/* pull up under the transparent header (header height ≈ 68px mobile / 76px desktop) */
+		margin-top: -68px;
+		padding-top: calc(var(--space-section) + 68px);
+		padding-bottom: var(--space-section);
+	}
+
+	@media (min-width: 1024px) {
+		.hero {
+			margin-top: -76px;
+			padding-top: calc(var(--space-section) + 76px);
+		}
+	}
+
+	.hero__inner {
+		position: relative;
+		z-index: 1;
+	}
+
+	.hero__layer {
+		position: relative;
+	}
+
+	.hero__layer--secondary {
+		position: absolute;
+		bottom: -28px;
+		left: -24px;
+		width: 38%;
+		max-width: 190px;
+		z-index: 2;
+	}
+
+	.roof-section__intro {
+		margin-top: -0.5rem;
+		margin-bottom: 2.5rem;
+		max-width: 44rem;
+		color: rgba(255, 255, 255, 0.75);
+		font-size: 1.05rem;
+	}
+
+	.hero__inner {
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
+	}
+
+	@media (min-width: 1024px) {
+		.hero__inner {
+			flex-direction: row;
+			align-items: center;
+			gap: 3rem;
+		}
+
+		.hero__content {
+			flex: 7;
+		}
+
+		.hero__media {
+			flex: 5;
+		}
+	}
+
+	.hero__sub {
+		margin-top: 1.5rem;
+		max-width: 42rem;
+		font-size: 1.125rem;
+		color: rgba(255, 255, 255, 0.8);
+	}
+
+	.hero__actions {
+		margin-top: 2rem;
+	}
+
+	.hero__note {
+		margin-top: 1.25rem;
+		font-size: 0.875rem;
+		color: rgba(255, 255, 255, 0.55);
+	}
+
+	.hero__media {
+		position: relative;
+		max-width: 460px;
+		margin-inline: auto;
+	}
+
+	@media (min-width: 1024px) {
+		.hero__media {
+			margin-inline: 0;
+		}
+	}
+
+	.hero__media :global(.hero__frame-main) {
+		width: 100%;
+		max-width: 420px;
+	}
+
+	/* Tag describes the main photo → bottom-right, clear of the secondary frame (bottom-left) */
+	.hero__media :global(.hero__frame-main .frame__tag) {
+		left: auto;
+		right: 20px;
+		bottom: 20px;
+	}
+
+	.hero__media :global(.hero__frame-secondary) {
+		border: 4px solid var(--charcoal);
+	}
+
+	@media (max-width: 480px) {
+		.hero__layer--secondary {
+			display: none;
+		}
+	}
+
+	.problem-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 1rem 2rem;
+	}
+
+	.problem-head__link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: var(--space-block);
+		font-weight: 700;
+		color: var(--red-700);
+		border-bottom: 2px solid transparent;
+		transition: border-color var(--dur-base) var(--ease);
+	}
+
+	.problem-head__link:hover {
+		border-bottom-color: var(--red-600);
+	}
+
+	.problem-head__link :global(.icon) {
+		width: 18px;
+		height: 18px;
+	}
+
+	.problem-grid {
+		display: grid;
+		gap: 1.25rem;
+	}
+
+	@media (min-width: 640px) {
+		.problem-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.problem-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.service-grid {
+		display: grid;
+		gap: 0 2.5rem;
+	}
+
+	@media (min-width: 640px) {
+		.service-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.service-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.projects-grid {
+		display: grid;
+		gap: 2rem;
+	}
+
+	@media (min-width: 768px) {
+		.projects-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.gallery-teaser {
+		margin-top: 3rem;
+	}
+
+	.projects-teaser__link {
+		margin-top: 2.5rem;
+	}
+
+	.story-section {
+		border-top: var(--border-light);
+	}
+
+	.about-teaser {
+		display: grid;
+		gap: 2.5rem;
+		align-items: center;
+	}
+
+	@media (min-width: 1024px) {
+		.about-teaser {
+			grid-template-columns: 460px 1fr;
+		}
+	}
+
+	.about-teaser__text p {
+		margin-bottom: 1.1rem;
+		color: var(--grey-500);
+		max-width: 38rem;
+	}
+
+	.about-teaser__text :global(.btn) {
+		margin-top: 0.5rem;
+	}
+</style>

@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Button from '../components/Button.astro';
+import { site } from '../data/site';
+
+const title = 'Pagina niet gevonden | Ciya Dakwerken';
+const description = 'Deze pagina bestaat niet (meer). Ga naar de homepage, bekijk onze diensten of neem contact op met Ciya Dakwerken.';
+---
+
+<Base {title} {description} path="/404/">
+	<section class="section notfound">
+		<div class="container notfound__inner">
+			<Eyebrow>Foutmelding</Eyebrow>
+			<h1>Pagina niet gevonden</h1>
+			<p>
+				De pagina die u zoekt bestaat niet of is verplaatst. Ga terug naar de homepage of bekijk een
+				van onderstaande links.
+			</p>
+			<div class="btn-row">
+				<Button href="/" variant="primary">Naar de homepage</Button>
+				<Button href="/diensten/" variant="ghost">Bekijk onze diensten</Button>
+				<Button href="/contact/" variant="ghost">Contact</Button>
+			</div>
+			<p class="notfound__phone">
+				Of bel ons rechtstreeks: <a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a>
+			</p>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.notfound {
+		min-height: 50vh;
+		display: flex;
+		align-items: center;
+	}
+
+	.notfound__inner {
+		max-width: 34rem;
+	}
+
+	.notfound__inner p {
+		margin-top: 1.25rem;
+		color: var(--grey-500);
+		font-size: 1.1rem;
+	}
+
+	.notfound .btn-row {
+		margin-top: 2rem;
+	}
+
+	.notfound__phone {
+		margin-top: 2rem !important;
+		font-weight: 600;
+	}
+
+	.notfound__phone a {
+		color: var(--red-700);
+	}
+</style>

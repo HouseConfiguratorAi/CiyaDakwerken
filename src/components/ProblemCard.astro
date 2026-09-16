@@ -1,0 +1,67 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+	icon: string;
+	question: string;
+	line: string;
+	href: string;
+}
+const { icon, question, line, href } = Astro.props;
+---
+
+<a class="problem-card tilt" href={href}>
+	<Icon name={icon as any} class="problem-card__icon" />
+	<h3>{question}</h3>
+	<p>{line}</p>
+	<span class="problem-card__arrow"><Icon name="arrow" /></span>
+</a>
+
+<style>
+	.problem-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding: 1.5rem 1.25rem 1.75rem;
+		background: var(--white);
+		border: var(--border-light);
+		border-top: 3px solid transparent;
+		border-radius: var(--radius);
+		position: relative;
+		transition: border-top-color var(--dur-base) var(--ease);
+	}
+
+	.problem-card:hover,
+	.problem-card:focus-visible {
+		border-top-color: var(--red-600);
+	}
+
+	.problem-card :global(.problem-card__icon) {
+		color: var(--red-600);
+	}
+
+	.problem-card h3 {
+		font-size: 1.05rem;
+	}
+
+	.problem-card p {
+		color: var(--grey-500);
+		font-size: 0.95rem;
+		flex-grow: 1;
+	}
+
+	.problem-card__arrow {
+		display: inline-flex;
+		color: var(--ink);
+	}
+
+	.problem-card__arrow :global(.icon) {
+		width: 20px;
+		height: 20px;
+		transition: transform var(--dur-base) var(--ease);
+	}
+
+	.problem-card:hover .problem-card__arrow :global(.icon) {
+		transform: translateX(4px);
+	}
+</style>

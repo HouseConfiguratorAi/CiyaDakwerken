@@ -1,0 +1,78 @@
+---
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import { site } from '../../data/site';
+import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+
+const title = 'Cookiebeleid | Ciya Dakwerken';
+const description = 'Cookiebeleid van Ciya Dakwerken in Lokeren: deze website plaatst geen tracking-, marketing- of analytische cookies en volgt geen bezoekersgedrag.';
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Cookies', url: `${site.siteUrl}/cookies/` },
+	]),
+];
+---
+
+<Base {title} {description} path="/cookies/" {jsonLd}>
+	<section class="section">
+		<div class="container legal">
+			<Eyebrow>Juridisch</Eyebrow>
+			<h1>Cookiebeleid</h1>
+
+			<div class="legal-block">
+				<h2>Geen tracking cookies</h2>
+				<p>
+					Deze website plaatst geen tracking-, marketing- of analytische cookies. Er wordt geen
+					bezoekersgedrag gevolgd en er worden geen gegevens gedeeld met externe advertentie- of
+					analyseplatformen.
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Functionele opslag</h2>
+				<p>
+					[Aan te vullen door Ciya Ismet BV / juridisch adviseur indien in de toekomst functionele
+					cookies of lokale opslag worden toegevoegd, bijvoorbeeld voor een formulierdienst.]
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Vragen</h2>
+				<p>
+					Heeft u vragen over dit cookiebeleid? Neem contact op via
+					<a href={`mailto:${site.email}`}>{site.email}</a>.
+				</p>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.legal {
+		max-width: 44rem;
+	}
+
+	.legal-block {
+		margin-top: var(--space-block);
+	}
+
+	.legal-block h2 {
+		font-family: var(--font-body);
+		font-weight: 600;
+		font-size: 1.2rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.legal-block p {
+		color: var(--grey-500);
+	}
+
+	.legal-block a {
+		color: var(--red-700);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+</style>

@@ -1,0 +1,286 @@
+---
+// Site-wide photo lightbox. Any element with [data-lightbox-group] containing <img> children opens here.
+// Native <dialog>, keyboard (←/→/Esc) and touch swipe, focus returns to the trigger. No library.
+---
+
+<dialog class="lb" data-lightbox aria-label="Foto vergroot weergeven">
+	<button type="button" class="lb__close" data-lb-close aria-label="Sluiten">
+		<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+	</button>
+	<button type="button" class="lb__nav lb__nav--prev" data-lb-prev aria-label="Vorige foto">
+		<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+	</button>
+	<figure class="lb__figure">
+		<img class="lb__img" data-lb-img alt="" />
+		<figcaption class="lb__caption">
+			<span data-lb-caption></span>
+			<a data-lb-link href="/diensten/">Meer over deze dienst →</a>
+		</figcaption>
+	</figure>
+	<button type="button" class="lb__nav lb__nav--next" data-lb-next aria-label="Volgende foto">
+		<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+	</button>
+	<p class="lb__count" data-lb-count aria-live="polite"></p>
+</dialog>
+
+<style>
+	.lb {
+		position: fixed;
+		inset: 0;
+		width: 100vw;
+		height: 100dvh;
+		max-width: none;
+		max-height: none;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: rgba(10, 10, 10, 0.94);
+		color: var(--white);
+		display: none;
+		place-items: center;
+	}
+
+	.lb[open] {
+		display: grid;
+		animation: lb-in 220ms var(--ease);
+	}
+
+	.lb::backdrop {
+		background: transparent;
+	}
+
+	@keyframes lb-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	.lb__figure {
+		margin: 0;
+		display: grid;
+		gap: 0.75rem;
+		justify-items: center;
+		max-width: min(92vw, 1100px);
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+
+	.lb__img {
+		max-width: 92vw;
+		max-height: 74dvh;
+		width: auto;
+		height: auto;
+		object-fit: contain;
+		border-radius: var(--radius);
+		background: var(--charcoal);
+		animation: lb-img 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+
+	@keyframes lb-img {
+		from {
+			opacity: 0;
+			transform: scale(0.97);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	.lb__caption {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem 1.25rem;
+		align-items: baseline;
+		justify-content: center;
+		text-align: center;
+		font-size: 0.95rem;
+		color: rgba(255, 255, 255, 0.85);
+		padding-inline: 1rem;
+	}
+
+	.lb__caption a {
+		font-weight: 700;
+		color: var(--red-500);
+	}
+
+	.lb__close,
+	.lb__nav {
+		position: absolute;
+		width: 48px;
+		height: 48px;
+		display: grid;
+		place-items: center;
+		background: rgba(255, 255, 255, 0.08);
+		color: var(--white);
+		border-radius: var(--radius);
+		transition: background var(--dur-fast) var(--ease);
+	}
+
+	.lb__close:hover,
+	.lb__nav:hover {
+		background: var(--red-600);
+	}
+
+	.lb__close svg,
+	.lb__nav svg {
+		width: 22px;
+		height: 22px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: square;
+	}
+
+	.lb__close {
+		top: calc(16px + env(safe-area-inset-top));
+		right: 16px;
+	}
+
+	.lb__nav {
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	.lb__nav--prev {
+		left: 12px;
+	}
+
+	.lb__nav--next {
+		right: 12px;
+	}
+
+	@media (max-width: 639px) {
+		.lb__nav {
+			top: auto;
+			bottom: calc(16px + env(safe-area-inset-bottom));
+			transform: none;
+		}
+	}
+
+	.lb__count {
+		position: absolute;
+		top: calc(28px + env(safe-area-inset-top));
+		left: 20px;
+		font-family: var(--font-display);
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		font-size: 0.85rem;
+		color: rgba(255, 255, 255, 0.7);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.lb[open],
+		.lb__img {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	type Item = { src: string; alt: string; caption: string; href: string };
+
+	function initLightbox() {
+		const dlg = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+		if (!dlg) return;
+		const img = dlg.querySelector<HTMLImageElement>('[data-lb-img]')!;
+		const cap = dlg.querySelector<HTMLElement>('[data-lb-caption]')!;
+		const link = dlg.querySelector<HTMLAnchorElement>('[data-lb-link]')!;
+		const count = dlg.querySelector<HTMLElement>('[data-lb-count]')!;
+		let items: Item[] = [];
+		let index = 0;
+		let opener: HTMLElement | null = null;
+
+		const render = () => {
+			const it = items[index];
+			img.src = it.src;
+			img.alt = it.alt;
+			cap.textContent = it.caption;
+			link.href = it.href;
+			link.hidden = !it.href;
+			count.textContent = `${index + 1} / ${items.length}`;
+			img.style.animation = 'none';
+			requestAnimationFrame(() => (img.style.animation = ''));
+		};
+		const open = (list: Item[], i: number, from: HTMLElement) => {
+			items = list;
+			index = i;
+			opener = from;
+			render();
+			if (!dlg.open) dlg.showModal();
+			document.body.style.overflow = 'hidden';
+		};
+		const close = () => {
+			dlg.close();
+			document.body.style.overflow = '';
+			opener?.focus({ preventScroll: true });
+		};
+		const step = (d: number) => {
+			index = (index + d + items.length) % items.length;
+			render();
+		};
+
+		if (!dlg.dataset.ready) {
+			dlg.dataset.ready = '1';
+			dlg.querySelector('[data-lb-close]')!.addEventListener('click', close);
+			dlg.querySelector('[data-lb-prev]')!.addEventListener('click', () => step(-1));
+			dlg.querySelector('[data-lb-next]')!.addEventListener('click', () => step(1));
+			dlg.addEventListener('click', (e) => {
+				if (e.target === dlg) close();
+			});
+			dlg.addEventListener('cancel', (e) => {
+				e.preventDefault();
+				close();
+			});
+			dlg.addEventListener('keydown', (e) => {
+				if (e.key === 'ArrowRight') step(1);
+				if (e.key === 'ArrowLeft') step(-1);
+			});
+			let x0 = 0;
+			dlg.addEventListener('pointerdown', (e) => (x0 = e.clientX));
+			dlg.addEventListener('pointerup', (e) => {
+				const dx = e.clientX - x0;
+				if (Math.abs(dx) > 48) step(dx < 0 ? 1 : -1);
+			});
+			document.addEventListener('astro:before-swap', () => {
+				if (dlg.open) close();
+			});
+		}
+
+		// Bind groups on the current page
+		document.querySelectorAll<HTMLElement>('[data-lightbox-group]').forEach((group) => {
+			if (group.dataset.lbReady) return;
+			group.dataset.lbReady = '1';
+			const triggers = [...group.querySelectorAll<HTMLElement>('[data-lb-item]')];
+			const list: Item[] = triggers.map((t) => {
+				const im = t.querySelector('img')!;
+				return {
+					// largest candidate from srcset, else src
+					src: (im.currentSrc || im.src).replace(/\s+\d+w$/, ''),
+					alt: im.alt,
+					caption: t.dataset.lbCaption ?? im.alt,
+					href: t.dataset.lbHref ?? '',
+				};
+			});
+			triggers.forEach((t, i) => {
+				t.addEventListener('click', (e) => {
+					e.preventDefault();
+					// prefer the largest srcset entry for the big view
+					const im = t.querySelector('img')!;
+					const srcset = im.getAttribute('srcset');
+					if (srcset) {
+						const best = srcset
+							.split(',')
+							.map((s) => s.trim().split(/\s+/))
+							.sort((a, b) => parseInt(b[1]) - parseInt(a[1]))[0];
+						if (best) list[i].src = best[0];
+					}
+					open(list, i, t);
+				});
+			});
+		});
+	}
+	document.addEventListener('astro:page-load', initLightbox);
+</script>

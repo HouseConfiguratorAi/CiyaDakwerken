@@ -1,0 +1,499 @@
+---
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+import Icon from '../../components/Icon.astro';
+import OwnerCard from '../../components/OwnerCard.astro';
+import { site } from '../../data/site';
+import { services } from '../../data/services';
+import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+
+const title = 'Offerte aanvragen | Ciya Dakwerken';
+const description =
+	'Vraag een vrijblijvende offerte aan bij Ciya Dakwerken in Lokeren. Vul het formulier in of bel 0484 55 02 52 — wij nemen persoonlijk contact met u op.';
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Offerte aanvragen', url: `${site.siteUrl}/offerte/` },
+	]),
+];
+
+// Ready-made e-mail for the direct button (visitor completes it in their own mail app).
+const mailtoTemplate = `mailto:${site.email}?subject=${encodeURIComponent('Offerteaanvraag via website')}&body=${encodeURIComponent(
+	'Beste Ciya Dakwerken,\n\nGraag ontvang ik een vrijblijvende offerte.\n\nNaam: \nTelefoon: \nGemeente / postcode: \nType werken: \n\nBeschrijving:\n\n\n(Foto\'s van het dak voeg ik toe als bijlage.)\n\nMet vriendelijke groeten,\n',
+)}`;
+
+const nextSteps = [
+	'Wij bekijken uw aanvraag en nemen contact met u op.',
+	'U krijgt advies, telefonisch of ter plaatse.',
+	'U ontvangt een vrijblijvende offerte, zonder verrassingen achteraf.',
+];
+---
+
+<Base {title} {description} path="/offerte/" {jsonLd}>
+	<section class="section">
+		<div class="container">
+			<Eyebrow>Offerte</Eyebrow>
+			<h1>Vraag uw vrijblijvende offerte aan</h1>
+			<p class="lede">
+				Bel ons of stuur een e-mail — allebei rechtstreeks, zonder tussenstappen. Liever eerst iets
+				invullen? Het formulier hieronder zet de e-mail voor u klaar.
+			</p>
+
+			<div class="direct" aria-label="Direct contact">
+				<a class="direct__card direct__card--call" href={`tel:${site.phoneE164}`}>
+					<span class="direct__icon"><Icon name="phone" /></span>
+					<span class="direct__text">
+						<strong>Bel ons</strong>
+						<span>{site.phoneDisplay}</span>
+					</span>
+					<Icon name="arrow" class="direct__arrow" />
+				</a>
+				<a class="direct__card direct__card--mail" href={mailtoTemplate}>
+					<span class="direct__icon"><Icon name="mail" /></span>
+					<span class="direct__text">
+						<strong>E-mail ons</strong>
+						<span>{site.email}</span>
+					</span>
+					<Icon name="arrow" class="direct__arrow" />
+				</a>
+			</div>
+			<p class="direct__or"><span>of laat ons de e-mail voor u klaarzetten</span></p>
+
+			<div class="offerte-grid">
+				<div class="offerte-form-col">
+					<form class="offerte-form" data-offerte-form data-mail={site.email} novalidate>
+						<!-- Submit composes an e-mail to site.email and opens the visitor's mail app (mailto). No third-party service. -->
+						<div class="field">
+							<label for="naam">Naam *</label>
+							<input type="text" id="naam" name="naam" required autocomplete="name" />
+							<p class="field__error" data-error-for="naam" hidden>Vul uw naam in.</p>
+						</div>
+
+						<div class="field">
+							<label for="telefoon">Telefoon *</label>
+							<input type="tel" id="telefoon" name="telefoon" required autocomplete="tel" inputmode="tel" />
+							<p class="field__error" data-error-for="telefoon" hidden>Vul uw telefoonnummer in.</p>
+						</div>
+
+						<div class="field">
+							<label for="email">E-mail <span class="field__optional">(optioneel)</span></label>
+							<input type="email" id="email" name="email" autocomplete="email" inputmode="email" />
+						</div>
+
+						<div class="field">
+							<label for="gemeente">Gemeente / postcode <span class="field__optional">(optioneel)</span></label>
+							<input type="text" id="gemeente" name="gemeente" autocomplete="postal-code" />
+						</div>
+
+						<div class="field">
+							<label for="type-werken">Type werken <span class="field__optional">(optioneel)</span></label>
+							<select id="type-werken" name="type-werken">
+								<option value="">Maak een keuze</option>
+								{services.map((service) => <option value={service.slug}>{service.name}</option>)}
+								<option value="onbekend">Weet ik niet / iets anders</option>
+							</select>
+						</div>
+
+						<div class="field">
+							<label for="beschrijving">Beschrijving <span class="field__optional">(optioneel)</span></label>
+							<textarea id="beschrijving" name="beschrijving" rows="5" placeholder="Beschrijf kort uw situatie of vraag"></textarea>
+						</div>
+
+						<p class="field__hint field__hint--photos">
+							<Icon name="photo" /> Foto's van uw dak? Voeg ze als bijlage toe aan de e-mail die zo dadelijk opent — dat helpt ons om uw vraag goed in te schatten.
+						</p>
+
+						<!-- Honeypot -->
+						<div class="field field--hp" aria-hidden="true">
+							<label for="bedrijfswebsite">Website</label>
+							<input type="text" id="bedrijfswebsite" name="bedrijfswebsite" tabindex="-1" autocomplete="off" />
+						</div>
+
+						<div class="offerte-form__submit">
+							<Button type="submit" variant="primary" class="offerte-form__btn" icon="mail">Offerte aanvragen via e-mail</Button>
+							<p class="form-phone">Liever bellen? <a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a></p>
+						</div>
+					</form>
+
+					<div class="form-success" data-form-success hidden role="status">
+						<p>Uw e-mailprogramma opent met uw aanvraag.</p>
+						<p>Controleer de tekst, voeg eventueel foto's toe en druk op verzenden. We nemen daarna contact met u op.</p>
+						<p class="form-success__fallback">
+							Opent er niets? Stuur uw aanvraag zelf naar <a href={`mailto:${site.email}`} data-mail-link>{site.email}</a>
+							<button type="button" class="copy-btn" data-copy-mail>Kopieer tekst</button>
+						</p>
+						<pre class="form-success__body" data-mail-body></pre>
+						<p>Liever bellen? <a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a></p>
+					</div>
+				</div>
+
+				<aside class="offerte-side side-panel">
+					<div class="offerte-side__block">
+						<h2>Wat gebeurt er nu?</h2>
+						<ol class="offerte-side__steps">
+							{
+								nextSteps.map((step, i) => (
+									<li>
+										<span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+										<p>{step}</p>
+									</li>
+								))
+							}
+						</ol>
+					</div>
+					<OwnerCard variant="compact" />
+					<div class="offerte-side__block">
+						<h2>Waarom Ciya Dakwerken</h2>
+						<ul class="offerte-side__trust">
+							<li>
+								<Icon name="check" />
+								<span>{site.experience}</span>
+							</li>
+							{
+								site.trustPoints.map((point) => (
+									<li>
+										<Icon name="check" />
+										<span>{point}</span>
+									</li>
+								))
+							}
+						</ul>
+					</div>
+				</aside>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.lede {
+		margin-top: 1.25rem;
+		max-width: 40rem;
+		font-size: 1.125rem;
+		color: var(--grey-500);
+	}
+
+	.direct {
+		margin-top: 2rem;
+		display: grid;
+		gap: 1rem;
+	}
+
+	@media (min-width: 640px) {
+		.direct {
+			grid-template-columns: repeat(2, minmax(0, 22rem));
+		}
+	}
+
+	.direct__card {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1.1rem 1.25rem;
+		border-radius: var(--radius);
+		border: 1.5px solid var(--grey-200);
+		background: var(--white);
+		transition: transform 200ms var(--ease), border-color var(--dur-base) var(--ease), background var(--dur-base) var(--ease);
+	}
+
+	.direct__card--call {
+		background: var(--red-600);
+		border-color: var(--red-600);
+		color: var(--white);
+	}
+
+	.direct__card--call:hover {
+		background: var(--red-500);
+	}
+
+	.direct__card--mail:hover {
+		border-color: var(--ink);
+	}
+
+	.direct__card:hover {
+		transform: translateY(-2px);
+	}
+
+	.direct__icon {
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		flex: none;
+		border-radius: var(--radius);
+		background: rgba(255, 255, 255, 0.16);
+	}
+
+	.direct__card--mail .direct__icon {
+		background: var(--grey-100);
+		color: var(--red-600);
+	}
+
+	.direct__text {
+		display: grid;
+		gap: 0.1rem;
+		min-width: 0;
+	}
+
+	.direct__text strong {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+		font-size: 1.15rem;
+	}
+
+	.direct__text span {
+		font-size: 0.95rem;
+		opacity: 0.85;
+		overflow-wrap: anywhere;
+	}
+
+	.direct :global(.direct__arrow) {
+		margin-left: auto;
+		width: 20px;
+		height: 20px;
+		flex: none;
+		transition: transform var(--dur-base) var(--ease);
+	}
+
+	.direct__card:hover :global(.direct__arrow) {
+		transform: translateX(4px);
+	}
+
+	.direct__or {
+		margin-top: 2rem;
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		font-size: 0.8rem;
+		color: var(--grey-500);
+	}
+
+	.direct__or::before,
+	.direct__or::after {
+		content: '';
+		flex: 1;
+		height: 1px;
+		background: var(--grey-200);
+	}
+
+	.offerte-grid {
+		margin-top: 1.5rem;
+		display: grid;
+		gap: 3rem;
+		align-items: start;
+	}
+
+	@media (min-width: 1024px) {
+		.offerte-grid {
+			grid-template-columns: minmax(0, 36rem) 340px;
+			gap: 4rem;
+		}
+	}
+
+	.offerte-form {
+		display: grid;
+		gap: 1.35rem;
+	}
+
+	.field__hint--photos {
+		display: flex;
+		gap: 0.6rem;
+		align-items: flex-start;
+		padding: 0.9rem 1rem;
+		background: var(--grey-100);
+		border-left: 3px solid var(--red-600);
+		border-radius: var(--radius);
+		font-size: 0.92rem;
+		color: var(--grey-700);
+	}
+
+	.field__hint--photos :global(.icon) {
+		color: var(--red-600);
+		flex: none;
+	}
+
+	.offerte-form__submit {
+		display: grid;
+		gap: 0.9rem;
+		margin-top: 0.5rem;
+	}
+
+	@media (max-width: 639px) {
+		.offerte-form :global(.offerte-form__btn) {
+			width: 100%;
+		}
+	}
+
+	.offerte-side {
+		display: grid;
+		gap: 2rem;
+		align-content: start;
+	}
+
+	@media (min-width: 1024px) {
+		.offerte-side {
+			position: sticky;
+			top: 96px;
+		}
+	}
+
+	.offerte-side__block h2 {
+		font-family: var(--font-display);
+		text-transform: uppercase;
+		font-size: 1.25rem;
+		letter-spacing: 0.02em;
+		margin-bottom: 1rem;
+	}
+
+	.offerte-side__steps {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.offerte-side__steps li {
+		display: flex;
+		gap: 0.9rem;
+		align-items: flex-start;
+	}
+
+	.offerte-side__steps span {
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: 1.6rem;
+		color: var(--red-600);
+		line-height: 1;
+	}
+
+	.offerte-side__steps p {
+		color: var(--grey-700);
+		padding-top: 0.15rem;
+	}
+
+	.offerte-side__trust {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.offerte-side__trust li {
+		display: flex;
+		gap: 0.6rem;
+		align-items: flex-start;
+	}
+
+	.offerte-side__trust :global(.icon) {
+		color: var(--red-600);
+		flex: none;
+		margin-top: 2px;
+	}
+</style>
+
+<script>
+	function initOfferteForm() {
+		const form = document.querySelector<HTMLFormElement>('[data-offerte-form]');
+		if (!form) return;
+		const MAIL = form.dataset.mail ?? '';
+		const success = document.querySelector<HTMLElement>('[data-form-success]');
+
+		// Prefill from the Dakcheck (/dakcheck/ → ?type=slug&bericht=...)
+		const params = new URLSearchParams(location.search);
+		const type = params.get('type');
+		const bericht = params.get('bericht');
+		const select = form.querySelector<HTMLSelectElement>('#type-werken');
+		const textarea = form.querySelector<HTMLTextAreaElement>('#beschrijving');
+		if (type && select && [...select.options].some((o) => o.value === type)) select.value = type;
+		if (bericht && textarea && !textarea.value) textarea.value = bericht + '\n';
+		if (type || bericht) form.querySelector<HTMLInputElement>('#naam')?.focus({ preventScroll: true });
+
+		// Clear errors as the user types
+		form.querySelectorAll<HTMLInputElement>('[required]').forEach((input) => {
+			input.addEventListener('input', () => {
+				if (input.value.trim()) {
+					input.closest('.field')?.classList.remove('field--invalid');
+					form.querySelector<HTMLElement>(`[data-error-for="${input.name}"]`)?.setAttribute('hidden', '');
+				}
+			});
+		});
+
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+
+			const hp = form.querySelector<HTMLInputElement>('#bedrijfswebsite');
+			if (hp && hp.value) return;
+
+			let valid = true;
+			let firstInvalid: HTMLInputElement | null = null;
+			form.querySelectorAll<HTMLInputElement>('[required]').forEach((input) => {
+				const errorEl = form.querySelector<HTMLElement>(`[data-error-for="${input.name}"]`);
+				const field = input.closest('.field');
+				if (!input.value.trim()) {
+					valid = false;
+					firstInvalid ??= input;
+					errorEl?.removeAttribute('hidden');
+					field?.classList.add('field--invalid');
+				} else {
+					errorEl?.setAttribute('hidden', '');
+					field?.classList.remove('field--invalid');
+				}
+			});
+
+			if (!valid) {
+				firstInvalid?.focus();
+				return;
+			}
+
+			const fd = new FormData(form);
+			const typeSel = form.querySelector<HTMLSelectElement>('#type-werken');
+			const typeLabel = typeSel?.selectedOptions[0]?.value ? typeSel.selectedOptions[0].text : '';
+			const lines = [
+				'Beste Ciya Dakwerken,',
+				'',
+				'Graag ontvang ik een vrijblijvende offerte.',
+				'',
+				`Naam: ${fd.get('naam') ?? ''}`,
+				`Telefoon: ${fd.get('telefoon') ?? ''}`,
+				`E-mail: ${fd.get('email') || '-'}`,
+				`Gemeente / postcode: ${fd.get('gemeente') || '-'}`,
+				`Type werken: ${typeLabel || '-'}`,
+				'',
+				'Beschrijving:',
+				String(fd.get('beschrijving') || '-'),
+				'',
+				'(Foto\'s van het dak voeg ik toe als bijlage.)',
+				'',
+				'Met vriendelijke groeten,',
+				String(fd.get('naam') ?? ''),
+			];
+			const body = lines.join('\n');
+			const subject = `Offerteaanvraag via website${typeLabel ? ' — ' + typeLabel : ''}`;
+			const mailto = `mailto:${MAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+			const bodyEl = success?.querySelector<HTMLElement>('[data-mail-body]');
+			if (bodyEl) bodyEl.textContent = body;
+			const link = success?.querySelector<HTMLAnchorElement>('[data-mail-link]');
+			if (link) link.href = mailto;
+			const copy = success?.querySelector<HTMLButtonElement>('[data-copy-mail]');
+			copy?.addEventListener('click', async () => {
+				try {
+					await navigator.clipboard.writeText(`Aan: ${MAIL}\nOnderwerp: ${subject}\n\n${body}`);
+					copy.textContent = 'Gekopieerd';
+				} catch {
+					copy.textContent = 'Selecteer en kopieer de tekst hieronder';
+				}
+			});
+			form.hidden = true;
+			success?.removeAttribute('hidden');
+			window.location.href = mailto;
+			success?.scrollIntoView({ block: 'center' });
+		});
+	}
+
+	document.addEventListener('astro:page-load', initOfferteForm);
+</script>

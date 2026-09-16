@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 76 76">
+	<path d="M55 27 L33 8 L11 27" fill="none" stroke="#C51F2A" stroke-width="10" stroke-linejoin="miter" stroke-miterlimit="6"/>
+	<path d="M16 24 V56 H52" fill="none" stroke="#0A0A0A" stroke-width="10" stroke-linejoin="miter" class="favicon-c"/>
+	<style>
+		@media (prefers-color-scheme: dark) {
+			.favicon-c { stroke: #FFFFFF; }
+		}
+	</style>
+</svg>

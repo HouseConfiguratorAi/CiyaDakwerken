@@ -1,0 +1,81 @@
+---
+// Mobile sticky bar (<=1023px): BEL / E-MAIL / OFFERTE, or BEL / WHATSAPP / OFFERTE when enabled.
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+const whatsappHref = `https://wa.me/${site.whatsapp.number}`;
+---
+
+<div class="sticky-bar" role="navigation" aria-label="Snelle acties">
+	<a class="sticky-bar__cell" href={`tel:${site.phoneE164}`}>
+		<Icon name="phone" />
+		<span>Bel</span>
+	</a>
+	{
+		site.whatsapp.enabled ? (
+			<a class="sticky-bar__cell" href={whatsappHref} target="_blank" rel="noopener noreferrer">
+				<Icon name="chat" />
+				<span>WhatsApp</span>
+			</a>
+		) : (
+			<a class="sticky-bar__cell" href={`mailto:${site.email}`}>
+				<Icon name="mail" />
+				<span>E-mail</span>
+			</a>
+		)
+	}
+	<a class="sticky-bar__cell sticky-bar__cell--cta" href="/offerte/">
+		<Icon name="arrow" />
+		<span>Offerte</span>
+	</a>
+</div>
+
+<style>
+	.sticky-bar {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 150;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		background: var(--black);
+		height: var(--stickybar-height);
+		padding-bottom: env(safe-area-inset-bottom);
+		border-top: 1px solid rgba(255, 255, 255, 0.12);
+	}
+
+	@media (min-width: 1024px) {
+		.sticky-bar {
+			display: none;
+		}
+	}
+
+	.sticky-bar__cell {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 2px;
+		color: var(--white);
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		font-size: 11px;
+		letter-spacing: 0.04em;
+		min-height: 44px;
+	}
+
+	.sticky-bar__cell + .sticky-bar__cell {
+		border-left: 1px solid rgba(255, 255, 255, 0.12);
+	}
+
+	.sticky-bar__cell :global(.icon) {
+		width: 20px;
+		height: 20px;
+	}
+
+	.sticky-bar__cell--cta {
+		background: var(--red-600);
+	}
+</style>

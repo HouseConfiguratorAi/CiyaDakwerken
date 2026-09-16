@@ -1,0 +1,132 @@
+---
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceRow from '../../components/ServiceRow.astro';
+import ProblemCard from '../../components/ProblemCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { services } from '../../data/services';
+import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+import { site } from '../../data/site';
+
+
+const problemCards = [
+	{ icon: 'drop', question: 'Lek in het dak?', line: 'Snel en eerlijk advies bij lekken en dakschade.', href: '/diensten/dakherstellingen/' },
+	{ icon: 'roof', question: 'Plat dak aan vernieuwing toe?', line: 'Roofing, EPDM en isolatie voor uw platte dak.', href: '/diensten/platte-daken/' },
+	{ icon: 'sun', question: 'Meer daglicht?', line: 'Velux dakramen en lichtkoepels op maat.', href: '/diensten/velux-dakramen/' },
+	{ icon: 'gutter', question: 'Dakgoten versleten of lek?', line: 'Plaatsing en herstelling van dakgoten.', href: '/diensten/dakgoten/' },
+	{ icon: 'layers', question: 'Dak isoleren?', line: 'Minder energieverlies, meer wooncomfort.', href: '/diensten/dakisolatie/' },
+	{ icon: 'brush', question: 'Onderhoud of reiniging?', line: 'Regelmatige controle en reiniging van uw dak.', href: '/diensten/dakonderhoud/' },
+];
+
+const title = 'Diensten | Ciya Dakwerken';
+const description = 'Alle dakwerken van Ciya Dakwerken op een rij: roofing, EPDM, lichtkoepels, Velux, zinkwerk, isolatie, dakgoten en herstellingen in Lokeren en omgeving.';
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Diensten', url: `${site.siteUrl}/diensten/` },
+	]),
+];
+---
+
+<Base {title} {description} path="/diensten/" {jsonLd}>
+	<section class="section">
+		<div class="container">
+			<Eyebrow>Aanbod</Eyebrow>
+			<h1>Onze diensten</h1>
+			<p class="intro">
+				Van afdichting tot afwerking: Ciya Dakwerken combineert vakmanschap met hoogwaardige
+				materialen. Platte daken zijn onze specialisatie — roofing, EPDM, lichtkoepels en
+				isolatie — aangevuld met Velux dakramen, dakgoten en zinkwerk op hellende daken. Bij
+				nieuwbouw, renovatie en onderhoud.
+			</p>
+
+			<div class="service-list">
+				{
+					services.map((service) => (
+						<ServiceRow
+							icon={service.icon}
+							name={service.name}
+							line={service.short}
+							href={`/diensten/${service.slug}/`}
+						/>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<section class="section section--tight">
+		<div class="container">
+			<div class="problem-head">
+				<SectionHeading eyebrow="Uw dak, uw vraag" title="Waar kunnen we u mee helpen?" />
+				<a class="problem-head__link" href="/dakcheck/">Niet zeker? Doe de dakcheck →</a>
+			</div>
+			<div class="problem-grid">
+				{problemCards.map((card) => <ProblemCard {...card} />)}
+			</div>
+		</div>
+	</section>
+
+	<CtaBand />
+</Base>
+
+<style>
+	.intro {
+		margin-top: 1.25rem;
+		max-width: 42rem;
+		font-size: 1.125rem;
+		color: var(--grey-500);
+	}
+
+	.service-list {
+		margin-top: var(--space-block);
+		display: grid;
+	}
+
+	@media (min-width: 768px) {
+		.service-list {
+			grid-template-columns: repeat(2, 1fr);
+			column-gap: 2.5rem;
+		}
+	}
+
+	.problem-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 1rem 2rem;
+	}
+
+	.problem-head__link {
+		margin-bottom: var(--space-block);
+		font-weight: 700;
+		color: var(--red-700);
+		border-bottom: 2px solid transparent;
+	}
+
+	.problem-head__link:hover {
+		border-bottom-color: var(--red-600);
+	}
+
+	.problem-grid {
+		display: grid;
+		gap: 1.25rem;
+	}
+
+	@media (min-width: 640px) {
+		.problem-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.problem-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+</style>

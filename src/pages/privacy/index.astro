@@ -1,0 +1,106 @@
+---
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import { site } from '../../data/site';
+import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+
+const title = 'Privacybeleid | Ciya Dakwerken';
+const description = 'Privacybeleid van Ciya Dakwerken (Ciya Ismet BV), Lokeren: hoe wij omgaan met de persoonsgegevens die u via het contact- of offerteformulier deelt.';
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Privacy', url: `${site.siteUrl}/privacy/` },
+	]),
+];
+---
+
+<Base {title} {description} path="/privacy/" {jsonLd}>
+	<section class="section">
+		<div class="container legal">
+			<Eyebrow>Juridisch</Eyebrow>
+			<h1>Privacybeleid</h1>
+
+			<div class="legal-block">
+				<h2>Verwerkingsverantwoordelijke</h2>
+				<p>
+					{site.legalName}, {site.address.street}, {site.address.postalCode} {site.address.city},
+					{site.vatDisplay}. Contact: <a href={`mailto:${site.email}`}>{site.email}</a> ·{' '}
+					<a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a>.
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Welke gegevens verzamelen wij</h2>
+				<p>
+					Via het contactformulier en het offerteformulier op deze website kan u ons naam,
+					contactgegevens, adresgegevens en een beschrijving van uw aanvraag bezorgen, eventueel
+					aangevuld met foto's. [Aan te vullen door Ciya Ismet BV / juridisch adviseur: exacte
+					bewaartermijn en verwerkingsdoeleinden.]
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Waarvoor gebruiken wij deze gegevens</h2>
+				<p>
+					Wij gebruiken de gegevens die u ons bezorgt om uw aanvraag te beantwoorden en, indien van
+					toepassing, een offerte op te maken. [Aan te vullen door Ciya Ismet BV / juridisch
+					adviseur.]
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Delen met derden</h2>
+				<p>
+					[Aan te vullen door Ciya Ismet BV / juridisch adviseur: of en met welke derden gegevens
+					gedeeld worden, bijvoorbeeld een formulier- of hostingdienst.]
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Uw rechten</h2>
+				<p>
+					U heeft het recht op inzage, verbetering en verwijdering van uw persoonsgegevens. Neem
+					hiervoor contact op via <a href={`mailto:${site.email}`}>{site.email}</a>. [Aan te vullen
+					door Ciya Ismet BV / juridisch adviseur: volledige rechtenlijst conform AVG/GDPR.]
+				</p>
+			</div>
+
+			<div class="legal-block">
+				<h2>Cookies</h2>
+				<p>
+					Deze website plaatst geen tracking- of analytische cookies. Meer informatie vindt u op de
+					<a href="/cookies/">cookiepagina</a>.
+				</p>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.legal {
+		max-width: 44rem;
+	}
+
+	.legal-block {
+		margin-top: var(--space-block);
+	}
+
+	.legal-block h2 {
+		font-family: var(--font-body);
+		font-weight: 600;
+		font-size: 1.2rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.legal-block p {
+		color: var(--grey-500);
+	}
+
+	.legal-block a {
+		color: var(--red-700);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+</style>

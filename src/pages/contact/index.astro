@@ -1,0 +1,285 @@
+---
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+import Icon from '../../components/Icon.astro';
+import OwnerCard from '../../components/OwnerCard.astro';
+import TrustStrip from '../../components/TrustStrip.astro';
+import ProcessSteps from '../../components/ProcessSteps.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { site } from '../../data/site';
+import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+
+const title = 'Contact | Ciya Dakwerken';
+const description = 'Neem contact op met Ciya Dakwerken in Lokeren: bel 0484 55 02 52, mail of stuur een bericht via het contactformulier. Wij antwoorden persoonlijk.';
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Contact', url: `${site.siteUrl}/contact/` },
+	]),
+];
+---
+
+<Base {title} {description} path="/contact/" {jsonLd}>
+	<section class="section">
+		<div class="container">
+			<Eyebrow>Contact</Eyebrow>
+			<h1>Neem contact op</h1>
+			<p class="lede">
+				Wij werken in {site.serviceArea}. Bel, mail of gebruik het formulier — voor een offerte kunt u
+				meteen foto's van uw dak meesturen via het <a href="/offerte/">offerteformulier</a>.
+			</p>
+
+			<div class="contact-grid">
+				<div class="contact-info side-panel">
+					<a class="contact-info__item contact-info__item--phone" href={`tel:${site.phoneE164}`}>
+						<Icon name="phone" />
+						<span>{site.phoneDisplay}</span>
+					</a>
+					<a class="contact-info__item" href={`mailto:${site.email}`}>
+						<Icon name="mail" />
+						<span>{site.email}</span>
+					</a>
+					<p class="contact-info__item">
+						<Icon name="pin" />
+						<span>{site.address.street}, {site.address.postalCode} {site.address.city}</span>
+					</p>
+					<a class="contact-info__item" href={site.facebook} target="_blank" rel="noopener noreferrer">
+						<Icon name="facebook" />
+						<span>Facebook</span>
+					</a>
+
+					<OwnerCard variant="compact" />
+					<p class="contact-info__note">
+						Liever meteen een offerte aanvragen? Ga naar het
+						<a href="/offerte/">offerteformulier</a>.
+					</p>
+				</div>
+
+				<div class="contact-form-col">
+				<form class="contact-form" data-contact-form data-mail={site.email} novalidate>
+					<!-- Submit composes an e-mail to site.email and opens the visitor's mail app (mailto). -->
+					<div class="field">
+						<label for="naam">Naam *</label>
+						<input type="text" id="naam" name="naam" required autocomplete="name" />
+						<p class="field__error" data-error-for="naam" hidden>Vul uw naam in.</p>
+					</div>
+					<div class="field">
+						<label for="contactvia">Telefoon of e-mail *</label>
+						<input type="text" id="contactvia" name="contactvia" required autocomplete="tel" />
+						<p class="field__error" data-error-for="contactvia" hidden>Vul uw telefoonnummer of e-mailadres in.</p>
+					</div>
+					<div class="field">
+						<label for="bericht">Bericht</label>
+						<textarea id="bericht" name="bericht" rows="5" placeholder="Waarmee kunnen we u helpen?"></textarea>
+					</div>
+					<!-- Honeypot -->
+					<div class="field field--hp" aria-hidden="true">
+						<label for="website">Website</label>
+						<input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+					</div>
+
+					<div class="contact-form__submit">
+						<Button type="submit" variant="primary" class="contact-form__btn" icon="mail">Verstuur via e-mail</Button>
+						<p class="form-phone">Liever bellen? <a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a></p>
+					</div>
+				</form>
+
+				<div class="form-success" data-form-success hidden role="status">
+					<p>Uw e-mailprogramma opent met uw bericht.</p>
+					<p>Controleer de tekst en druk op verzenden. We nemen daarna contact met u op.</p>
+					<p class="form-success__fallback">
+						Opent er niets? Mail ons rechtstreeks op <a href={`mailto:${site.email}`} data-mail-link>{site.email}</a>
+						<button type="button" class="copy-btn" data-copy-mail>Kopieer tekst</button>
+					</p>
+					<pre class="form-success__body" data-mail-body></pre>
+					<p>Liever bellen? <a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a></p>
+				</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section class="section section--tight contact-trust">
+		<div class="container">
+			<TrustStrip />
+		</div>
+	</section>
+
+	<section class="section section--dark">
+		<div class="container">
+			<SectionHeading level="h2" eyebrow="Wat u kunt verwachten" title="Zo werken we" />
+			<ProcessSteps
+				tone="dark"
+				steps={[
+					'U neemt contact op via telefoon, e-mail of dit formulier.',
+					'Advies ter plaatse of telefonisch, op basis van uw situatie.',
+					'U ontvangt een vrijblijvende offerte, zonder verrassingen achteraf.',
+					'Na uw akkoord plannen we de werken in en voeren we ze vakkundig uit.',
+				]}
+			/>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.contact-trust {
+		border-top: var(--border-light);
+	}
+
+	.contact-grid {
+		margin-top: var(--space-block);
+		display: grid;
+		gap: 3rem;
+	}
+
+	@media (min-width: 900px) {
+		.contact-grid {
+			grid-template-columns: 1fr 1.3fr;
+		}
+	}
+
+	.contact-info {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		align-items: flex-start;
+		align-self: start;
+	}
+
+	.contact-form-col {
+		display: grid;
+		gap: 1.25rem;
+		max-width: 32rem;
+	}
+
+	.contact-info__item {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		font-weight: 600;
+	}
+
+	.contact-info__item--phone {
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		text-transform: uppercase;
+	}
+
+	.contact-info__item :global(.icon) {
+		color: var(--red-600);
+		flex: none;
+	}
+
+	.contact-info__note {
+		margin-top: 0.5rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--grey-200);
+		color: var(--grey-500);
+	}
+
+	.contact-info__note a {
+		color: var(--red-700);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	.contact-form {
+		display: grid;
+		gap: 1.35rem;
+		max-width: 34rem;
+	}
+
+	.contact-form__submit {
+		display: grid;
+		gap: 0.9rem;
+		margin-top: 0.5rem;
+	}
+
+	@media (max-width: 639px) {
+		.contact-form :global(.contact-form__btn) {
+			width: 100%;
+		}
+	}
+
+	.lede {
+		margin-top: 1.25rem;
+		max-width: 40rem;
+		font-size: 1.125rem;
+		color: var(--grey-500);
+	}
+
+	.lede a {
+		color: var(--red-700);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+</style>
+
+<script>
+	function initContactForm() {
+		const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+		if (!form) return;
+		const success = document.querySelector<HTMLElement>('[data-form-success]');
+
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+
+			// Honeypot check
+			const hp = form.querySelector<HTMLInputElement>('#website');
+			if (hp && hp.value) return;
+
+			let valid = true;
+			const required = form.querySelectorAll<HTMLInputElement>('[required]');
+			required.forEach((input) => {
+				const errorEl = form.querySelector<HTMLElement>(`[data-error-for="${input.name}"]`);
+				const field = input.closest('.field');
+				if (!input.value.trim()) {
+					valid = false;
+					errorEl?.removeAttribute('hidden');
+					field?.classList.add('field--invalid');
+				} else {
+					errorEl?.setAttribute('hidden', '');
+					field?.classList.remove('field--invalid');
+				}
+			});
+
+			if (!valid) return;
+
+			const MAIL = form.dataset.mail ?? '';
+			const fd = new FormData(form);
+			const body = [
+				'Beste Ciya Dakwerken,',
+				'',
+				String(fd.get('bericht') || ''),
+				'',
+				`Naam: ${fd.get('naam') ?? ''}`,
+				`Telefoon of e-mail: ${fd.get('contactvia') ?? ''}`,
+				'',
+				'Met vriendelijke groeten,',
+				String(fd.get('naam') ?? ''),
+			].join('\n');
+			const subject = 'Bericht via website';
+			const mailto = `mailto:${MAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+			const bodyEl = success?.querySelector<HTMLElement>('[data-mail-body]');
+			if (bodyEl) bodyEl.textContent = body;
+			const link = success?.querySelector<HTMLAnchorElement>('[data-mail-link]');
+			if (link) link.href = mailto;
+			success?.querySelector<HTMLButtonElement>('[data-copy-mail]')?.addEventListener('click', async (ev) => {
+				const btn = ev.currentTarget as HTMLButtonElement;
+				try {
+					await navigator.clipboard.writeText(`Aan: ${MAIL}\nOnderwerp: ${subject}\n\n${body}`);
+					btn.textContent = 'Gekopieerd';
+				} catch {
+					btn.textContent = 'Selecteer en kopieer de tekst hieronder';
+				}
+			});
+			form.hidden = true;
+			success?.removeAttribute('hidden');
+			window.location.href = mailto;
+		});
+	}
+
+	document.addEventListener('astro:page-load', initContactForm);
+</script>

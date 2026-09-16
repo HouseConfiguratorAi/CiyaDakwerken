@@ -1,0 +1,14 @@
+---
+interface Props {
+	rule?: boolean;
+	as?: 'p' | 'span' | 'div';
+}
+const { rule = true, as: Tag = 'p' } = Astro.props;
+---
+
+<Tag class="eyebrow">
+	<svg class="eyebrow__chevron" viewBox="0 0 24 24" aria-hidden="true">
+		<polyline points="3,17 12,7 21,17" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter" />
+	</svg>
+	<slot />
+</Tag>
