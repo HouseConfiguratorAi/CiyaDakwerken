@@ -114,8 +114,19 @@ const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 					setTimeout(revealAll, 2500);
 				}
 
-				// ---- Lazy image fade-in
-			document.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => {
+				// ---- Pause decorative animations while their section is off-screen
+			if ('IntersectionObserver' in window) {
+				const w = window as any;
+				w.__animIO?.disconnect();
+				w.__animIO = new IntersectionObserver(
+					(entries) => entries.forEach((e) => e.target.classList.toggle('is-offscreen', !e.isIntersecting)),
+					{ rootMargin: '200px 0px' },
+				);
+				document.querySelectorAll<HTMLElement>('[data-anim-root]').forEach((el) => w.__animIO.observe(el));
+			}
+
+			// ---- Image fade-in (lazy) + mark every image loaded so skeletons stop
+			document.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
 				const done = () => img.classList.add('is-loaded');
 				if (img.complete && img.naturalWidth > 0) done();
 				else {

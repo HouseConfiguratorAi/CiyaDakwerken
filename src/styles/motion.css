@@ -272,7 +272,7 @@ html.js .reveal-group .is-in .eyebrow::after {
 }
 
 
-/* Lazy images fade in; their containers show a quiet skeleton until then */
+/* Lazy images fade in; their containers show a quiet skeleton ONLY while the image is still loading */
 html.js img[loading='lazy'] {
 	opacity: 0;
 	transition: opacity 500ms var(--ease);
@@ -282,22 +282,18 @@ html.js img[loading='lazy'].is-loaded {
 	opacity: 1;
 }
 
-.gallery__media,
-.story__media,
-.ba-slider__frame,
-.frame {
-	background-image: linear-gradient(100deg, var(--grey-100) 40%, var(--grey-200) 50%, var(--grey-100) 60%);
-	background-size: 250% 100%;
-	animation: skeleton 1.6s linear infinite;
+html.js :is(.gallery__media, .story__media, .ba-slider__frame, .frame):has(img:not(.is-loaded)) {
+	/* static placeholder — no animation, zero paint cost */
+	background-image: linear-gradient(135deg, var(--grey-100), var(--grey-200));
 }
 
-@keyframes skeleton {
-	from {
-		background-position: 120% 0;
-	}
-	to {
-		background-position: -20% 0;
-	}
+/* Decorative infinite animations pause while their section is off-screen (JS toggles .is-offscreen) */
+.is-offscreen .hero-shapes svg,
+.is-offscreen .float-slow,
+.is-offscreen .roof3d__float,
+.is-offscreen .roof3d__shadow,
+.is-offscreen .snap-hint::before {
+	animation-play-state: paused !important;
 }
 
 /* Scroll progress (thin red line above the header) */
@@ -364,12 +360,6 @@ html.js img[loading='lazy'].is-loaded {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.gallery__media,
-	.story__media,
-	.ba-slider__frame,
-	.frame {
-		animation: none;
-	}
 
 	html.js img[loading='lazy'] {
 		opacity: 1;

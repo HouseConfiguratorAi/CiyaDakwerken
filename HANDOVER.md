@@ -147,6 +147,9 @@ Small implementation notes for whoever maintains this:
 - `BeforeAfter.astro`: "Voor" is the base layer (left), "Na" is clipped from the left (right). The frame
   is a fixed 4:5 with `object-fit: cover` so pairs with different aspect ratios stay aligned.
 - `ProcessSteps.astro` takes `tone="dark"` on charcoal sections; default is the light variant.
+- Performance rule of thumb: no infinite animation on paint-only properties (the old skeleton shimmer
+  animated `background-position` on ~20 elements and caused visible lag). Image placeholders are static;
+  decorative loops (hero shapes, 3D roof) pause when their `[data-anim-root]` section is off-screen.
 - Motion lives in `src/styles/motion.css` + the pointer script at the bottom of `Base.astro`: hero
   entrance stagger, drifting roofline shapes, photo float + mouse parallax, card tilt, button sweep,
   photo-band scroll parallax, drawer stagger, phone snap-scroll rows (`.snap-row`). All transform/opacity

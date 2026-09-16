@@ -34,9 +34,7 @@ const layers: Layer[] = [
 							class={`roof3d__layer roof3d__layer--${layer.tone}`}
 							style={`--i:${i}`}
 							data-layer={layer.id}
-						>
-							<span class="roof3d__num">{String(i + 1).padStart(2, '0')}</span>
-						</div>
+						/>
 					))
 				}
 			</div>
@@ -235,24 +233,6 @@ const layers: Layer[] = [
 		.roof3d.is-open .roof3d__layer.is-active {
 			transform: translateZ(calc(var(--i) * 54px + 16px));
 		}
-	}
-
-	.roof3d__num {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		transform: translate(-50%, -50%) rotateZ(42deg) rotateX(-58deg);
-		font-family: var(--font-display);
-		font-weight: 800;
-		font-size: 1.6rem;
-		color: var(--white);
-		text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
-		opacity: 0;
-		transition: opacity 300ms var(--ease);
-	}
-
-	.roof3d.is-open .roof3d__layer.is-active .roof3d__num {
-		opacity: 1;
 	}
 
 	.roof3d__shadow {
