@@ -1,0 +1,277 @@
+---
+// Regional landing page. Honest scope: based in Lokeren (Oost-Vlaanderen), works in Lokeren and the wider
+// surroundings. No city list, no radius, no "heel Oost-Vlaanderen" promise.
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+import Frame from '../../components/Frame.astro';
+import Icon from '../../components/Icon.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceRow from '../../components/ServiceRow.astro';
+import TrustStrip from '../../components/TrustStrip.astro';
+import ProjectStory from '../../components/ProjectStory.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { site } from '../../data/site';
+import { services } from '../../data/services';
+import { localBusinessJsonLd, breadcrumbJsonLd, faqJsonLd } from '../../lib/seo';
+import huisAanbouw from '../../assets/images/huis-nieuw-plat-dak-aanbouw-velux.jpg';
+
+const title = 'Dakwerken in Oost-Vlaanderen | Ciya Dakwerken, Lokeren';
+const description =
+	'Dakwerker uit Lokeren, actief in Oost-Vlaanderen: platte daken, roofing, EPDM, dakisolatie, lichtkoepels, Velux en dakgoten. Meer dan 20 jaar ervaring, eerlijk advies.';
+
+const faq = [
+	{
+		q: 'In welke regio voert Ciya Dakwerken dakwerken uit?',
+		a: 'Ciya Dakwerken is gevestigd in Lokeren en werkt in Lokeren en de ruime omgeving in Oost-Vlaanderen. Twijfelt u of uw adres binnen ons werkgebied valt? Bel ons even, dan bekijken we het meteen.',
+	},
+	{
+		q: 'Waarin is Ciya Dakwerken gespecialiseerd?',
+		a: 'Platte daken zijn onze specialisatie: roofing en EPDM plaatsen en vernieuwen, dakisolatie, lichtkoepels en de afwerking van dakranden. Daarnaast plaatsen we Velux dakramen, dakgoten en zinkwerk, en herstellen en onderhouden we daken.',
+	},
+	{
+		q: 'Hoe verloopt een aanvraag?',
+		a: 'U belt of mailt ons, of gebruikt het offerteformulier. We bekijken uw dak — ter plaatse of op basis van foto’s — en u ontvangt een vrijblijvende offerte met een duidelijke omschrijving van de werken.',
+	},
+	{
+		q: 'Kan ik een offerte krijgen zonder verplichtingen?',
+		a: 'Ja. Elke offerte is vrijblijvend. U beslist zelf of en wanneer u de werken laat uitvoeren.',
+	},
+	{
+		q: 'Geeft Ciya Dakwerken garantie?',
+		a: 'Ja, wij geven garantie op al onze werkzaamheden. De concrete voorwaarden staan in uw offerte.',
+	},
+];
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Dakwerken in Oost-Vlaanderen', url: `${site.siteUrl}/dakwerken-oost-vlaanderen/` },
+	]),
+	faqJsonLd(faq),
+];
+---
+
+<Base {title} {description} path="/dakwerken-oost-vlaanderen/" {jsonLd} ogImage="/brand/og-platte-daken.jpg">
+	<section class="section regio-hero">
+		<div class="container regio-hero__inner">
+			<div>
+				<Eyebrow>Dakwerker in Oost-Vlaanderen</Eyebrow>
+				<h1>Dakwerken in Oost-Vlaanderen, vanuit Lokeren</h1>
+				<p class="lede">
+					Ciya Dakwerken is een dakwerker uit Lokeren met meer dan 20 jaar ervaring in dakwerken. We werken
+					in Lokeren en de ruime omgeving in Oost-Vlaanderen — dichtbij genoeg om vlot ter plaatse te komen
+					voor advies, een herstelling of een volledige vernieuwing van uw dak.
+				</p>
+				<div class="btn-row">
+					<Button href="/offerte/" variant="primary">Offerte aanvragen</Button>
+					<Button href={`tel:${site.phoneE164}`} variant="ghost" icon="phone">Bel {site.phoneDisplay}</Button>
+				</div>
+			</div>
+			<div class="regio-hero__media float-slow">
+				<Frame
+					image={huisAanbouw}
+					alt="Woning met nieuw plat dak op de aanbouw en dakramen in het hellende dak"
+					tag="Realisatie · Plat dak op aanbouw"
+					loading="eager"
+					fetchpriority="high"
+					widths={[480, 640, 840, 1200]}
+					sizes="(min-width: 1024px) 440px, 90vw"
+				/>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section--tight regio-trust">
+		<div class="container">
+			<TrustStrip />
+		</div>
+	</section>
+
+	<section class="section section--tight">
+		<div class="container regio-text">
+			<div class="prose">
+				<SectionHeading level="h2" eyebrow="Specialist platte daken" title="Wat we doen in Oost-Vlaanderen" />
+				<p>
+					Platte daken zijn ons vak. Bij nieuwbouw, renovatie en onderhoud plaatsen en vernieuwen we
+					<a href="/diensten/roofing/">roofing</a> en <a href="/diensten/epdm/">EPDM</a>, isoleren we het dak
+					en werken we dakranden, opstanden en doorvoeren netjes af — precies de plekken waar een plat dak
+					anders begint te lekken. Waar een dak licht mist, plaatsen we een
+					<a href="/diensten/lichtkoepels/">lichtkoepel</a> of een <a href="/diensten/velux-dakramen/">Velux dakraam</a>.
+				</p>
+				<p>
+					Ook voor <a href="/diensten/dakgoten/">dakgoten</a> en <a href="/diensten/zinkwerken/">zinkwerk</a>, voor
+					<a href="/diensten/dakherstellingen/">herstellingen</a> na een lek of storm en voor
+					<a href="/diensten/dakonderhoud/">onderhoud en reiniging</a> kunt u bij ons terecht. Elke opdracht begint
+					met een eerlijk gesprek: wat is er nodig, wat kan wachten en wat is de beste oplossing voor uw dak — niet de duurste.
+				</p>
+				<h3>Waarom een dakwerker uit de buurt?</h3>
+				<p>
+					Een dak vraagt soms snel een blik ter plaatse: na stormweer, bij een vochtplek of om een offerte
+					goed te kunnen opmaken. Omdat we vanuit Lokeren werken, zijn we vlot bij u — en blijven we bereikbaar
+					na de werken. U krijgt persoonlijk advies en maatwerk, hoogwaardige materialen en garantie op al
+					onze werkzaamheden.
+				</p>
+			</div>
+			<aside class="regio-card side-panel">
+				<p class="regio-card__title">Ciya Dakwerken</p>
+				<ul class="regio-card__list">
+					<li><Icon name="pin" /><span>{site.address.street}, {site.address.postalCode} {site.address.city} ({site.region})</span></li>
+					<li><Icon name="phone" /><a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a></li>
+					<li><Icon name="mail" /><a href={`mailto:${site.email}`}>{site.email}</a></li>
+					<li><Icon name="check" /><span>{site.legalName} · BTW {site.vatDisplay}</span></li>
+				</ul>
+				<p class="regio-card__note">Werkgebied: {site.serviceAreaLong}.</p>
+				<Button href="/dakcheck/" variant="dark" icon="arrow" iconPosition="right">Doe de dakcheck</Button>
+			</aside>
+		</div>
+	</section>
+
+	<section class="section section--tight regio-services">
+		<div class="container">
+			<SectionHeading level="h2" eyebrow="Aanbod" title="Onze dakwerken" />
+			<div class="service-grid">
+				{services.map((s) => <ServiceRow name={s.name} line={s.short} href={`/diensten/${s.slug}/`} icon={s.icon} />)}
+			</div>
+		</div>
+	</section>
+
+	<section class="section section--tight regio-story">
+		<div class="container">
+			<ProjectStory />
+		</div>
+	</section>
+
+	<section class="section section--tight">
+		<div class="container">
+			<SectionHeading level="h2" eyebrow="Vragen" title="Veelgestelde vragen over onze dakwerken" />
+			<Faq items={faq} />
+		</div>
+	</section>
+
+	<CtaBand />
+</Base>
+
+<style>
+	.regio-hero__inner {
+		display: grid;
+		gap: 2.5rem;
+		align-items: center;
+	}
+
+	@media (min-width: 1024px) {
+		.regio-hero__inner {
+			grid-template-columns: 7fr 5fr;
+			gap: 4rem;
+		}
+	}
+
+	.lede {
+		margin-top: 1.25rem;
+		max-width: 40rem;
+		font-size: 1.125rem;
+		color: var(--grey-500);
+	}
+
+	.regio-hero .btn-row {
+		margin-top: 2rem;
+	}
+
+	.regio-hero__media {
+		max-width: 440px;
+		margin-inline: auto;
+	}
+
+	@media (min-width: 1024px) {
+		.regio-hero__media {
+			margin-inline: 0;
+			justify-self: end;
+		}
+	}
+
+	.regio-trust,
+	.regio-services,
+	.regio-story {
+		border-top: var(--border-light);
+	}
+
+	.regio-text {
+		display: grid;
+		gap: 3rem;
+		align-items: start;
+	}
+
+	@media (min-width: 1024px) {
+		.regio-text {
+			grid-template-columns: minmax(0, 68ch) 340px;
+			gap: 4rem;
+		}
+	}
+
+	.prose p {
+		margin-top: 1.1rem;
+		color: var(--grey-700);
+	}
+
+	.prose h3 {
+		margin-top: 2rem;
+		font-family: var(--font-display);
+		text-transform: uppercase;
+		font-size: 1.5rem;
+		letter-spacing: 0.01em;
+	}
+
+	.regio-card__title {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		font-size: 1.25rem;
+		margin-bottom: 1rem;
+	}
+
+	.regio-card__list {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.regio-card__list li {
+		display: flex;
+		gap: 0.6rem;
+		align-items: flex-start;
+	}
+
+	.regio-card__list :global(.icon) {
+		color: var(--red-600);
+		flex: none;
+		margin-top: 2px;
+	}
+
+	.regio-card__list a:hover {
+		color: var(--red-700);
+	}
+
+	.regio-card__note {
+		margin: 1.25rem 0;
+		font-size: 0.9rem;
+		color: var(--grey-500);
+	}
+
+	.service-grid {
+		display: grid;
+		gap: 0 2.5rem;
+	}
+
+	@media (min-width: 640px) {
+		.service-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.service-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+</style>

@@ -37,6 +37,8 @@ export interface BeforeAfterProject {
 	after: ImageMetadata;
 	afterAlt: string;
 	note: string;
+	/** What was done, as visible in the photos — factual, no place/date/client. */
+	steps: string[];
 }
 
 export interface SingleProject {
@@ -58,6 +60,12 @@ export const beforeAfterProjects: BeforeAfterProject[] = [
 		after: roofingDakrand,
 		afterAlt: 'Hetzelfde platte dak na isolatie en nieuwe roofing, met afgewerkte dakrand',
 		note: 'Volledige renovatie van een plat dak: oude dakbedekking verwijderd, isolatieplaten geplaatst en nieuwe roofing met afgewerkte dakrand.',
+		steps: [
+			'Oude, verweerde dakbedekking verwijderd en ondergrond gecontroleerd',
+			'Isolatieplaten geplaatst over het volledige dakvlak, tot aan de dakranden',
+			'Nieuwe roofing aangebracht',
+			'Dakrand en opstanden strak afgewerkt',
+		],
 	},
 	{
 		slug: 'roofing-plat-dak',
@@ -68,6 +76,12 @@ export const beforeAfterProjects: BeforeAfterProject[] = [
 		after: roofingNa,
 		afterAlt: 'Plat dak na vernieuwing van de roofing',
 		note: 'Vernieuwing van de roofing op een plat dak.',
+		steps: [
+			'Oude roofing en grind verwijderd',
+			'Ondergrond gecontroleerd en voorbereid',
+			'Nieuwe roofing in meerdere lagen aangebracht',
+			'Dakranden en aansluitingen afgewerkt',
+		],
 	},
 	{
 		slug: 'velux-dakraam',
@@ -78,6 +92,12 @@ export const beforeAfterProjects: BeforeAfterProject[] = [
 		after: veluxNa,
 		afterAlt: 'Geplaatst Velux dakraam in pannendak',
 		note: 'Plaatsing van een Velux dakraam in een hellend dak.',
+		steps: [
+			'Opening gemaakt in het bestaande pannendak',
+			'Dakconstructie rond de opening bijgewerkt',
+			'Velux dakraam geplaatst',
+			'Aansluiting op de pannen waterdicht afgewerkt',
+		],
 	},
 	{
 		slug: 'lichtkoepel',
@@ -88,6 +108,12 @@ export const beforeAfterProjects: BeforeAfterProject[] = [
 		after: koepelNa,
 		afterAlt: 'Nieuwe vlakke lichtkoepel op plat dak',
 		note: 'Vervanging van een verouderde lichtkoepel door een nieuwe uitvoering.',
+		steps: [
+			'Oude, verweerde lichtkoepel verwijderd',
+			'Opstand gecontroleerd en voorbereid',
+			'Nieuwe vlakke lichtkoepel geplaatst',
+			'Aansluiting waterdicht ingewerkt in de dakbedekking',
+		],
 	},
 	{
 		slug: 'zinken-dakgoot',
@@ -98,6 +124,12 @@ export const beforeAfterProjects: BeforeAfterProject[] = [
 		after: gootNa,
 		afterAlt: 'Nieuw geplaatste zinken dakgoot',
 		note: 'Plaatsing van een zinken dakgoot.',
+		steps: [
+			'Oude goot verwijderd en gootbodem voorbereid',
+			'Nieuwe zinken dakgoot op maat geplaatst',
+			'Naden en aansluitingen gesoldeerd',
+			'Afvoer en aansluiting op het dak afgewerkt',
+		],
 	},
 ];
 

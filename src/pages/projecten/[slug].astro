@@ -1,0 +1,347 @@
+---
+// Case-study page per before/after project. Facts only: service, what was done, photos. No place, date or client.
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+import Icon from '../../components/Icon.astro';
+import BeforeAfter from '../../components/BeforeAfter.astro';
+import ProjectStory from '../../components/ProjectStory.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceRow from '../../components/ServiceRow.astro';
+import TrustStrip from '../../components/TrustStrip.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { beforeAfterProjects, projectStory } from '../../data/projects';
+import { getService, getRelatedServices } from '../../data/services';
+import { site } from '../../data/site';
+import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+
+export function getStaticPaths() {
+	return beforeAfterProjects.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+
+const { project } = Astro.props;
+const service = getService(project.service)!;
+const related = getRelatedServices(service).slice(0, 3);
+const hasStory = project.slug === 'renovatie-plat-dak-isolatie';
+const others = beforeAfterProjects.filter((p) => p.slug !== project.slug);
+
+const steps = project.steps;
+
+const title = `${project.title} | Realisatie Ciya Dakwerken`;
+const description = `${project.note} Bekijk voor en na. Uitgevoerd door Ciya Dakwerken, dakwerker in Lokeren (Oost-Vlaanderen).`.slice(0, 158);
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Realisaties', url: `${site.siteUrl}/projecten/` },
+		{ name: project.title, url: `${site.siteUrl}/projecten/${project.slug}/` },
+	]),
+];
+---
+
+<Base {title} {description} path={`/projecten/${project.slug}/`} {jsonLd} ogImage={`/brand/og-${service.slug}.jpg`}>
+	<nav class="breadcrumb" aria-label="Kruimelpad">
+		<div class="container">
+			<a href="/">Home</a><span aria-hidden="true">/</span>
+			<a href="/projecten/">Realisaties</a><span aria-hidden="true">/</span>
+			<span aria-current="page">{project.title}</span>
+		</div>
+	</nav>
+
+	<section class="section case">
+		<div class="container case__grid">
+			<div class="case__text">
+				<Eyebrow>Realisatie · {service.name}</Eyebrow>
+				<h1>{project.title}</h1>
+				<p class="lede">{project.note}</p>
+				<dl class="case__facts">
+					<div><dt>Type werk</dt><dd><a href={`/diensten/${service.slug}/`}>{service.name}</a></dd></div>
+					<div><dt>Uitgevoerd door</dt><dd>{site.name}</dd></div>
+					<div><dt>Werkgebied</dt><dd>{site.serviceAreaLong}</dd></div>
+				</dl>
+				<div class="btn-row">
+					<Button href="/offerte/" variant="primary">Zoiets voor uw dak?</Button>
+					<Button href={`tel:${site.phoneE164}`} variant="ghost" icon="phone">Bel {site.phoneDisplay}</Button>
+				</div>
+			</div>
+			<div class="case__media">
+				<BeforeAfter id={`case-${project.slug}`} before={project.before} beforeAlt={project.beforeAlt} after={project.after} afterAlt={project.afterAlt} label={project.title} />
+				<p class="case__hint"><Icon name="chevron" /> Schuif over de foto om voor en na te vergelijken</p>
+			</div>
+		</div>
+	</section>
+
+	{
+		hasStory && (
+			<section class="section section--tight case__story">
+				<div class="container">
+					<ProjectStory cta={false} />
+				</div>
+			</section>
+		)
+	}
+
+	<section class="section section--dark">
+		<div class="container case__did">
+			<div>
+				<SectionHeading level="h2" eyebrow="Wat we deden" title="De werken in een oogopslag" />
+				<ol class="did">
+					{steps.map((s, i) => (
+						<li>
+							<span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+							<p>{s}</p>
+						</li>
+					))}
+				</ol>
+			</div>
+			<div class="case__why">
+				<p class="case__why-title">Waarom dit werkt</p>
+				<ul class="chevron-list chevron-list--dark">
+					{service.benefits.slice(0, 4).map((b) => (
+						<li><Icon name="check" /><span>{b}</span></li>
+					))}
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section--tight">
+		<div class="container">
+			<TrustStrip />
+		</div>
+	</section>
+
+	{
+		others.length > 0 && (
+			<section class="section section--tight case__more">
+				<div class="container">
+					<SectionHeading level="h2" eyebrow="Meer realisaties" title="Ander eigen werk" />
+					<ul class="more">
+						{others.slice(0, 4).map((p) => (
+							<li><a href={`/projecten/${p.slug}/`}><span class="more__s">{getService(p.service)?.name}</span><strong>{p.title}</strong></a></li>
+						))}
+					</ul>
+				</div>
+			</section>
+		)
+	}
+
+	<section class="section section--tight case__related">
+		<div class="container">
+			<SectionHeading level="h2" eyebrow="Diensten" title="Gerelateerde diensten" />
+			<div class="related-grid">
+				<ServiceRow name={service.name} line={service.short} href={`/diensten/${service.slug}/`} icon={service.icon} />
+				{related.slice(0, 2).map((r) => <ServiceRow name={r.name} line={r.short} href={`/diensten/${r.slug}/`} icon={r.icon} />)}
+			</div>
+		</div>
+	</section>
+
+	<CtaBand />
+</Base>
+
+<style>
+	.breadcrumb {
+		padding-block: 1rem;
+		border-bottom: var(--border-light);
+		font-size: 0.85rem;
+		color: var(--grey-500);
+	}
+
+	.breadcrumb .container {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	.breadcrumb [aria-current='page'] {
+		color: var(--ink);
+		font-weight: 600;
+	}
+
+	.case__grid {
+		display: grid;
+		gap: 2.5rem;
+		align-items: center;
+	}
+
+	@media (min-width: 1024px) {
+		.case__grid {
+			grid-template-columns: 1fr 520px;
+			gap: 4rem;
+		}
+	}
+
+	.lede {
+		margin-top: 1.25rem;
+		font-size: 1.125rem;
+		color: var(--grey-500);
+		max-width: 38rem;
+	}
+
+	.case__facts {
+		margin: 1.75rem 0 0;
+		display: grid;
+		gap: 0;
+		border-top: var(--border-light);
+		max-width: 36rem;
+	}
+
+	.case__facts > div {
+		display: grid;
+		grid-template-columns: 9rem 1fr;
+		gap: 1rem;
+		padding: 0.7rem 0;
+		border-bottom: var(--border-light);
+	}
+
+	.case__facts dt {
+		color: var(--grey-500);
+		font-size: 0.9rem;
+	}
+
+	.case__facts dd {
+		margin: 0;
+		font-weight: 600;
+	}
+
+	.case__facts a:hover {
+		color: var(--red-700);
+	}
+
+	.case .btn-row {
+		margin-top: 1.75rem;
+	}
+
+	.case__hint {
+		margin-top: 0.5rem;
+		display: flex;
+		gap: 0.4rem;
+		align-items: center;
+		font-size: 0.85rem;
+		color: var(--grey-500);
+	}
+
+	.case__hint :global(.icon) {
+		width: 16px;
+		height: 16px;
+		transform: rotate(90deg);
+		color: var(--red-600);
+	}
+
+	.case__story,
+	.case__more,
+	.case__related {
+		border-top: var(--border-light);
+	}
+
+	.case__did {
+		display: grid;
+		gap: 3rem;
+	}
+
+	@media (min-width: 1024px) {
+		.case__did {
+			grid-template-columns: 1.2fr 1fr;
+			gap: 4rem;
+		}
+	}
+
+	.did {
+		display: grid;
+		gap: 1.25rem;
+	}
+
+	.did li {
+		display: flex;
+		gap: 1rem;
+		align-items: flex-start;
+		padding-top: 0.75rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.14);
+	}
+
+	.did span {
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: 1.75rem;
+		line-height: 1;
+		color: var(--red-500);
+		min-width: 2.2ch;
+	}
+
+	.did p {
+		color: rgba(255, 255, 255, 0.85);
+	}
+
+	.case__why-title {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		font-size: 1.25rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.chevron-list--dark li + li {
+		border-top: var(--border-dark);
+	}
+
+	.chevron-list--dark :global(.icon) {
+		color: var(--red-500);
+	}
+
+	.more {
+		display: grid;
+		gap: 1rem;
+	}
+
+	@media (min-width: 640px) {
+		.more {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.more {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+
+	.more a {
+		display: grid;
+		gap: 0.35rem;
+		padding: 1.25rem;
+		border: var(--border-light);
+		border-top: 3px solid transparent;
+		border-radius: var(--radius);
+		transition: border-top-color var(--dur-base) var(--ease);
+	}
+
+	.more a:hover {
+		border-top-color: var(--red-600);
+	}
+
+	.more__s {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		font-size: 0.78rem;
+		color: var(--red-700);
+	}
+
+	.more strong {
+		font-weight: 600;
+	}
+
+	.related-grid {
+		display: grid;
+		gap: 0 2.5rem;
+	}
+
+	@media (min-width: 768px) {
+		.related-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+</style>

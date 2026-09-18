@@ -6,7 +6,8 @@ import { site } from '../data/site';
 import { services } from '../data/services';
 
 const navLinks = [
-	{ href: '/projecten/', label: 'Projecten' },
+	{ href: '/projecten/', label: 'Realisaties' },
+	{ href: '/kennisbank/', label: 'Kennisbank' },
 	{ href: '/over-ons/', label: 'Over ons' },
 	{ href: '/contact/', label: 'Contact' },
 ];
@@ -47,14 +48,27 @@ const isDienstenActive = currentPath.startsWith('/diensten/') || currentPath ===
 										<a
 											href={`/diensten/${service.slug}/`}
 											aria-current={currentPath === `/diensten/${service.slug}/` ? 'page' : undefined}
+											class="mega__item"
 										>
-											{service.name}
+											<Icon name={service.icon as any} class="mega__icon" />
+											<span class="mega__text">
+												<strong>{service.name}</strong>
+												<small>{service.short}</small>
+											</span>
 										</a>
 									</li>
 								))
 							}
 						</ul>
-						<a href="/diensten/" class="nav-desktop__all">Alle diensten →</a>
+						<div class="mega__aside">
+							<a href="/dakcheck/" class="mega__card">
+								<span class="mega__card-eyebrow">Niet zeker?</span>
+								<strong>Doe de dakcheck</strong>
+								<span>Drie vragen, meteen een eerlijke inschatting.</span>
+								<span class="mega__card-link">Start <Icon name="arrow" /></span>
+							</a>
+							<a href="/diensten/" class="nav-desktop__all">Alle diensten →</a>
+						</div>
 					</div>
 				</li>
 				{
@@ -259,10 +273,12 @@ const isDienstenActive = currentPath.startsWith('/diensten/') || currentPath ===
 		border: var(--border-light);
 		box-shadow: 0 12px 0 0 rgba(0, 0, 0, 0.04);
 		padding: 1.25rem 1.5rem 1.25rem;
-		min-width: 520px;
+		min-width: 860px;
 		border-top: 3px solid var(--red-600);
 		display: grid;
-		gap: 0.25rem;
+		grid-template-columns: 1fr 240px;
+		gap: 1.5rem;
+		color: var(--ink);
 		opacity: 0;
 		visibility: hidden;
 		transform: translateY(6px);
@@ -279,31 +295,119 @@ const isDienstenActive = currentPath.startsWith('/diensten/') || currentPath ===
 
 	.nav-desktop__panel ul {
 		display: grid;
-		grid-template-columns: repeat(2, max-content);
-		gap: 0.15rem 2rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.15rem 1rem;
 	}
 
-	.nav-desktop__panel a {
-		display: block;
-		padding: 0.5rem 0.5rem;
-		font-size: 0.9rem;
+	.nav-desktop__panel .mega__item {
+		display: flex;
+		gap: 0.75rem;
+		align-items: flex-start;
+		padding: 0.55rem 0.6rem;
 		border-radius: var(--radius);
-		white-space: nowrap;
+		border-left: 3px solid transparent;
 	}
 
-	.nav-desktop__panel a:hover,
-	.nav-desktop__panel a:focus-visible {
+	.nav-desktop__panel .mega__item:hover,
+	.nav-desktop__panel .mega__item:focus-visible {
 		background: var(--grey-100);
+		border-left-color: var(--red-600);
+		color: var(--ink);
+	}
+
+	.nav-desktop__panel :global(.mega__icon) {
 		color: var(--red-600);
+		flex: none;
+		width: 20px;
+		height: 20px;
+		margin-top: 2px;
+	}
+
+	.mega__text {
+		display: grid;
+		gap: 0.1rem;
+		min-width: 0;
+	}
+
+	.mega__text strong {
+		font-weight: 600;
+		font-size: 0.92rem;
+		line-height: 1.2;
+	}
+
+	.mega__text small {
+		font-size: 0.78rem;
+		color: var(--grey-500);
+		line-height: 1.35;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.mega__aside {
+		display: grid;
+		gap: 0.75rem;
+		align-content: start;
+		border-left: var(--border-light);
+		padding-left: 1.5rem;
+	}
+
+	.mega__card {
+		display: grid;
+		gap: 0.35rem;
+		padding: 1.1rem 1.1rem 1rem;
+		background: var(--charcoal);
+		color: var(--white);
+		border-radius: var(--radius);
+		border-top: 3px solid var(--red-600);
+	}
+
+	.mega__card:hover {
+		background: var(--black);
+		color: var(--white);
+	}
+
+	.mega__card-eyebrow {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		font-size: 0.72rem;
+		color: var(--red-500);
+	}
+
+	.mega__card strong {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		font-size: 1.15rem;
+	}
+
+	.mega__card span:not(.mega__card-eyebrow):not(.mega__card-link) {
+		font-size: 0.85rem;
+		color: rgba(255, 255, 255, 0.75);
+	}
+
+	.mega__card-link {
+		margin-top: 0.4rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-weight: 700;
+		font-size: 0.85rem;
+	}
+
+	.mega__card-link :global(.icon) {
+		width: 16px;
+		height: 16px;
 	}
 
 	.nav-desktop__all {
-		margin-top: 0.75rem;
-		padding-top: 0.75rem;
-		border-top: var(--border-light);
 		font-weight: 700;
 		font-size: 0.85rem;
 		color: var(--red-600);
+		padding: 0.25rem 0;
 	}
 
 	.site-header__actions {

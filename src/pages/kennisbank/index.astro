@@ -1,0 +1,158 @@
+---
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getCollection } from 'astro:content';
+import { site } from '../../data/site';
+import { getService } from '../../data/services';
+import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+
+const articles = (await getCollection('kennisbank')).sort((a, b) => a.data.order - b.data.order);
+const readingTime = (body: string) => Math.max(2, Math.round(body.split(/\s+/).length / 200));
+
+const title = 'Kennisbank: advies over platte daken en dakwerken | Ciya Dakwerken';
+const description =
+	'Eerlijk advies van een dakwerker uit Lokeren: EPDM of roofing, wanneer een plat dak vernieuwen, isoleren bij renovatie, wat te doen bij een lek, onderhoud en meer daglicht.';
+
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Kennisbank', url: `${site.siteUrl}/kennisbank/` },
+	]),
+	{
+		'@context': 'https://schema.org',
+		'@type': 'ItemList',
+		itemListElement: articles.map((a, i) => ({ '@type': 'ListItem', position: i + 1, url: `${site.siteUrl}/kennisbank/${a.id}/`, name: a.data.title })),
+	},
+];
+---
+
+<Base {title} {description} path="/kennisbank/" {jsonLd}>
+	<section class="section">
+		<div class="container">
+			<Eyebrow>Kennisbank</Eyebrow>
+			<h1>Advies over uw dak, zonder verkooppraat</h1>
+			<p class="lede">
+				Wat we onze klanten ter plaatse vertellen, staat hier op papier: hoe een plat dak in elkaar zit, wanneer
+				herstellen volstaat, waarom isoleren loont en wat u doet bij een lek.
+			</p>
+
+			<ul class="articles reveal-group">
+				{
+					articles.map((a, i) => {
+						const service = getService(a.data.service);
+						return (
+							<li class="article-card reveal" style={`--stagger:${i % 6}`}>
+								<a href={`/kennisbank/${a.id}/`} class="article-card__link">
+									<span class="article-card__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+									<span class="article-card__body">
+										<span class="article-card__q">{a.data.question}</span>
+										<strong class="article-card__title">{a.data.title}</strong>
+										<span class="article-card__meta">
+											{service && <span>{service.name}</span>}
+											<span>{readingTime(a.body ?? '')} min lezen</span>
+										</span>
+									</span>
+									<Icon name="arrow" class="article-card__arrow" />
+								</a>
+							</li>
+						);
+					})
+				}
+			</ul>
+		</div>
+	</section>
+	<CtaBand />
+</Base>
+
+<style>
+	.lede {
+		margin-top: 1.25rem;
+		max-width: 42rem;
+		font-size: 1.125rem;
+		color: var(--grey-500);
+	}
+
+	.articles {
+		margin-top: var(--space-block);
+		display: grid;
+		gap: 1rem;
+	}
+
+	@media (min-width: 900px) {
+		.articles {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1.25rem;
+		}
+	}
+
+	.article-card__link {
+		display: flex;
+		gap: 1.25rem;
+		align-items: flex-start;
+		padding: 1.5rem 1.5rem 1.5rem 1.25rem;
+		height: 100%;
+		border: var(--border-light);
+		border-top: 3px solid transparent;
+		border-radius: var(--radius);
+		background: var(--white);
+		transition: border-top-color var(--dur-base) var(--ease), transform 200ms var(--ease);
+	}
+
+	.article-card__link:hover {
+		border-top-color: var(--red-600);
+		transform: translateY(-2px);
+	}
+
+	.article-card__num {
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: 2rem;
+		line-height: 1;
+		color: var(--grey-300);
+		flex: none;
+	}
+
+	.article-card__body {
+		display: grid;
+		gap: 0.4rem;
+		flex: 1;
+	}
+
+	.article-card__q {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		font-size: 0.8rem;
+		color: var(--red-700);
+	}
+
+	.article-card__title {
+		font-weight: 600;
+		font-size: 1.1rem;
+		line-height: 1.35;
+	}
+
+	.article-card__meta {
+		display: flex;
+		gap: 0.75rem;
+		font-size: 0.85rem;
+		color: var(--grey-500);
+	}
+
+	.article-card :global(.article-card__arrow) {
+		width: 20px;
+		height: 20px;
+		flex: none;
+		color: var(--grey-400);
+		transition: transform var(--dur-base) var(--ease), color var(--dur-base) var(--ease);
+	}
+
+	.article-card__link:hover :global(.article-card__arrow) {
+		color: var(--red-600);
+		transform: translateX(4px);
+	}
+</style>

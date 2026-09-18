@@ -19,9 +19,15 @@ const description = 'Deze pagina bestaat niet (meer). Ga naar de homepage, bekij
 			</p>
 			<div class="btn-row">
 				<Button href="/" variant="primary">Naar de homepage</Button>
-				<Button href="/diensten/" variant="ghost">Bekijk onze diensten</Button>
-				<Button href="/contact/" variant="ghost">Contact</Button>
+				<Button href="/dakcheck/" variant="dark">Doe de dakcheck</Button>
+				<Button href="/diensten/" variant="ghost">Onze diensten</Button>
 			</div>
+			<ul class="notfound__links">
+				<li><a href="/projecten/">Realisaties</a></li>
+				<li><a href="/kennisbank/">Kennisbank</a></li>
+				<li><a href="/veelgestelde-vragen/">Veelgestelde vragen</a></li>
+				<li><a href="/contact/">Contact</a></li>
+			</ul>
 			<p class="notfound__phone">
 				Of bel ons rechtstreeks: <a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a>
 			</p>
@@ -48,6 +54,18 @@ const description = 'Deze pagina bestaat niet (meer). Ga naar de homepage, bekij
 
 	.notfound .btn-row {
 		margin-top: 2rem;
+	}
+
+	.notfound__links {
+		margin-top: 1.5rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.5rem;
+		font-weight: 600;
+	}
+
+	.notfound__links a:hover {
+		color: var(--red-700);
 	}
 
 	.notfound__phone {

@@ -20,6 +20,8 @@ export const site = {
 	positioningAlt: 'Uw betrouwbare dakwerker',
 	experience: 'Meer dan 20 jaar ervaring in dakwerken',
 	serviceArea: 'Lokeren en omgeving',
+	region: 'Oost-Vlaanderen',
+	serviceAreaLong: 'Lokeren en omgeving (Oost-Vlaanderen)',
 	trustPoints: [
 		'Vakmanschap en hoogwaardige materialen',
 		'Persoonlijk advies en maatwerk',
@@ -29,8 +31,9 @@ export const site = {
 		enabled: false,
 		number: '32484550252',
 	},
-	// TODO: confirm final domain with the client before this site goes live.
-	siteUrl: 'https://www.ciyadakwerken.be',
+	// Live deploy (Vercel). Replace with the client's own .be domain as soon as it exists — a real domain
+	// matters for local rankings; keep this in sync with `site` in astro.config.mjs.
+	siteUrl: 'https://cya-dakwerken-1.vercel.app',
 } as const;
 
 export type Site = typeof site;

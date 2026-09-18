@@ -19,6 +19,8 @@ import RoofLayers from '../components/RoofLayers.astro';
 import Icon from '../components/Icon.astro';
 import OwnerCard from '../components/OwnerCard.astro';
 import { owner } from '../data/owner';
+import { getCollection } from 'astro:content';
+const articles = (await getCollection('kennisbank')).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
 import { site, homeFaq } from '../data/site';
 import { services } from '../data/services';
 import { beforeAfterProjects, gallery, teamOnSite } from '../data/projects';
@@ -49,8 +51,8 @@ const processSteps = [
 	'Uitvoering en oplevering, met aandacht voor een nette afwerking.',
 ];
 
-const title = 'Ciya Dakwerken | Dakwerker in Lokeren – Specialist platte daken';
-const description = 'Specialist in platte daken in Lokeren en omgeving: roofing, EPDM, lichtkoepels, Velux, zink en dakgoten. Vraag een vrijblijvende offerte aan.';
+const title = 'Dakwerken Lokeren & Oost-Vlaanderen | Ciya Dakwerken';
+const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofing, EPDM, isolatie, lichtkoepels, Velux, zink en dakgoten. Meer dan 20 jaar ervaring. Vraag uw offerte aan.';
 ---
 
 <Base {title} {description} path="/" jsonLd={localBusinessJsonLd()} headerOverlay={true}>
@@ -63,7 +65,7 @@ const description = 'Specialist in platte daken in Lokeren en omgeving: roofing,
 		</div>
 		<div class="container hero__inner">
 			<div class="hero__content">
-				<div class="enter" style="--e:0"><Eyebrow>Dakwerker · {site.serviceArea}</Eyebrow></div>
+				<div class="enter" style="--e:0"><Eyebrow>Dakwerker in Lokeren · {site.region}</Eyebrow></div>
 				<h1 class="enter" style="--e:1">Uw specialist in platte daken</h1>
 				<p class="hero__sub enter" style="--e:2">
 					Roofing, EPDM, lichtkoepels, Velux, zink en dakgoten — bij nieuwbouw, renovatie en
@@ -75,7 +77,7 @@ const description = 'Specialist in platte daken in Lokeren en omgeving: roofing,
 						Bel {site.phoneDisplay}
 					</Button>
 				</div>
-				<p class="hero__note enter" style="--e:4">Persoonlijk advies · Kwaliteitsmaterialen · Garantie op ons werk</p>
+				<p class="hero__note enter" style="--e:4">Persoonlijk advies · Kwaliteitsmaterialen · Garantie op ons werk · <a href="/dakwerken-oost-vlaanderen/">Actief in Oost-Vlaanderen</a></p>
 			</div>
 			<div class="hero__media enter" style="--e:2">
 				<div class="hero__layer parallax-1 float-slow">
@@ -237,6 +239,29 @@ const description = 'Specialist in platte daken in Lokeren en omgeving: roofing,
 		)
 	}
 
+	<!-- KENNISBANK TEASER -->
+	<section class="section section--tight kb-teaser">
+		<div class="container">
+			<div class="problem-head">
+				<SectionHeading eyebrow="Kennisbank" title="Eerlijk advies over uw dak" />
+				<a class="problem-head__link" href="/kennisbank/">Alle artikels <Icon name="arrow" /></a>
+			</div>
+			<ul class="kb-grid reveal-group">
+				{
+					articles.map((a, i) => (
+						<li class="reveal" style={`--stagger:${i}`}>
+							<a href={`/kennisbank/${a.id}/`} class="kb-card">
+								<span class="kb-card__q">{a.data.question}</span>
+								<strong>{a.data.title}</strong>
+								<span class="kb-card__more">Lees verder <Icon name="arrow" /></span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
 	<!-- FAQ -->
 	<section class="section section--tight">
 		<div class="container">
@@ -330,6 +355,17 @@ const description = 'Specialist in platte daken in Lokeren en omgeving: roofing,
 		color: rgba(255, 255, 255, 0.55);
 	}
 
+	.hero__note a {
+		color: rgba(255, 255, 255, 0.8);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		text-decoration-color: var(--red-500);
+	}
+
+	.hero__note a:hover {
+		color: var(--white);
+	}
+
 	.hero__media {
 		position: relative;
 		max-width: 460px;
@@ -390,6 +426,67 @@ const description = 'Specialist in platte daken in Lokeren en omgeving: roofing,
 	.problem-head__link :global(.icon) {
 		width: 18px;
 		height: 18px;
+	}
+
+	.kb-teaser {
+		border-top: var(--border-light);
+	}
+
+	.kb-grid {
+		display: grid;
+		gap: 1.25rem;
+	}
+
+	@media (min-width: 900px) {
+		.kb-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.kb-card {
+		display: grid;
+		gap: 0.6rem;
+		height: 100%;
+		padding: 1.5rem;
+		border: var(--border-light);
+		border-top: 3px solid transparent;
+		border-radius: var(--radius);
+		transition: border-top-color var(--dur-base) var(--ease), transform 200ms var(--ease);
+	}
+
+	.kb-card:hover {
+		border-top-color: var(--red-600);
+		transform: translateY(-2px);
+	}
+
+	.kb-card__q {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		font-size: 0.78rem;
+		color: var(--red-700);
+	}
+
+	.kb-card strong {
+		font-weight: 600;
+		font-size: 1.05rem;
+		line-height: 1.35;
+	}
+
+	.kb-card__more {
+		margin-top: auto;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-weight: 700;
+		font-size: 0.9rem;
+	}
+
+	.kb-card__more :global(.icon) {
+		width: 16px;
+		height: 16px;
+		color: var(--red-600);
 	}
 
 	.problem-grid {

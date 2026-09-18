@@ -33,7 +33,11 @@ export function localBusinessJsonLd() {
 			addressLocality: site.address.city,
 			addressCountry: site.address.country,
 		},
-		areaServed: [{ '@type': 'City', name: site.address.city }],
+		areaServed: [
+			{ '@type': 'City', name: site.address.city },
+			{ '@type': 'AdministrativeArea', name: site.region },
+		],
+		geo: { '@type': 'GeoCoordinates', latitude: 51.1036, longitude: 3.9931 },
 		sameAs: [site.facebook],
 		knowsAbout: [
 			'Roofing (bitumen)',
@@ -57,7 +61,10 @@ export function serviceJsonLd(service: Service) {
 		name: service.name,
 		serviceType: service.name,
 		provider: { '@id': `${site.siteUrl}/#business` },
-		areaServed: [{ '@type': 'City', name: site.address.city }],
+		areaServed: [
+			{ '@type': 'City', name: site.address.city },
+			{ '@type': 'AdministrativeArea', name: site.region },
+		],
 		url: `${site.siteUrl}/diensten/${service.slug}/`,
 	};
 }

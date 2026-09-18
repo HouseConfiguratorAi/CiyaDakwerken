@@ -191,3 +191,28 @@ Small implementation notes for whoever maintains this:
 - **Legal pages are placeholders** — need a lawyer/the client to fill in the bracketed sections.
 - **No git repository, no deploy, no DNS, no analytics, no email/WhatsApp integration** — this was
   explicitly out of scope for this build (local-only, per the brief) and untouched.
+
+## SEO expansion (2026-09-18)
+
+Added to compete for "dakwerken Oost-Vlaanderen" and build topical authority:
+
+- **`/dakwerken-oost-vlaanderen/`** — dedicated regional landing page. Honest scope only: based in
+  Lokeren, works in Lokeren and the wider surroundings — no city list, no "heel Oost-Vlaanderen" claim.
+- **`/kennisbank/`** — 6 advice articles as an Astro content collection (`src/content/kennisbank/*.md`,
+  schema in `src/content.config.ts`). Each has a `service` field linking it to `data/services.ts`, a TOC,
+  reading time, byline (the verified owner), and `Article` JSON-LD. Add a new article by dropping a
+  `.md` file with the same frontmatter shape — no template changes needed.
+- **`/projecten/[slug]/`** — case-study page per before/after project, with its own factual "wat we
+  deden" step list (`steps` field on each project in `data/projects.ts` — NOT derived from the generic
+  service solutions, since that produced inaccurate per-project claims).
+- **`/veelgestelde-vragen/`** — every service FAQ aggregated on one page with jump links, plus its own
+  `FAQPage` schema.
+- **Mega-menu**: the Diensten dropdown now shows an icon + one-line description per service and a
+  "Doe de dakcheck" card, two columns, in `Header.astro`.
+- **Schema/meta**: `RoofingContractor` and `Service` JSON-LD now include `areaServed` for both the city
+  and Oost-Vlaanderen as an `AdministrativeArea`, plus `geo` coordinates for Lokeren; `Base.astro` adds
+  `geo.region`/`geo.placename`/`geo.position` meta tags. Titles/descriptions mention "Lokeren &
+  Oost-Vlaanderen" where they fit within length limits.
+- **`siteUrl`** is temporarily the live Vercel URL (`https://cya-dakwerken-1.vercel.app`) in both
+  `astro.config.mjs` and `src/data/site.ts` — swap to the client's own domain the moment it exists;
+  canonical URLs, sitemap, and JSON-LD all key off this value.

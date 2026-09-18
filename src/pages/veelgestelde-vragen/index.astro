@@ -1,0 +1,103 @@
+---
+import Base from '../../layouts/Base.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { site, homeFaq } from '../../data/site';
+import { services } from '../../data/services';
+import { localBusinessJsonLd, breadcrumbJsonLd, faqJsonLd } from '../../lib/seo';
+
+const title = 'Veelgestelde vragen over dakwerken | Ciya Dakwerken';
+const description =
+	'Antwoorden van een dakwerker uit Lokeren: over platte daken, roofing, EPDM, isolatie, lichtkoepels, Velux, zink, dakgoten, herstellingen en onderhoud.';
+const allFaq = [...homeFaq, ...services.flatMap((s) => s.faq)];
+const jsonLd = [
+	localBusinessJsonLd(),
+	breadcrumbJsonLd([
+		{ name: 'Home', url: `${site.siteUrl}/` },
+		{ name: 'Veelgestelde vragen', url: `${site.siteUrl}/veelgestelde-vragen/` },
+	]),
+	faqJsonLd(allFaq),
+];
+---
+
+<Base {title} {description} path="/veelgestelde-vragen/" {jsonLd}>
+	<section class="section">
+		<div class="container faq-page">
+			<Eyebrow>Vragen</Eyebrow>
+			<h1>Veelgestelde vragen</h1>
+			<p class="lede">Alles wat klanten ons vragen over daken, per onderwerp. Staat uw vraag er niet bij? Bel gerust: <a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a>.</p>
+
+			<nav class="faq-nav" aria-label="Onderwerpen">
+				<a href="#algemeen">Algemeen</a>
+				{services.map((s) => <a href={`#${s.slug}`}>{s.name}</a>)}
+			</nav>
+
+			<section id="algemeen" class="faq-group">
+				<h2>Algemeen</h2>
+				<Faq items={homeFaq} />
+			</section>
+			{
+				services.map((s) => (
+					<section id={s.slug} class="faq-group">
+						<h2><a href={`/diensten/${s.slug}/`}>{s.name}</a></h2>
+						<Faq items={s.faq} />
+					</section>
+				))
+			}
+		</div>
+	</section>
+	<CtaBand />
+</Base>
+
+<style>
+	.faq-page {
+		max-width: 60rem;
+	}
+
+	.lede {
+		margin-top: 1.25rem;
+		max-width: 42rem;
+		font-size: 1.125rem;
+		color: var(--grey-500);
+	}
+
+	.lede a {
+		font-weight: 700;
+		color: var(--red-700);
+	}
+
+	.faq-nav {
+		margin-top: 2rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.faq-nav a {
+		padding: 0.45rem 0.8rem;
+		border: 1.5px solid var(--grey-200);
+		border-radius: var(--radius);
+		font-size: 0.9rem;
+		font-weight: 600;
+	}
+
+	.faq-nav a:hover {
+		border-color: var(--red-600);
+		color: var(--red-700);
+	}
+
+	.faq-group {
+		margin-top: 3rem;
+		scroll-margin-top: 100px;
+	}
+
+	.faq-group h2 {
+		font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem);
+		margin-bottom: 0.5rem;
+	}
+
+	.faq-group h2 a:hover {
+		color: var(--red-700);
+	}
+</style>
