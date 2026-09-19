@@ -13,7 +13,7 @@ const readingTime = (body: string) => Math.max(2, Math.round(body.split(/\s+/).l
 
 const title = 'Kennisbank: advies over platte daken en dakwerken | Ciya Dakwerken';
 const description =
-	'Eerlijk advies van een dakwerker uit Lokeren: EPDM of roofing, wanneer een plat dak vernieuwen, isoleren bij renovatie, wat te doen bij een lek, onderhoud en meer daglicht.';
+	'Eerlijk advies van een dakwerker uit Lokeren: EPDM of roofing, wanneer een plat dak vernieuwen, isoleren bij renovatie, en wat te doen bij een lek.';
 
 const jsonLd = [
 	localBusinessJsonLd(),
@@ -44,7 +44,7 @@ const jsonLd = [
 					articles.map((a, i) => {
 						const service = getService(a.data.service);
 						return (
-							<li class="article-card reveal" style={`--stagger:${i % 6}`}>
+							<li class="article-card reveal-motion" style={`--stagger:${i % 6}`}>
 								<a href={`/kennisbank/${a.id}/`} class="article-card__link">
 									<span class="article-card__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
 									<span class="article-card__body">
@@ -111,7 +111,7 @@ const jsonLd = [
 		font-weight: 800;
 		font-size: 2rem;
 		line-height: 1;
-		color: var(--grey-300);
+		color: var(--grey-400);
 		flex: none;
 	}
 

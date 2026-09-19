@@ -5,6 +5,8 @@
 	--red-700: #8f111b;
 	--red-600: #c51f2a;
 	--red-500: #d9323c;
+	/* Lighter red for text on dark backgrounds only — red-500 fails WCAG AA there */
+	--red-400: #f17685;
 
 	/* Neutrals */
 	--black: #0a0a0a;

@@ -207,9 +207,12 @@ textarea {
 	background: var(--red-600);
 }
 
-.section--dark .eyebrow,
+.section--dark .eyebrow {
+	color: var(--red-400);
+}
+
 .section--red .eyebrow {
-	color: var(--red-500);
+	color: var(--white);
 }
 
 .eyebrow__chevron {

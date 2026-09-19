@@ -31,7 +31,7 @@ const { image, alt, eyebrow, title, text, ctaHref, ctaLabel, position = 'center 
 	/>
 	<div class="band__overlay" aria-hidden="true"></div>
 	<div class="container band__inner">
-		<div class="band__content reveal">
+		<div class="band__content reveal-motion">
 			{eyebrow && <p class="band__eyebrow">{eyebrow}</p>}
 			<h2 class="band__title">{title}</h2>
 			{text && <p class="band__text">{text}</p>}
@@ -98,7 +98,7 @@ const { image, alt, eyebrow, title, text, ctaHref, ctaLabel, position = 'center 
 		text-transform: uppercase;
 		letter-spacing: 0.12em;
 		font-size: 0.8125rem;
-		color: var(--red-500);
+		color: var(--red-400);
 		margin-bottom: 1rem;
 	}
 

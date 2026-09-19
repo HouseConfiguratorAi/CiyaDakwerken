@@ -52,7 +52,7 @@ const processSteps = [
 ];
 
 const title = 'Dakwerken Lokeren & Oost-Vlaanderen | Ciya Dakwerken';
-const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofing, EPDM, isolatie, lichtkoepels, Velux, zink en dakgoten. Meer dan 20 jaar ervaring. Vraag uw offerte aan.';
+const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofing, EPDM, isolatie, lichtkoepels en dakgoten. Meer dan 20 jaar ervaring. Vraag uw offerte aan.';
 ---
 
 <Base {title} {description} path="/" jsonLd={localBusinessJsonLd()} headerOverlay={true}>
@@ -249,7 +249,7 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 			<ul class="kb-grid reveal-group">
 				{
 					articles.map((a, i) => (
-						<li class="reveal" style={`--stagger:${i}`}>
+						<li class="reveal-motion" style={`--stagger:${i}`}>
 							<a href={`/kennisbank/${a.id}/`} class="kb-card">
 								<span class="kb-card__q">{a.data.question}</span>
 								<strong>{a.data.title}</strong>

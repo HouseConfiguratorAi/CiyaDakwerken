@@ -92,9 +92,13 @@ const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
 		<script>
 			function initPage() {
-				// Reveal-on-scroll: adds .is-in to .reveal elements. Hidden state only applies under html.js,
-				// so users without JS see everything. Reveals slightly before entering the viewport.
-				const revealAll = () => document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
+				// Reveal-on-scroll: adds .is-in to .reveal / .reveal-motion elements. Hidden state only
+				// applies under html.js, so users without JS see everything. Reveals slightly before
+				// entering the viewport. .reveal-motion is the opacity-safe variant (transform only) used
+				// where text is overlaid directly on the element, so a mid-transition snapshot can never
+				// produce a low-contrast paint.
+				const revealSelector = '.reveal, .reveal-motion';
+				const revealAll = () => document.querySelectorAll(revealSelector).forEach((el) => el.classList.add('is-in'));
 				const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 				if (prefersReduced || !('IntersectionObserver' in window)) {
 					revealAll();
@@ -110,7 +114,7 @@ const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 						},
 						{ threshold: 0, rootMargin: '0px 0px 15% 0px' },
 					);
-					document.querySelectorAll('.reveal').forEach((el) => {
+					document.querySelectorAll(revealSelector).forEach((el) => {
 						const r = el.getBoundingClientRect();
 						if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('is-in');
 						else io.observe(el);

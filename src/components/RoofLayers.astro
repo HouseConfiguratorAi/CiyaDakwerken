@@ -288,7 +288,7 @@ const layers: Layer[] = [
 		font-weight: 800;
 		font-size: 1.5rem;
 		line-height: 1;
-		color: var(--grey-300);
+		color: var(--grey-400);
 		min-width: 2ch;
 		transition: color var(--dur-base) var(--ease);
 	}
@@ -331,7 +331,11 @@ const layers: Layer[] = [
 	}
 
 	:global(.section--dark) .roof3d__item-num {
-		color: var(--grey-700);
+		color: var(--grey-500);
+	}
+
+	:global(.section--dark) .roof3d__item[aria-pressed='true'] .roof3d__item-num {
+		color: var(--red-400);
 	}
 
 	:global(.section--dark) .roof3d__shadow {

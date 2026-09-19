@@ -10,7 +10,7 @@ const { steps, tone = 'light' } = Astro.props;
 <ol class:list={['process', 'reveal-group', `process--${tone}`]}>
 	{
 		steps.map((step, i) => (
-			<li class="process__item reveal" style={`--stagger:${i}`}>
+			<li class="process__item reveal-motion" style={`--stagger:${i}`}>
 				<span class="process__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
 				<p>{step}</p>
 			</li>
@@ -39,7 +39,7 @@ const { steps, tone = 'light' } = Astro.props;
 		font-weight: 800;
 		font-size: clamp(2.5rem, 2rem + 2vw, 4rem);
 		line-height: 1;
-		color: var(--grey-300);
+		color: var(--grey-400);
 	}
 
 	.process__item p {
