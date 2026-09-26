@@ -144,7 +144,7 @@ export const services: Service[] = [
 		seo: {
 			title: 'Platte Daken Lokeren & Oost-Vlaanderen | Ciya Dakwerken',
 			description:
-				'Roofing, EPDM, lichtkoepels en isolatie voor uw platte dak in Lokeren en omgeving. Persoonlijk advies en vakwerk. Vraag een vrijblijvende offerte aan.',
+				'Roofing, EPDM, lichtkoepels en isolatie voor uw platte dak in heel Oost-Vlaanderen. Persoonlijk advies en vakwerk. Vraag een vrijblijvende offerte aan.',
 		},
 	},
 	{
@@ -225,7 +225,7 @@ export const services: Service[] = [
 		seo: {
 			title: 'EPDM Dakbedekking Lokeren & Oost-Vlaanderen | Ciya Dakwerken',
 			description:
-				'EPDM-dakbedekking voor platte daken in Lokeren en omgeving. Flexibel, duurzaam en vakkundig geplaatst. Vraag vandaag een vrijblijvende offerte aan.',
+				'EPDM-dakbedekking voor platte daken in heel Oost-Vlaanderen. Flexibel, duurzaam en vakkundig geplaatst. Vraag vandaag een vrijblijvende offerte aan.',
 		},
 	},
 	{
@@ -308,7 +308,7 @@ export const services: Service[] = [
 		seo: {
 			title: 'Roofing Plat Dak Lokeren & Oost-Vlaanderen | Ciya Dakwerken',
 			description:
-				'Plaatsing en vernieuwing van roofing op platte daken in Lokeren en omgeving. Degelijk vakwerk en persoonlijk advies. Vraag een vrijblijvende offerte aan.',
+				'Plaatsing en vernieuwing van roofing op platte daken in heel Oost-Vlaanderen. Degelijk vakwerk en persoonlijk advies. Vraag een vrijblijvende offerte aan.',
 		},
 	},
 	{
@@ -391,7 +391,7 @@ export const services: Service[] = [
 		seo: {
 			title: 'Lichtkoepels Plaatsen Lokeren | Ciya Dakwerken',
 			description:
-				'Plaatsing en vervanging van lichtkoepels op platte daken in Lokeren en omgeving. Meer daglicht, waterdicht afgewerkt. Vraag een vrijblijvende offerte aan.',
+				'Plaatsing en vervanging van lichtkoepels op platte daken in heel Oost-Vlaanderen. Meer daglicht, waterdicht afgewerkt. Vraag een vrijblijvende offerte aan.',
 		},
 	},
 	{
@@ -474,7 +474,7 @@ export const services: Service[] = [
 		seo: {
 			title: 'Velux en Dakramen Lokeren & Oost-Vlaanderen | Ciya Dakwerken',
 			description:
-				'Plaatsing van Velux dakramen in Lokeren en omgeving. Meer daglicht op zolder, waterdicht afgewerkt. Vraag vandaag een vrijblijvende offerte aan.',
+				'Plaatsing van Velux dakramen in heel Oost-Vlaanderen. Meer daglicht op zolder, waterdicht afgewerkt. Vraag vandaag een vrijblijvende offerte aan.',
 		},
 	},
 	{
@@ -557,7 +557,7 @@ export const services: Service[] = [
 		seo: {
 			title: 'Zinkwerken Lokeren & Oost-Vlaanderen | Ciya Dakwerken',
 			description:
-				'Zinken dakgoten, dakranden en aansluitingen op maat in Lokeren en omgeving. Duurzaam materiaal, vakkundig geplaatst. Vraag een vrijblijvende offerte aan.',
+				'Zinken dakgoten, dakranden en aansluitingen op maat in heel Oost-Vlaanderen. Duurzaam materiaal, vakkundig geplaatst. Vraag een vrijblijvende offerte aan.',
 		},
 	},
 	{
@@ -640,7 +640,7 @@ export const services: Service[] = [
 		seo: {
 			title: 'Dakgoten Plaatsen en Herstellen Lokeren | Ciya Dakwerken',
 			description:
-				'Plaatsing, vervanging en herstelling van dakgoten in Lokeren en omgeving. Voor een correcte waterafvoer. Vraag een vrijblijvende offerte aan.',
+				'Plaatsing, vervanging en herstelling van dakgoten in heel Oost-Vlaanderen. Voor een correcte waterafvoer. Vraag een vrijblijvende offerte aan.',
 		},
 	},
 	{
@@ -723,7 +723,7 @@ export const services: Service[] = [
 		seo: {
 			title: 'Dakisolatie Lokeren & Oost-Vlaanderen | Ciya Dakwerken',
 			description:
-				'Dakisolatie in Lokeren en omgeving, vooral voor platte daken en vaak samen met een vernieuwing van de dakbedekking. Vraag een vrijblijvende offerte aan.',
+				'Dakisolatie in heel Oost-Vlaanderen, vooral voor platte daken en vaak samen met een vernieuwing van de dakbedekking. Vraag een vrijblijvende offerte aan.',
 		},
 	},
 	{
@@ -796,7 +796,7 @@ export const services: Service[] = [
 		seo: {
 			title: 'Vloeibare Dakbedekking Lokeren | Ciya Dakwerken',
 			description:
-				'Vloeibare dakbedekking voor moeilijke details en kleine oppervlaktes in Lokeren en omgeving. Naadloos afgewerkt. Vraag een vrijblijvende offerte aan.',
+				'Vloeibare dakbedekking voor moeilijke details en kleine oppervlaktes in heel Oost-Vlaanderen. Naadloos afgewerkt. Vraag een vrijblijvende offerte aan.',
 		},
 	},
 	{
@@ -876,7 +876,7 @@ export const services: Service[] = [
 		seo: {
 			title: 'Dakherstellingen Lokeren & Oost-Vlaanderen | Ciya Dakwerken',
 			description:
-				'Herstelling van lekken, losliggende pannen en dakschade in Lokeren en omgeving. Eerlijk advies, vakkundig hersteld. Vraag een vrijblijvende offerte aan.',
+				'Herstelling van lekken, losliggende pannen en dakschade in heel Oost-Vlaanderen. Eerlijk advies, vakkundig hersteld. Vraag een vrijblijvende offerte aan.',
 		},
 	},
 	{
@@ -957,7 +957,7 @@ export const services: Service[] = [
 		seo: {
 			title: 'Dakonderhoud en Reiniging Lokeren | Ciya Dakwerken',
 			description:
-				'Onderhoud en reiniging van daken en dakgoten in Lokeren en omgeving. Tijdig problemen opsporen en voorkomen. Vraag een vrijblijvende offerte aan.',
+				'Onderhoud en reiniging van daken en dakgoten in heel Oost-Vlaanderen. Tijdig problemen opsporen en voorkomen. Vraag een vrijblijvende offerte aan.',
 		},
 	},
 ];

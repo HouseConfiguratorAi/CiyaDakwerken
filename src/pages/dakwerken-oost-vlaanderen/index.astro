@@ -1,6 +1,6 @@
 ---
-// Regional landing page. Honest scope: based in Lokeren (Oost-Vlaanderen), works in Lokeren and the wider
-// surroundings. No city list, no radius, no "heel Oost-Vlaanderen" promise.
+// Regional landing page. Scope confirmed by the owner (2026-09-26): based in Lokeren, works in all of
+// Oost-Vlaanderen. Towns listed = the province's arrondissement capitals (site.serviceCities).
 import Base from '../../layouts/Base.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
 import Button from '../../components/Button.astro';
@@ -19,12 +19,12 @@ import huisAanbouw from '../../assets/images/huis-nieuw-plat-dak-aanbouw-velux.j
 
 const title = 'Dakwerken in Oost-Vlaanderen | Ciya Dakwerken, Lokeren';
 const description =
-	'Dakwerker uit Lokeren, actief in Oost-Vlaanderen: platte daken, roofing, EPDM, dakisolatie, lichtkoepels en dakgoten. Meer dan 20 jaar ervaring, eerlijk advies.';
+	'Dakwerker uit Lokeren, actief in heel Oost-Vlaanderen: platte daken, roofing, EPDM, dakisolatie, lichtkoepels en dakgoten. Meer dan 20 jaar ervaring.';
 
 const faq = [
 	{
 		q: 'In welke regio voert Ciya Dakwerken dakwerken uit?',
-		a: 'Ciya Dakwerken is gevestigd in Lokeren en werkt in Lokeren en de ruime omgeving in Oost-Vlaanderen. Twijfelt u of uw adres binnen ons werkgebied valt? Bel ons even, dan bekijken we het meteen.',
+		a: 'Ciya Dakwerken is gevestigd in Lokeren en werkt in heel Oost-Vlaanderen: in Gent, Sint-Niklaas, Aalst, Dendermonde, Oudenaarde, Eeklo en alle gemeenten ertussen.',
 	},
 	{
 		q: 'Waarin is Ciya Dakwerken gespecialiseerd?',
@@ -62,7 +62,7 @@ const jsonLd = [
 				<h1>Dakwerken in Oost-Vlaanderen, vanuit Lokeren</h1>
 				<p class="lede">
 					Ciya Dakwerken is een dakwerker uit Lokeren met meer dan 20 jaar ervaring in dakwerken. We werken
-					in Lokeren en de ruime omgeving in Oost-Vlaanderen — dichtbij genoeg om vlot ter plaatse te komen
+					in heel Oost-Vlaanderen — van Gent en Sint-Niklaas tot Aalst, Dendermonde, Oudenaarde en Eeklo —
 					voor advies, een herstelling of een volledige vernieuwing van uw dak.
 				</p>
 				<div class="btn-row">
@@ -95,23 +95,28 @@ const jsonLd = [
 			<div class="prose">
 				<SectionHeading level="h2" eyebrow="Specialist platte daken" title="Wat we doen in Oost-Vlaanderen" />
 				<p>
-					Platte daken zijn ons vak. Bij nieuwbouw, renovatie en onderhoud plaatsen en vernieuwen we
+					Platte daken zijn ons vak. Bij nieuwbouw, renovatie en onderhoud plaatsen en vernieuwen we{' '}
 					<a href="/diensten/roofing/">roofing</a> en <a href="/diensten/epdm/">EPDM</a>, isoleren we het dak
 					en werken we dakranden, opstanden en doorvoeren netjes af — precies de plekken waar een plat dak
-					anders begint te lekken. Waar een dak licht mist, plaatsen we een
+					anders begint te lekken. Waar een dak licht mist, plaatsen we een{' '}
 					<a href="/diensten/lichtkoepels/">lichtkoepel</a> of een <a href="/diensten/velux-dakramen/">Velux dakraam</a>.
 				</p>
 				<p>
-					Ook voor <a href="/diensten/dakgoten/">dakgoten</a> en <a href="/diensten/zinkwerken/">zinkwerk</a>, voor
-					<a href="/diensten/dakherstellingen/">herstellingen</a> na een lek of storm en voor
+					Ook voor <a href="/diensten/dakgoten/">dakgoten</a> en <a href="/diensten/zinkwerken/">zinkwerk</a>, voor{' '}
+					<a href="/diensten/dakherstellingen/">herstellingen</a> na een lek of storm en voor{' '}
 					<a href="/diensten/dakonderhoud/">onderhoud en reiniging</a> kunt u bij ons terecht. Elke opdracht begint
 					met een eerlijk gesprek: wat is er nodig, wat kan wachten en wat is de beste oplossing voor uw dak — niet de duurste.
 				</p>
-				<h3>Waarom een dakwerker uit de buurt?</h3>
+				<h3>Werkgebied: heel Oost-Vlaanderen</h3>
+				<ul class="regio-cities" aria-label="Werkgebied">
+					{site.serviceCities.map((c) => <li>{c}</li>)}
+					<li>en alle gemeenten ertussen</li>
+				</ul>
+				<h3>Waarom een dakwerker uit de provincie?</h3>
 				<p>
 					Een dak vraagt soms snel een blik ter plaatse: na stormweer, bij een vochtplek of om een offerte
-					goed te kunnen opmaken. Omdat we vanuit Lokeren werken, zijn we vlot bij u — en blijven we bereikbaar
-					na de werken. U krijgt persoonlijk advies en maatwerk, hoogwaardige materialen en garantie op al
+					goed te kunnen opmaken. Vanuit Lokeren zijn we vlot overal in Oost-Vlaanderen — en blijven we
+					bereikbaar na de werken. U krijgt persoonlijk advies en maatwerk, hoogwaardige materialen en garantie op al
 					onze werkzaamheden.
 				</p>
 			</div>
@@ -221,6 +226,27 @@ const jsonLd = [
 		text-transform: uppercase;
 		font-size: 1.5rem;
 		letter-spacing: 0.01em;
+	}
+
+	.regio-cities {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 1rem;
+	}
+
+	.regio-cities li {
+		padding: 0.35rem 0.8rem;
+		border: 1px solid var(--grey-200);
+		border-radius: var(--radius);
+		font-weight: 600;
+		font-size: 0.95rem;
+	}
+
+	.regio-cities li:last-child {
+		border-style: dashed;
+		font-weight: 400;
+		color: var(--grey-500);
 	}
 
 	.regio-card__title {

@@ -124,30 +124,19 @@ async function buildOgImage() {
 }
 
 
-// The icon = the logo's own "C + roof + chimney" (full wordmark is unreadable at 16–32px). Two crops of the
-// source logo (1598×634): the C under the roof, plus the roof tail above the "I" — letters left out.
-async function logoMark() {
-	const src = path.join(root, 'src/assets/brand/ciya-logo.png');
-	const left = await sharp(src).extract({ left: 100, top: 0, width: 540, height: 515 }).png().toBuffer();
-	const tail = await sharp(src).extract({ left: 640, top: 0, width: 105, height: 238 }).png().toBuffer();
-	const joined = await sharp({ create: { width: 645, height: 515, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
-		.composite([
-			{ input: left, left: 0, top: 0 },
-			{ input: tail, left: 540, top: 0 },
-		])
-		.png()
-		.toBuffer();
-	return sharp(joined).trim({ threshold: 1 }).png().toBuffer();
-}
+// The icon = the logo's own "C + roof + chimney" (the full wordmark is unreadable at 16–32 px), traced once to a
+// flat vector from src/assets/brand/ciya-logo.png (potrace; gloss and drop shadows removed):
+//   src/assets/brand/ciya-mark.svg — black C, used for the PNG/ICO renders below
+//   public/favicon.svg             — same paths, C turns white under prefers-color-scheme: dark
+// Everything is rendered with a transparent background except the apple-touch icon (iOS fills transparency
+// with black, which would hide the C).
+const MARK = path.join(root, 'src/assets/brand/ciya-mark.svg');
 
-async function iconTile(mark, size, { pad = 0.06, radius = 0.2, rounded = true } = {}) {
+async function markPng(size, { pad = 0 } = {}) {
 	const inner = Math.round(size * (1 - 2 * pad));
-	const resized = await sharp(mark).resize(inner, inner, { fit: 'inside', kernel: 'lanczos3' }).png().toBuffer();
-	const meta = await sharp(resized).metadata();
-	const r = rounded ? Math.round(size * radius) : 0;
-	const bg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"><rect width="${size}" height="${size}" rx="${r}" fill="#FFFFFF"/></svg>`);
-	return sharp(bg)
-		.composite([{ input: resized, left: Math.round((size - meta.width) / 2), top: Math.round((size - meta.height) / 2) }])
+	const mark = await sharp(MARK).resize(inner, inner, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 }, kernel: 'lanczos3' }).png().toBuffer();
+	return sharp({ create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+		.composite([{ input: mark, left: Math.round((size - inner) / 2), top: Math.round((size - inner) / 2) }])
 		.png()
 		.toBuffer();
 }
@@ -174,19 +163,21 @@ function pngsToIco(images) {
 }
 
 async function buildLogoIcons() {
-	const mark = await logoMark();
 	const out = async (rel, buf) => {
 		await writeFile(path.join(root, rel), buf);
 		console.log('wrote', rel);
 	};
 	const ico = [];
-	for (const size of [16, 32, 48]) ico.push({ size, buf: await iconTile(mark, size, { pad: 0.04 }) });
+	for (const size of [16, 32, 48]) ico.push({ size, buf: await markPng(size) });
 	await out('public/favicon.ico', pngsToIco(ico));
-	await out('public/favicon-96x96.png', await iconTile(mark, 96));
-	// Apple adds its own rounding; square tile with a bit more padding.
-	await out('public/apple-touch-icon.png', await iconTile(mark, 180, { pad: 0.1, rounded: false }));
-	await out('public/icon-192.png', await iconTile(mark, 192, { pad: 0.1, rounded: false }));
-	await out('public/icon-512.png', await iconTile(mark, 512, { pad: 0.1, rounded: false }));
+	await out('public/favicon-96x96.png', await markPng(96));
+	await out('public/icon-192.png', await markPng(192, { pad: 0.08 }));
+	await out('public/icon-512.png', await markPng(512, { pad: 0.08 }));
+	const apple = await sharp({ create: { width: 180, height: 180, channels: 4, background: '#FFFFFF' } })
+		.composite([{ input: await markPng(180, { pad: 0.12 }) }])
+		.png()
+		.toBuffer();
+	await out('public/apple-touch-icon.png', apple);
 	// Full logo for LocalBusiness schema / Google (raster, on white, crawlable).
 	const logo = await sharp(path.join(root, 'src/assets/brand/ciya-logo.png')).resize(800).flatten({ background: '#FFFFFF' }).png().toBuffer();
 	await out('public/brand/logo.png', logo);

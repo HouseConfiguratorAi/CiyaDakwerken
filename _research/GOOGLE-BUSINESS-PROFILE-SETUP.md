@@ -14,9 +14,9 @@ Go to https://business.google.com → "Manage now" → sign in with **the accoun
 - **Address:** Uebergdreef 55, 9160 Lokeren — this is the KBO-registered seat. If he works from a
   different visible location, use that instead; Google penalizes listings at addresses with no real
   presence. If unsure, safer to set it as a **service-area business** (see below).
-- **Service area:** if he doesn't want the home address public, choose "I deliver goods and services to
-  my customers" and set the service area to Lokeren + surrounding municipalities he actually covers
-  (Lochristi, Zele, Waasmunster, Sint-Niklaas, etc. — only ones he's comfortable naming; don't guess).
+- **Service area:** set it to **Oost-Vlaanderen** (the whole province — confirmed by the owner 2026-09-26).
+  Google lets you add the province itself; optionally add Gent, Sint-Niklaas, Aalst, Dendermonde,
+  Oudenaarde and Eeklo as well, the same towns the website lists.
 - **Phone:** 0484 55 02 52
 - **Website:** the live site URL (Vercel URL now, swap to the real domain once it exists)
 
@@ -31,12 +31,12 @@ email, or instant verification if eligible. **Postcard is the default — budget
   Platte daken, Roofing, EPDM, Lichtkoepels, Velux & dakramen, Zinkwerken, Dakgoten, Dakisolatie,
   Vloeibare dakbedekking, Dakherstellingen, Dakonderhoud — matches the 11 services on the website.
 - **Description** (750 char max) — suggested, edit as needed, no invented claims:
-  > Ciya Dakwerken is uw specialist in platte daken, actief in Lokeren en omgeving (Oost-Vlaanderen).
+  > Ciya Dakwerken is uw specialist in platte daken, actief in heel Oost-Vlaanderen.
   > Meer dan 20 jaar ervaring in dakwerken: roofing, EPDM, dakisolatie, lichtkoepels, Velux dakramen,
   > zinkwerk en dakgoten. Bij nieuwbouw, renovatie en onderhoud werken we met persoonlijk advies,
   > hoogwaardige materialen en garantie op het uitgevoerde werk. Vraag een vrijblijvende offerte aan.
 - **Photos:** upload 10–15 of the real project photos already on the site
-  (`~/Downloads/cya dakwerken images/website/src/assets/images/`) — before/after pairs perform best.
+  (`~/Downloads/ciya dakwerken images/website/src/assets/images/`) — before/after pairs perform best.
   Add the logo as the profile photo and a work photo as the cover photo.
 - **Website link:** point it at the homepage. Once Google My Business supports it, also link the
   Diensten and Offerte pages as "menu"/"services" deep links if the option appears.

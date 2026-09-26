@@ -35,8 +35,8 @@ export function localBusinessJsonLd() {
 			addressCountry: site.address.country,
 		},
 		areaServed: [
-			{ '@type': 'City', name: site.address.city },
 			{ '@type': 'AdministrativeArea', name: site.region },
+			...site.serviceCities.map((name) => ({ '@type': 'City', name })),
 		],
 		geo: { '@type': 'GeoCoordinates', latitude: 51.1036, longitude: 3.9931 },
 		sameAs: [site.facebook],
@@ -64,8 +64,8 @@ export function serviceJsonLd(service: Service) {
 		serviceType: service.name,
 		provider: { '@id': `${site.siteUrl}/#business` },
 		areaServed: [
-			{ '@type': 'City', name: site.address.city },
 			{ '@type': 'AdministrativeArea', name: site.region },
+			...site.serviceCities.map((name) => ({ '@type': 'City', name })),
 		],
 		url: `${site.siteUrl}/diensten/${service.slug}/`,
 	};

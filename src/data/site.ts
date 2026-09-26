@@ -19,9 +19,11 @@ export const site = {
 	positioning: 'Uw specialist in platte daken',
 	positioningAlt: 'Uw betrouwbare dakwerker',
 	experience: 'Meer dan 20 jaar ervaring in dakwerken',
-	serviceArea: 'Lokeren en omgeving',
+	serviceArea: 'heel Oost-Vlaanderen',
 	region: 'Oost-Vlaanderen',
-	serviceAreaLong: 'Lokeren en omgeving (Oost-Vlaanderen)',
+	serviceAreaLong: 'heel Oost-Vlaanderen, vanuit Lokeren',
+	// Main towns of the province (its six arrondissements) — used as the concrete description of the area.
+	serviceCities: ['Gent', 'Aalst', 'Sint-Niklaas', 'Dendermonde', 'Lokeren', 'Oudenaarde', 'Eeklo'],
 	trustPoints: [
 		'Vakmanschap en hoogwaardige materialen',
 		'Persoonlijk advies en maatwerk',
@@ -48,7 +50,7 @@ export interface FaqItem {
 export const homeFaq: FaqItem[] = [
 	{
 		q: 'In welke regio is Ciya Dakwerken actief?',
-		a: 'Wij werken in Lokeren en omgeving, regio Lokeren (Oost-Vlaanderen).',
+		a: 'Wij werken in heel Oost-Vlaanderen, vanuit onze thuisbasis in Lokeren: van Gent, Sint-Niklaas en Aalst tot Dendermonde, Oudenaarde en Eeklo.',
 	},
 	{
 		q: 'Werkt Ciya Dakwerken voor nieuwbouw én renovatie?',
