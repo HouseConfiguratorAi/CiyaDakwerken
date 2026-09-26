@@ -214,7 +214,8 @@ Added to compete for "dakwerken Oost-Vlaanderen" and build topical authority:
   and Oost-Vlaanderen as an `AdministrativeArea`, plus `geo` coordinates for Lokeren; `Base.astro` adds
   `geo.region`/`geo.placename`/`geo.position` meta tags. Titles/descriptions mention "Lokeren &
   Oost-Vlaanderen" where they fit within length limits.
-- **`siteUrl`** is temporarily `https://ciya-dakwerken.vercel.app` (correct spelling; the old project URL was
-  `cya-…`). That domain must be added in the Vercel project (Settings → Domains) — see "Domain — one place".
+- **`siteUrl`** is temporarily `https://ciyadakwerken.vercel.app` — the production domain of the Vercel project
+  (team frade1, connected to GitHub `HouseConfiguratorAi/CiyaDakwerken`; every push to `main` deploys). See
+  "Domain — one place".
 - **Service area** (owner decision 2026-09-26): all of Oost-Vlaanderen, from Lokeren. `site.serviceCities` lists
   the province's arrondissement towns; they feed the regional page and `areaServed` in the schema.

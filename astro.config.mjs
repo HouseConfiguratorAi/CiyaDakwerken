@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // THE domain — single source of truth (site.ts, robots.txt, canonicals and sitemap all read it).
 // Swap for the client's own domain (e.g. https://www.ciyadakwerken.be) as soon as it is registered.
-const siteUrl = 'https://ciya-dakwerken.vercel.app';
+const siteUrl = 'https://ciyadakwerken.vercel.app';
 
 // https://astro.build/config
 export default defineConfig({
