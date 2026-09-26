@@ -31,9 +31,10 @@ export const site = {
 		enabled: false,
 		number: '32484550252',
 	},
-	// Live deploy (Vercel). Replace with the client's own .be domain as soon as it exists — a real domain
-	// matters for local rankings; keep this in sync with `site` in astro.config.mjs.
-	siteUrl: 'https://cya-dakwerken-1.vercel.app',
+	// The domain is set ONCE, in astro.config.mjs (`siteUrl`). robots.txt, canonicals, sitemap and schema follow.
+	siteUrl: String(import.meta.env.SITE).replace(/\/$/, ''),
+	// Google Search Console → "HTML tag" method → paste only the content="…" value here. '' = no tag.
+	googleSiteVerification: '',
 } as const;
 
 export type Site = typeof site;

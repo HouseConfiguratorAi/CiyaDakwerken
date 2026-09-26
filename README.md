@@ -7,4 +7,4 @@ Static website for Ciya Dakwerken (Ciya Ismet BV, Lokeren). Built with Astro 7, 
 - **Everything you need to know** (content, photos, forms, what is verified, what is still open): see [HANDOVER.md](HANDOVER.md)
 - Design brief, competitor audit and QA logs: `_research/`
 
-Before going live: set the real domain in `astro.config.mjs` (`site`) and `src/data/site.ts` (`siteUrl`), then rebuild.
+Before going live: set the real domain in `astro.config.mjs` (`siteUrl`) — the only place it lives — then rebuild.

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Generates brand assets from the client logo + a small SVG mark (BRIEF §2).
+// Generates brand assets from the client logo: favicons/app icons (logo's C + roof) and share images.
 // Run once with `npm run brand`; outputs are committed to public/.
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -9,67 +9,8 @@ import sharp from 'sharp';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 
-const RED = '#C51F2A';
-const BLACK = '#0A0A0A';
 const WHITE = '#FFFFFF';
 const CHARCOAL = '#1C1C1C';
-
-// --- The small mark: a bold "C" under the red roofline with chimney — echoes the client logo. ---
-// viewBox 0 0 64 64. Roof + chimney are always red; the "C" swaps colour per variant.
-const MARK_ROOF = `<path d="M4 36 L34 10 L61 30" fill="none" stroke="${RED}" stroke-width="7.5" stroke-linejoin="miter" stroke-linecap="butt"/>
-	<rect x="13.5" y="16" width="7.5" height="12" fill="${RED}"/>`;
-function markC(color, cls = '') {
-	return `<path d="M50 30 A18 18 0 1 0 50 52" fill="none" stroke="${color}" stroke-width="12" stroke-linecap="butt"${cls ? ` class="${cls}"` : ''}/>`;
-}
-function markSvg({ cColor, padding = 0, tile = false }) {
-	const size = 64 + padding * 2;
-	const offset = -padding;
-	const bg = tile ? `<rect x="${offset}" y="${offset}" width="${size}" height="${size}" rx="${Math.round(size * 0.18)}" fill="${WHITE}"/>` : '';
-	return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${offset} ${offset} ${size} ${size}">
-	${bg}
-	${MARK_ROOF}
-	${markC(cColor)}
-</svg>`;
-}
-
-async function writeSvg(file, svg) {
-	await writeFile(file, svg, 'utf8');
-	console.log('wrote', path.relative(root, file));
-}
-
-async function svgToPng(svg, size, outFile, { background = { r: 0, g: 0, b: 0, alpha: 0 } } = {}) {
-	const buf = await sharp(Buffer.from(svg), { density: 384 })
-		.resize(size, size, { fit: 'contain', background })
-		.png()
-		.toBuffer();
-	if (outFile) {
-		await writeFile(outFile, buf);
-		console.log('wrote', path.relative(root, outFile));
-	}
-	return buf;
-}
-
-// Minimal ICO container wrapping a single PNG image (valid since Windows Vista).
-function pngToIco(pngBuffer, size) {
-	const headerSize = 6;
-	const dirEntrySize = 16;
-	const header = Buffer.alloc(headerSize);
-	header.writeUInt16LE(0, 0); // reserved
-	header.writeUInt16LE(1, 2); // type: 1 = icon
-	header.writeUInt16LE(1, 4); // 1 image
-
-	const dirEntry = Buffer.alloc(dirEntrySize);
-	dirEntry.writeUInt8(size >= 256 ? 0 : size, 0); // width (0 = 256)
-	dirEntry.writeUInt8(size >= 256 ? 0 : size, 1); // height
-	dirEntry.writeUInt8(0, 2); // palette
-	dirEntry.writeUInt8(0, 3); // reserved
-	dirEntry.writeUInt16LE(1, 4); // colour planes
-	dirEntry.writeUInt16LE(32, 6); // bits per pixel
-	dirEntry.writeUInt32LE(pngBuffer.length, 8); // image data size
-	dirEntry.writeUInt32LE(headerSize + dirEntrySize, 12); // offset
-
-	return Buffer.concat([header, dirEntry, pngBuffer]);
-}
 
 // Per-service share images: hero photo + logo + service name. Map kept in sync with data/services.ts.
 const SERVICE_OG = {
@@ -182,55 +123,81 @@ async function buildOgImage() {
 	console.log('wrote', path.relative(root, outFile));
 }
 
+
+// The icon = the logo's own "C + roof + chimney" (full wordmark is unreadable at 16–32px). Two crops of the
+// source logo (1598×634): the C under the roof, plus the roof tail above the "I" — letters left out.
+async function logoMark() {
+	const src = path.join(root, 'src/assets/brand/ciya-logo.png');
+	const left = await sharp(src).extract({ left: 100, top: 0, width: 540, height: 515 }).png().toBuffer();
+	const tail = await sharp(src).extract({ left: 640, top: 0, width: 105, height: 238 }).png().toBuffer();
+	const joined = await sharp({ create: { width: 645, height: 515, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+		.composite([
+			{ input: left, left: 0, top: 0 },
+			{ input: tail, left: 540, top: 0 },
+		])
+		.png()
+		.toBuffer();
+	return sharp(joined).trim({ threshold: 1 }).png().toBuffer();
+}
+
+async function iconTile(mark, size, { pad = 0.06, radius = 0.2, rounded = true } = {}) {
+	const inner = Math.round(size * (1 - 2 * pad));
+	const resized = await sharp(mark).resize(inner, inner, { fit: 'inside', kernel: 'lanczos3' }).png().toBuffer();
+	const meta = await sharp(resized).metadata();
+	const r = rounded ? Math.round(size * radius) : 0;
+	const bg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"><rect width="${size}" height="${size}" rx="${r}" fill="#FFFFFF"/></svg>`);
+	return sharp(bg)
+		.composite([{ input: resized, left: Math.round((size - meta.width) / 2), top: Math.round((size - meta.height) / 2) }])
+		.png()
+		.toBuffer();
+}
+
+// ICO container holding several PNG images (valid since Windows Vista).
+function pngsToIco(images) {
+	const header = Buffer.alloc(6);
+	header.writeUInt16LE(0, 0);
+	header.writeUInt16LE(1, 2);
+	header.writeUInt16LE(images.length, 4);
+	let offset = 6 + 16 * images.length;
+	const dirs = images.map(({ size, buf }) => {
+		const d = Buffer.alloc(16);
+		d.writeUInt8(size >= 256 ? 0 : size, 0);
+		d.writeUInt8(size >= 256 ? 0 : size, 1);
+		d.writeUInt16LE(1, 4);
+		d.writeUInt16LE(32, 6);
+		d.writeUInt32LE(buf.length, 8);
+		d.writeUInt32LE(offset, 12);
+		offset += buf.length;
+		return d;
+	});
+	return Buffer.concat([header, ...dirs, ...images.map((i) => i.buf)]);
+}
+
+async function buildLogoIcons() {
+	const mark = await logoMark();
+	const out = async (rel, buf) => {
+		await writeFile(path.join(root, rel), buf);
+		console.log('wrote', rel);
+	};
+	const ico = [];
+	for (const size of [16, 32, 48]) ico.push({ size, buf: await iconTile(mark, size, { pad: 0.04 }) });
+	await out('public/favicon.ico', pngsToIco(ico));
+	await out('public/favicon-96x96.png', await iconTile(mark, 96));
+	// Apple adds its own rounding; square tile with a bit more padding.
+	await out('public/apple-touch-icon.png', await iconTile(mark, 180, { pad: 0.1, rounded: false }));
+	await out('public/icon-192.png', await iconTile(mark, 192, { pad: 0.1, rounded: false }));
+	await out('public/icon-512.png', await iconTile(mark, 512, { pad: 0.1, rounded: false }));
+	// Full logo for LocalBusiness schema / Google (raster, on white, crawlable).
+	const logo = await sharp(path.join(root, 'src/assets/brand/ciya-logo.png')).resize(800).flatten({ background: '#FFFFFF' }).png().toBuffer();
+	await out('public/brand/logo.png', logo);
+}
+
 async function main() {
 	const brandDir = path.join(root, 'public/brand');
 	await mkdir(brandDir, { recursive: true });
 
-	// 1. public/brand/mark.svg + mark-white.svg
-	const markDark = markSvg({ cColor: BLACK });
-	const markLight = markSvg({ cColor: WHITE });
-	await writeSvg(path.join(brandDir, 'mark.svg'), markDark);
-	await writeSvg(path.join(brandDir, 'mark-white.svg'), markLight);
-
-	// 2. public/favicon.svg — mark with 4px padding, colour-scheme aware (white C on dark tab bars).
-	const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -4 72 72">
-	${MARK_ROOF}
-	${markC(BLACK, 'favicon-c')}
-	<style>
-		@media (prefers-color-scheme: dark) {
-			.favicon-c { stroke: ${WHITE}; }
-		}
-	</style>
-</svg>`;
-	await writeFile(path.join(root, 'public/favicon.svg'), faviconSvg, 'utf8');
-	console.log('wrote', path.relative(root, path.join(root, 'public/favicon.svg')));
-
-	// 3. public/favicon.ico — 32px PNG (transparent) wrapped in a minimal ICO container.
-	const faviconPng = await svgToPng(markSvg({ cColor: BLACK, padding: 6, tile: true }), 32, null);
-	const ico = pngToIco(faviconPng, 32);
-	await writeFile(path.join(root, 'public/favicon.ico'), ico);
-	console.log('wrote', path.relative(root, path.join(root, 'public/favicon.ico')));
-
-	// 4. public/apple-touch-icon.png — 180px, mark on white, ~24px padding.
-	const appleIconSize = 180;
-	const applePadding = 24;
-	const markInner = appleIconSize - applePadding * 2;
-	const markBuf = await svgToPng(markSvg({ cColor: BLACK }), markInner, null, {
-		background: { r: 255, g: 255, b: 255, alpha: 1 },
-	});
-	const appleIcon = await sharp({
-		create: {
-			width: appleIconSize,
-			height: appleIconSize,
-			channels: 4,
-			background: { r: 255, g: 255, b: 255, alpha: 1 },
-		},
-	})
-		.composite([{ input: markBuf, top: applePadding, left: applePadding }])
-		.png()
-		.toBuffer();
-	await writeFile(path.join(root, 'public/apple-touch-icon.png'), appleIcon);
-	console.log('wrote', path.relative(root, path.join(root, 'public/apple-touch-icon.png')));
+	// 1–4. Favicons + app icons from the client's real logo (the "C + roof" part), on a white tile.
+	await buildLogoIcons();
 
 	// 5. public/brand/og-default.jpg — 1200x630 charcoal + hatch + white logo + tagline.
 	await buildOgImage();

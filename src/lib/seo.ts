@@ -1,5 +1,6 @@
 // SEO / structured data helpers. No aggregateRating, no review, no openingHours, no priceRange — ever.
 import { site } from '../data/site';
+import { owner } from '../data/owner';
 import type { Service } from '../data/services';
 import type { FaqItem } from '../data/site';
 
@@ -24,7 +25,7 @@ export function localBusinessJsonLd() {
 		telephone: site.phoneE164,
 		email: site.email,
 		url: site.siteUrl,
-		logo: `${site.siteUrl}/brand/mark.svg`,
+		logo: `${site.siteUrl}/brand/logo.png`,
 		image: `${site.siteUrl}/brand/og-default.jpg`,
 		address: {
 			'@type': 'PostalAddress',
@@ -39,6 +40,7 @@ export function localBusinessJsonLd() {
 		],
 		geo: { '@type': 'GeoCoordinates', latitude: 51.1036, longitude: 3.9931 },
 		sameAs: [site.facebook],
+		founder: { '@type': 'Person', name: owner.name, jobTitle: owner.role },
 		knowsAbout: [
 			'Roofing (bitumen)',
 			'EPDM dakbedekking',

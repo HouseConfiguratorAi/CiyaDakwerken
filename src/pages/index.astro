@@ -65,8 +65,10 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 		</div>
 		<div class="container hero__inner">
 			<div class="hero__content">
-				<div class="enter" style="--e:0"><Eyebrow>Dakwerker in Lokeren · {site.region}</Eyebrow></div>
-				<h1 class="enter" style="--e:1">Uw specialist in platte daken</h1>
+				<h1 class="hero__title">
+					<span class="hero__kicker enter" style="--e:0"><Eyebrow as="span">Dakwerken in Lokeren · {site.region}</Eyebrow></span><span class="visually-hidden"> — </span>
+					<span class="hero__headline enter" style="--e:1">Uw specialist in platte daken</span>
+				</h1>
 				<p class="hero__sub enter" style="--e:2">
 					Roofing, EPDM, lichtkoepels, Velux, zink en dakgoten — bij nieuwbouw, renovatie en
 					onderhoud. {site.experience}.
@@ -336,6 +338,11 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 		.hero__media {
 			flex: 5;
 		}
+	}
+
+	.hero__kicker,
+	.hero__headline {
+		display: block;
 	}
 
 	.hero__sub {

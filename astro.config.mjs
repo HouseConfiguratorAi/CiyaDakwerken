@@ -2,7 +2,8 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// Live deploy (Vercel). Swap for the client's own domain when available (also in src/data/site.ts).
+// THE domain — single source of truth (site.ts, robots.txt, canonicals and sitemap all read it).
+// Swap for the client's own domain (e.g. https://www.ciyadakwerken.be) as soon as it is registered.
 const siteUrl = 'https://cya-dakwerken-1.vercel.app';
 
 // https://astro.build/config
