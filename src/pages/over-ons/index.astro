@@ -1,10 +1,10 @@
 ---
+import Words from '../../components/Words.astro';
 import Base from '../../layouts/Base.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
 import Button from '../../components/Button.astro';
 import Frame from '../../components/Frame.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
-import TrustStrip from '../../components/TrustStrip.astro';
 import ProcessSteps from '../../components/ProcessSteps.astro';
 import Icon from '../../components/Icon.astro';
 import CtaBand from '../../components/CtaBand.astro';
@@ -43,7 +43,7 @@ const jsonLd = [
 		<div class="container intro">
 			<div class="intro__text">
 				<Eyebrow>Over ons</Eyebrow>
-				<h1>Over Ciya Dakwerken</h1>
+				<h1><Words text="Over Ciya Dakwerken" /></h1>
 				<p class="intro__lede">
 					{site.experience}, met platte daken als specialisatie. Ciya Dakwerken is een dakwerker
 					uit Lokeren met een duidelijke aanpak: eerlijk advies, een heldere offerte en vakwerk,
@@ -82,13 +82,6 @@ const jsonLd = [
 			</section>
 		)
 	}
-
-	<!-- TRUST -->
-	<section class="section section--tight trust">
-		<div class="container">
-			<TrustStrip />
-		</div>
-	</section>
 
 	<!-- PILLARS -->
 	<section class="section section--tight">
@@ -228,11 +221,6 @@ const jsonLd = [
 
 	.owner-section {
 		border-top: var(--border-light);
-	}
-
-	.trust {
-		border-top: var(--border-light);
-		border-bottom: var(--border-light);
 	}
 
 	.pillars {

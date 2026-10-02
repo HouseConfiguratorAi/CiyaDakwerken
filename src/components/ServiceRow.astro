@@ -10,7 +10,7 @@ interface Props {
 const { icon = 'roof', name, line, href } = Astro.props;
 ---
 
-<a class="service-row" href={href}>
+<a class="service-row" href={href} data-spot>
 	<Icon name={icon as any} class="service-row__icon" />
 	<span class="service-row__text">
 		<span class="service-row__name">{name}</span>
@@ -27,13 +27,16 @@ const { icon = 'roof', name, line, href } = Astro.props;
 		padding: 1.1rem 0.75rem 1.1rem 0.75rem;
 		border-bottom: var(--border-light);
 		border-left: 3px solid transparent;
-		transition: border-left-color var(--dur-base) var(--ease), background var(--dur-base) var(--ease);
+		transition: border-left-color var(--dur-base) var(--ease), background var(--dur-base) var(--ease),
+			padding-left 420ms var(--ease-out);
+		overflow: hidden;
 	}
 
 	.service-row:hover,
 	.service-row:focus-within {
 		border-left-color: var(--red-600);
 		background: var(--grey-100);
+		padding-left: 1.1rem;
 	}
 
 	.section--dark .service-row {

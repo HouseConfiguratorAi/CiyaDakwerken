@@ -1,6 +1,7 @@
 ---
 // Regional landing page. Scope confirmed by the owner (2026-09-26): based in Lokeren, works in all of
 // Oost-Vlaanderen. Towns listed = the province's arrondissement capitals (site.serviceCities).
+import Words from '../../components/Words.astro';
 import Base from '../../layouts/Base.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
 import Button from '../../components/Button.astro';
@@ -59,7 +60,7 @@ const jsonLd = [
 		<div class="container regio-hero__inner">
 			<div>
 				<Eyebrow>Dakwerker in Oost-Vlaanderen</Eyebrow>
-				<h1>Dakwerken in Oost-Vlaanderen, vanuit Lokeren</h1>
+				<h1><Words text="Dakwerken in Oost-Vlaanderen, vanuit Lokeren" /></h1>
 				<p class="lede">
 					Ciya Dakwerken is een dakwerker uit Lokeren met meer dan 20 jaar ervaring in dakwerken. We werken
 					in heel Oost-Vlaanderen — van Gent en Sint-Niklaas tot Aalst, Dendermonde, Oudenaarde en Eeklo —

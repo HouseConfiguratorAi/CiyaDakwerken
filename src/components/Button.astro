@@ -6,6 +6,8 @@ interface Props {
 	iconPosition?: 'left' | 'right';
 	type?: 'button' | 'submit';
 	class?: string;
+	/** Pointer-attracted button (fine pointers only). */
+	magnetic?: boolean;
 }
 
 import Icon from './Icon.astro';
@@ -17,13 +19,14 @@ const {
 	iconPosition = 'left',
 	type = 'button',
 	class: className,
+	magnetic = false,
 } = Astro.props;
 
-const classes = `btn btn--${variant} ${className ?? ''}`;
+const classes = `btn btn--${variant}${icon ? ` btn--icon-${iconPosition}` : ''} ${className ?? ''}`;
 const Tag = href ? 'a' : 'button';
 ---
 
-<Tag class={classes} href={href} type={href ? undefined : type}>
+<Tag class={classes} href={href} type={href ? undefined : type} data-magnetic={magnetic ? '' : undefined}>
 	{icon && iconPosition === 'left' && <Icon name={icon} />}
 	<slot />
 	{icon && iconPosition === 'right' && <Icon name={icon} />}

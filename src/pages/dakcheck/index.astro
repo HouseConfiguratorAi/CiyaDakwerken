@@ -1,6 +1,7 @@
 ---
 // Dakcheck — three quick questions → the right service + a pre-filled quote request.
 // Pure client-side; nothing is sent. Result texts are general guidance, never promises.
+import Words from '../../components/Words.astro';
 import Base from '../../layouts/Base.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
 import Icon from '../../components/Icon.astro';
@@ -49,7 +50,7 @@ const serviceOptions = services.map((s) => ({ slug: s.slug, name: s.name }));
 		<div class="container check__wrap">
 			<header class="check__head">
 				<Eyebrow>Dakcheck</Eyebrow>
-				<h1>Welke oplossing past bij uw dak?</h1>
+				<h1><Words text="Welke oplossing past bij uw dak?" /></h1>
 				<p class="lede">Drie korte vragen. U krijgt meteen een eerlijke inschatting en een vooraf ingevulde offerteaanvraag.</p>
 			</header>
 

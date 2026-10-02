@@ -1,9 +1,9 @@
 ---
+import Words from '../components/Words.astro';
 import Base from '../layouts/Base.astro';
 import Eyebrow from '../components/Eyebrow.astro';
 import Button from '../components/Button.astro';
 import Frame from '../components/Frame.astro';
-import ZigzagDivider from '../components/ZigzagDivider.astro';
 import TrustStrip from '../components/TrustStrip.astro';
 import ProblemCard from '../components/ProblemCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
@@ -35,7 +35,7 @@ import veluxVoor from '../assets/images/velux-dakraam-voor.jpg';
 const renovatie = beforeAfterProjects.find((p) => p.slug === 'renovatie-plat-dak-isolatie')!;
 
 const problemCards = [
-	{ icon: 'drop', question: 'Lek in het dak?', line: 'Snel en eerlijk advies bij lekken en dakschade.', href: '/diensten/dakherstellingen/' },
+	{ icon: 'drop', question: 'Lek in het dak?', line: 'Snel en eerlijk advies bij lekken en dakschade. Bel ons rechtstreeks, dan bekijken we de situatie meteen.', href: '/diensten/dakherstellingen/', featured: true },
 	{ icon: 'roof', question: 'Plat dak aan vernieuwing toe?', line: 'Roofing, EPDM en isolatie voor uw platte dak.', href: '/diensten/platte-daken/' },
 	{ icon: 'sun', question: 'Meer daglicht?', line: 'Velux dakramen en lichtkoepels op maat.', href: '/diensten/velux-dakramen/' },
 	{ icon: 'gutter', question: 'Dakgoten versleten of lek?', line: 'Plaatsing en herstelling van dakgoten.', href: '/diensten/dakgoten/' },
@@ -50,6 +50,8 @@ const processSteps = [
 	'Na uw akkoord plannen we de werken in.',
 	'Uitvoering en oplevering, met aandacht voor een nette afwerking.',
 ];
+
+const marqueeItems = services.map((s) => s.name);
 
 const title = 'Dakwerken Lokeren & Oost-Vlaanderen | Ciya Dakwerken';
 const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofing, EPDM, isolatie, lichtkoepels en dakgoten. Meer dan 20 jaar ervaring. Vraag uw offerte aan.';
@@ -67,15 +69,15 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 			<div class="hero__content">
 				<h1 class="hero__title">
 					<span class="hero__kicker enter" style="--e:0"><Eyebrow as="span">Dakwerken in Lokeren · {site.region}</Eyebrow></span><span class="visually-hidden"> — </span>
-					<span class="hero__headline enter" style="--e:1">Uw specialist in platte daken</span>
+					<span class="hero__headline"><Words text="Uw specialist in platte daken" delay={1} /></span>
 				</h1>
 				<p class="hero__sub enter" style="--e:2">
 					Roofing, EPDM, lichtkoepels, Velux, zink en dakgoten — bij nieuwbouw, renovatie en
 					onderhoud. {site.experience}.
 				</p>
 				<div class="btn-row hero__actions enter" style="--e:3">
-					<Button href="/offerte/" variant="primary">Offerte aanvragen</Button>
-					<Button href={`tel:${site.phoneE164}`} variant="ghost" icon="phone">
+					<Button href="/offerte/" variant="primary" magnetic>Offerte aanvragen</Button>
+					<Button href={`tel:${site.phoneE164}`} variant="ghost" icon="phone" magnetic>
 						Bel {site.phoneDisplay}
 					</Button>
 				</div>
@@ -108,7 +110,17 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 		</div>
 	</section>
 
-	<ZigzagDivider />
+	<!-- SERVICES TICKER (decorative; the services are listed in full below) -->
+	<div class="marquee" aria-hidden="true" data-anim-root>
+		<div class="marquee__track">
+			<div class="marquee__group">
+				{marqueeItems.map((name) => <span class="marquee__item">{name}</span>)}
+			</div>
+			<div class="marquee__group" aria-hidden="true">
+				{marqueeItems.map((name) => <span class="marquee__item">{name}</span>)}
+			</div>
+		</div>
+	</div>
 
 	<!-- TRUST STRIP -->
 	<section class="section section--tight">
@@ -121,7 +133,7 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 	<section class="section section--tight">
 		<div class="container">
 			<SectionHeading eyebrow="Uw dak, uw vraag" title="Waar kunnen we u mee helpen?" />
-			<div class="problem-grid">
+			<div class="problem-grid bento">
 				{problemCards.map((card) => <ProblemCard {...card} />)}
 			</div>
 		</div>
@@ -209,6 +221,33 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 		</div>
 	</section>
 
+	<!-- WERKGEBIED -->
+	<section class="section area" data-anim-root>
+		<div class="container area__inner">
+			<div class="area__text">
+				<SectionHeading eyebrow="Werkgebied" title="Actief in heel Oost-Vlaanderen" />
+				<p>
+					Ciya Dakwerken is gevestigd in Lokeren en werkt in heel Oost-Vlaanderen. Twijfelt u of uw adres binnen ons
+					werkgebied valt? Bel gerust, dan bekijken we het meteen.
+				</p>
+				<div class="btn-row area__actions">
+					<Button href="/dakwerken-oost-vlaanderen/" variant="dark" icon="arrow" iconPosition="right">Bekijk ons werkgebied</Button>
+					<Button href={`tel:${site.phoneE164}`} variant="ghost" icon="phone">Bel {site.phoneDisplay}</Button>
+				</div>
+			</div>
+			<ul class="area-chips reveal-group" aria-label="Steden in ons werkgebied">
+				{
+					site.serviceCities.map((city, i) => (
+						<li class:list={['area-chip', 'reveal-motion', { 'area-chip--home': city === site.address.city }]} style={`--stagger:${i}`}>
+							{city}
+						</li>
+					))
+				}
+				<li class="area-chip area-chip--soft reveal-motion" style={`--stagger:${site.serviceCities.length}`}>en alle gemeenten ertussen</li>
+			</ul>
+		</div>
+	</section>
+
 	<!-- PROCESS -->
 	<section class="section section--dark">
 		<div class="container">
@@ -252,7 +291,7 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 				{
 					articles.map((a, i) => (
 						<li class="reveal-motion" style={`--stagger:${i}`}>
-							<a href={`/kennisbank/${a.id}/`} class="kb-card">
+							<a href={`/kennisbank/${a.id}/`} class="kb-card" data-spot>
 								<span class="kb-card__q">{a.data.question}</span>
 								<strong>{a.data.title}</strong>
 								<span class="kb-card__more">Lees verder <Icon name="arrow" /></span>
@@ -279,6 +318,8 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 	.hero {
 		position: relative;
 		overflow: hidden;
+		background-image: radial-gradient(55% 60% at 80% 28%, rgba(217, 50, 60, 0.2), transparent 68%), var(--grain);
+		background-size: auto, 180px 180px;
 		/* pull up under the transparent header (header height ≈ 68px mobile / 76px desktop) */
 		margin-top: -68px;
 		padding-top: calc(var(--space-section) + 68px);
@@ -345,6 +386,12 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 		display: block;
 	}
 
+	.hero__headline {
+		margin-top: 0.2rem;
+		font-size: clamp(2.9rem, 1.6rem + 4.4vw, 5.6rem);
+		line-height: 0.92;
+	}
+
 	.hero__sub {
 		margin-top: 1.5rem;
 		max-width: 42rem;
@@ -354,6 +401,12 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 
 	.hero__actions {
 		margin-top: 2rem;
+	}
+
+	@media (max-width: 520px) {
+		.hero__actions :global(.btn) {
+			flex: 1 1 100%;
+		}
 	}
 
 	.hero__note {
@@ -439,6 +492,38 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 		border-top: var(--border-light);
 	}
 
+	.area {
+		background: var(--grey-100);
+	}
+
+	.area__inner {
+		display: grid;
+		gap: 2.5rem;
+		align-items: center;
+	}
+
+	@media (min-width: 1024px) {
+		.area__inner {
+			grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+			gap: 4rem;
+		}
+	}
+
+	.area__text p {
+		color: var(--grey-700);
+		max-width: 34rem;
+	}
+
+	.area__actions {
+		margin-top: 1.75rem;
+	}
+
+	.area :global(.area-chip) {
+		font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.4rem);
+		padding: 0.8rem 1.35rem;
+	}
+
+
 	.kb-grid {
 		display: grid;
 		gap: 1.25rem;
@@ -494,23 +579,6 @@ const description = 'Dakwerker in Lokeren, Oost-Vlaanderen: platte daken, roofin
 		width: 16px;
 		height: 16px;
 		color: var(--red-600);
-	}
-
-	.problem-grid {
-		display: grid;
-		gap: 1.25rem;
-	}
-
-	@media (min-width: 640px) {
-		.problem-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.problem-grid {
-			grid-template-columns: repeat(3, 1fr);
-		}
 	}
 
 	.service-grid {

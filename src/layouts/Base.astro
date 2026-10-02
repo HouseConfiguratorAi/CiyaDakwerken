@@ -174,6 +174,26 @@ const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 			// ---- Pointer-driven motion (mouse only; touch devices get the CSS float/snap instead)
 				const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches && !prefersReduced;
 				if (finePointer) {
+					// Spotlight: soft light under the pointer on cards/rows
+					document.querySelectorAll<HTMLElement>('[data-spot]').forEach((el) => {
+						el.addEventListener('pointermove', (e) => {
+							const r = el.getBoundingClientRect();
+							el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+							el.style.setProperty('--my', `${e.clientY - r.top}px`);
+						});
+					});
+					// Magnetic CTA buttons: lean slightly toward the pointer
+					document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
+						el.addEventListener('pointermove', (e) => {
+							const r = el.getBoundingClientRect();
+							const x = e.clientX - (r.left + r.width / 2);
+							const y = e.clientY - (r.top + r.height / 2);
+							el.style.transform = `translate(${(x * 0.2).toFixed(1)}px, ${(y * 0.28).toFixed(1)}px)`;
+						});
+						el.addEventListener('pointerleave', () => {
+							el.style.transform = '';
+						});
+					});
 					// Card tilt
 					document.querySelectorAll<HTMLElement>('.tilt').forEach((card) => {
 						card.addEventListener('mousemove', (e) => {

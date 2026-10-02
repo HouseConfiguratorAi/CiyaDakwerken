@@ -1,5 +1,6 @@
 ---
 // Case-study page per before/after project. Facts only: service, what was done, photos. No place, date or client.
+import Words from '../../components/Words.astro';
 import Base from '../../layouts/Base.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
 import Button from '../../components/Button.astro';
@@ -53,7 +54,7 @@ const jsonLd = [
 		<div class="container case__grid">
 			<div class="case__text">
 				<Eyebrow>Realisatie · {service.name}</Eyebrow>
-				<h1>{project.title}</h1>
+				<h1><Words text={project.title} /></h1>
 				<p class="lede">{project.note}</p>
 				<dl class="case__facts">
 					<div><dt>Type werk</dt><dd><a href={`/diensten/${service.slug}/`}>{service.name}</a></dd></div>

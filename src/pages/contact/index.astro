@@ -1,4 +1,5 @@
 ---
+import Words from '../../components/Words.astro';
 import Base from '../../layouts/Base.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
 import Button from '../../components/Button.astro';
@@ -26,7 +27,7 @@ const jsonLd = [
 	<section class="section">
 		<div class="container">
 			<Eyebrow>Contact</Eyebrow>
-			<h1>Neem contact op</h1>
+			<h1><Words text="Neem contact op" /></h1>
 			<p class="lede">
 				Wij werken in {site.serviceArea}. Bel, mail of gebruik het formulier — voor een offerte kunt u
 				meteen foto's van uw dak meesturen via het <a href="/offerte/">offerteformulier</a>.

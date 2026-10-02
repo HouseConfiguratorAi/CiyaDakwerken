@@ -1,0 +1,52 @@
+---
+// Headline text where every word rises out of its own mask (transform only: no opacity, so a mid-animation
+// snapshot never produces a low-contrast paint). The visible text stays one plain string for screen readers
+// and search engines. `delay` offsets the stagger (in words) when another line animates first.
+interface Props {
+	text: string;
+	delay?: number;
+}
+const { text, delay = 0 } = Astro.props;
+const words = text.split(' ');
+---
+
+{
+	words.map((word, i) => (
+		<>
+			<span class="word" style={`--w:${i + delay}`}>
+				<span class="word__in">{word}</span>
+			</span>
+			{i < words.length - 1 ? ' ' : ''}
+		</>
+	))
+}
+
+<style>
+	.word {
+		display: inline-block;
+		overflow: hidden;
+		vertical-align: top;
+		padding-block: 0.07em 0.03em;
+		margin-block: -0.07em -0.03em;
+	}
+
+	.word__in {
+		display: inline-block;
+		transform: translateY(108%);
+		animation: word-up 950ms var(--ease-out) forwards;
+		animation-delay: calc(140ms + var(--w, 0) * 80ms);
+	}
+
+	@keyframes word-up {
+		to {
+			transform: translateY(0);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.word__in {
+			transform: none;
+			animation: none;
+		}
+	}
+</style>

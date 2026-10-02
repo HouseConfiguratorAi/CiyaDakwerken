@@ -1,0 +1,475 @@
+/* ---------- Polish layer ----------
+   Typography, surfaces, spotlight/marquee utilities, scroll-driven effects and page transitions.
+   Rules: transform/opacity/clip-path only; nothing that fades text (see .reveal-motion in motion.css);
+   everything off under prefers-reduced-motion. Selectors are prefixed with `html` where they must beat the
+   later-declared rules in global.css. */
+
+:root {
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+	--grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .075 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---- Typography ---- */
+h1,
+h2,
+h3 {
+	text-wrap: balance;
+}
+
+p,
+li,
+dd,
+blockquote {
+	text-wrap: pretty;
+}
+
+h1 {
+	letter-spacing: -0.012em;
+}
+
+h2 {
+	letter-spacing: -0.008em;
+}
+
+a[href^='tel:'],
+.phone-num {
+	font-variant-numeric: tabular-nums;
+}
+
+::selection {
+	background: var(--red-600);
+	color: var(--white);
+}
+
+html {
+	scroll-padding-top: 5.5rem;
+}
+
+/* ---- Dark surfaces: film grain + faint warm light so they never read as flat fills ---- */
+html .section--dark {
+	background-color: var(--charcoal);
+	background-image: var(--grain), radial-gradient(90% 70% at 100% 0%, rgba(217, 50, 60, 0.07), transparent 60%);
+	background-size: 180px 180px, auto;
+}
+
+/* ---- Buttons: physical press, glow, arrow nudge ---- */
+.btn {
+	transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease),
+		color var(--dur-fast) var(--ease), transform 220ms var(--ease-out), box-shadow 300ms var(--ease-out);
+}
+
+.btn:active {
+	transform: translateY(1px) scale(0.975);
+	transition-duration: 80ms;
+}
+
+.btn--primary:hover {
+	box-shadow: 0 14px 28px -14px rgba(197, 31, 42, 0.85);
+}
+
+.btn--dark:hover {
+	box-shadow: 0 14px 28px -14px rgba(10, 10, 10, 0.6);
+}
+
+.btn .icon {
+	transition: transform 360ms var(--ease-out);
+}
+
+.btn--icon-right:hover .icon {
+	transform: translateX(4px);
+}
+
+.btn[data-magnetic] {
+	transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease),
+		color var(--dur-fast) var(--ease), transform 350ms var(--ease-out), box-shadow 300ms var(--ease-out);
+}
+
+/* ---- Spotlight: soft light that follows the pointer (JS sets --mx/--my) ---- */
+[data-spot] {
+	position: relative;
+	--mx: 50%;
+	--my: 50%;
+}
+
+[data-spot]::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+	background: radial-gradient(280px circle at var(--mx) var(--my), var(--spot, rgba(197, 31, 42, 0.11)), transparent 70%);
+	opacity: 0;
+	transition: opacity 320ms var(--ease);
+}
+
+/* keep card content above the light (positioned pseudo-elements otherwise paint over static text) */
+.kb-card > *,
+.service-row > * {
+	position: relative;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	[data-spot]:hover::before {
+		opacity: 1;
+	}
+}
+
+/* ---- Bento grid for problem cards (first card is the featured, urgent one) ---- */
+.bento {
+	display: grid;
+	gap: 1rem;
+}
+
+.bento > .problem-card--featured {
+	grid-column: 1 / -1;
+}
+
+@media (min-width: 640px) {
+	.bento {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.bento > :last-child:nth-child(even) {
+		grid-column: 1 / -1;
+	}
+}
+
+@media (min-width: 1024px) {
+	.bento {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1.1rem;
+	}
+
+	.bento > .problem-card--featured {
+		grid-column: 1 / 3;
+		grid-row: 1 / 3;
+	}
+
+	.bento > :last-child:nth-child(even) {
+		grid-column: 1 / -1;
+	}
+}
+
+/* A trailing card that spans the full row reads as a slim horizontal bar */
+@media (min-width: 640px) {
+	.bento > .problem-card:last-child:nth-child(even) {
+		min-height: 0;
+		flex-direction: row;
+		align-items: center;
+		gap: 1.5rem;
+		padding-block: 1.1rem;
+	}
+
+	.bento > .problem-card:last-child:nth-child(even) .problem-card__top {
+		display: contents;
+	}
+
+	.bento > .problem-card:last-child:nth-child(even) .problem-card__body {
+		order: 1;
+		flex: 1;
+	}
+
+	.bento > .problem-card:last-child:nth-child(even) .problem-card__arrow {
+		order: 2;
+	}
+}
+
+/* Phones: regular cards become compact rows (the urgent card stays large) */
+@media (max-width: 639px) {
+	.bento > .problem-card:not(.problem-card--featured) {
+		min-height: 0;
+		flex-direction: row;
+		align-items: center;
+		gap: 1rem;
+		padding: 0.95rem 1.1rem;
+	}
+
+	.bento > .problem-card:not(.problem-card--featured) .problem-card__top {
+		display: contents;
+	}
+
+	.bento > .problem-card:not(.problem-card--featured) .problem-card__body {
+		order: 1;
+		flex: 1;
+		gap: 0.2rem;
+	}
+
+	.bento > .problem-card:not(.problem-card--featured) .problem-card__arrow {
+		order: 2;
+		width: 36px;
+		height: 36px;
+	}
+
+	.bento > .problem-card:not(.problem-card--featured) h3 {
+		font-size: 1.02rem;
+	}
+
+	.bento > .problem-card:not(.problem-card--featured) p {
+		font-size: 0.88rem;
+	}
+
+	.bento > .problem-card--featured {
+		min-height: 0;
+	}
+}
+
+/* ---- Marquee (services ticker) ---- */
+.marquee {
+	position: relative;
+	overflow: hidden;
+	background: var(--black);
+	color: var(--white);
+	padding-block: 1.15rem;
+	border-block: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* edge fade into the band's own colour (a mask would fade into the page behind it) */
+.marquee::before,
+.marquee::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: clamp(40px, 9%, 140px);
+	z-index: 2;
+	pointer-events: none;
+}
+
+.marquee::before {
+	left: 0;
+	background: linear-gradient(90deg, var(--black), transparent);
+}
+
+.marquee::after {
+	right: 0;
+	background: linear-gradient(270deg, var(--black), transparent);
+}
+
+.marquee__track {
+	display: flex;
+	width: max-content;
+	animation: marquee 56s linear infinite;
+	will-change: transform;
+}
+
+.marquee__group {
+	display: flex;
+	flex: none;
+	align-items: center;
+}
+
+.marquee__item {
+	display: inline-flex;
+	align-items: center;
+	gap: 1.5rem;
+	padding-right: 1.5rem;
+	font-family: var(--font-display);
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+	font-size: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.marquee__item:nth-child(even) {
+	color: var(--grey-400);
+}
+
+.marquee__item::after {
+	content: '';
+	width: 9px;
+	height: 9px;
+	background: var(--red-600);
+	transform: rotate(45deg);
+	flex: none;
+}
+
+@keyframes marquee {
+	to {
+		transform: translate3d(-50%, 0, 0);
+	}
+}
+
+@media (hover: hover) {
+	.marquee:hover .marquee__track {
+		animation-play-state: paused;
+	}
+}
+
+.is-offscreen .marquee__track {
+	animation-play-state: paused !important;
+}
+
+/* ---- Werkgebied chips ---- */
+.area-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.6rem;
+}
+
+.area-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.65rem 1.05rem;
+	border: 1.5px solid var(--grey-200);
+	border-radius: 999px;
+	font-family: var(--font-display);
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	font-size: 1rem;
+	background: var(--white);
+	transition: transform 360ms var(--ease-spring), border-color var(--dur-base) var(--ease),
+		background var(--dur-base) var(--ease), color var(--dur-base) var(--ease);
+}
+
+a.area-chip:hover {
+	transform: translateY(-3px) rotate(-1deg);
+	border-color: var(--red-600);
+	background: var(--red-600);
+	color: var(--white);
+}
+
+.area-chip--home {
+	background: var(--ink);
+	border-color: var(--ink);
+	color: var(--white);
+}
+
+.area-chip--home::before {
+	content: '';
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--red-500);
+	box-shadow: 0 0 0 4px rgba(217, 50, 60, 0.28);
+}
+
+.area-chip--soft {
+	border-style: dashed;
+	font-weight: 500;
+	text-transform: none;
+	letter-spacing: 0;
+	font-family: var(--font-body);
+	color: var(--grey-500);
+}
+
+/* ---- Scroll-driven enhancements (progressive: Chromium/Safari 26+, skipped elsewhere) ---- */
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		/* Photos wipe in as they enter the viewport */
+		.story__media,
+		.gallery__media {
+			animation: wipe-up linear both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 55%;
+		}
+
+		/* Process rail draws itself while the section scrolls through */
+		.process {
+			position: relative;
+		}
+
+		.process::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			height: 3px;
+			background: var(--red-600);
+			transform-origin: left;
+			z-index: 1;
+			animation: rail-grow linear both;
+			animation-timeline: view();
+			animation-range: entry 25% cover 45%;
+		}
+
+		/* Section headings drift up slightly relative to the scroll */
+		.section-heading h2 {
+			animation: head-drift linear both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 80%;
+		}
+	}
+}
+
+@keyframes wipe-up {
+	from {
+		clip-path: inset(100% 0 0 0);
+	}
+	to {
+		clip-path: inset(0 0 0 0);
+	}
+}
+
+@keyframes rail-grow {
+	from {
+		transform: scaleX(0);
+	}
+	to {
+		transform: scaleX(1);
+	}
+}
+
+@keyframes head-drift {
+	from {
+		transform: translate3d(0, 22px, 0);
+	}
+	to {
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+/* ---- Page transitions (Astro ClientRouter → View Transitions API) ---- */
+@media (prefers-reduced-motion: no-preference) {
+	::view-transition-old(root) {
+		animation: 140ms cubic-bezier(0.4, 0, 1, 1) both vt-out;
+	}
+
+	::view-transition-new(root) {
+		animation: 360ms var(--ease-out) both vt-in;
+	}
+}
+
+@keyframes vt-out {
+	to {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+}
+
+@keyframes vt-in {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+	.marquee__track {
+		animation: none;
+	}
+
+	.marquee {
+		overflow-x: auto;
+	}
+
+	.marquee::before,
+	.marquee::after {
+		display: none;
+	}
+
+	.marquee__group[aria-hidden='true'] {
+		display: none;
+	}
+
+	.area-chip:hover,
+	.btn:active {
+		transform: none;
+	}
+}

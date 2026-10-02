@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import Words from '../../components/Words.astro';
 import Base from '../../layouts/Base.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
 import Frame from '../../components/Frame.astro';
@@ -28,7 +30,7 @@ const jsonLd = [
 	<section class="section">
 		<div class="container">
 			<Eyebrow>Eigen werk</Eyebrow>
-			<h1>Realisaties</h1>
+			<h1><Words text="Realisaties" /></h1>
 			<p class="intro">
 				Een selectie van uitgevoerde werken. Alle foto's zijn van eigen realisaties — geen stockbeelden.
 				Schuif over de foto's om voor en na te vergelijken.
@@ -67,26 +69,31 @@ const jsonLd = [
 						);
 					})
 				}
+				{
+					singleProjects.map((project) => {
+						const service = getService(project.service);
+						return (
+							<div class="project-card">
+								<div class="single-frame">
+									<Image
+										src={project.single}
+										alt={project.singleAlt}
+										widths={[320, 480, 640, 960]}
+										sizes="(min-width: 768px) 560px, 92vw"
+										loading="lazy"
+										formats={['avif', 'webp']}
+									/>
+								</div>
+								<div class="project-card__footer">
+									<p>{project.note}</p>
+									{service && <a href={`/diensten/${service.slug}/`}>{service.name} →</a>}
+								</div>
+							</div>
+						);
+					})
+				}
 			</div>
 
-			{
-				singleProjects.length > 0 && (
-					<div class="single-projects">
-						{singleProjects.map((project) => {
-							const service = getService(project.service);
-							return (
-								<div class="single-project">
-									<Frame image={project.single} alt={project.singleAlt} sizes="(min-width: 1024px) 460px, 90vw" />
-									<div class="project-card__footer">
-										<p>{project.note}</p>
-										{service && <a href={`/diensten/${service.slug}/`}>{service.name} →</a>}
-									</div>
-								</div>
-							);
-						})}
-					</div>
-				)
-			}
 		</div>
 	</section>
 
@@ -111,6 +118,7 @@ const jsonLd = [
 	.projects-grid {
 		display: grid;
 		gap: 3rem 2.5rem;
+		align-items: start;
 	}
 
 	.story-section {
@@ -148,10 +156,17 @@ const jsonLd = [
 		white-space: nowrap;
 	}
 
-	.single-projects {
-		margin-top: 3rem;
-		display: grid;
-		gap: 2.5rem;
-		max-width: 460px;
+	.single-frame {
+		aspect-ratio: 4 / 5;
+		overflow: hidden;
+		border-radius: var(--radius);
+		background: var(--grey-100);
+	}
+
+	.single-frame :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
 	}
 </style>

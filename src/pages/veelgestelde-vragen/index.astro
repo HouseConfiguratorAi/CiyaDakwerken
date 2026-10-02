@@ -1,4 +1,5 @@
 ---
+import Words from '../../components/Words.astro';
 import Base from '../../layouts/Base.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
 import Faq from '../../components/Faq.astro';
@@ -25,7 +26,7 @@ const jsonLd = [
 	<section class="section">
 		<div class="container faq-page">
 			<Eyebrow>Vragen</Eyebrow>
-			<h1>Veelgestelde vragen</h1>
+			<h1><Words text="Veelgestelde vragen" /></h1>
 			<p class="lede">Alles wat klanten ons vragen over daken, per onderwerp. Staat uw vraag er niet bij? Bel gerust: <a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a>.</p>
 
 			<nav class="faq-nav" aria-label="Onderwerpen">

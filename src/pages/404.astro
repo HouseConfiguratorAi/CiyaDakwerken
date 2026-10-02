@@ -1,4 +1,5 @@
 ---
+import Words from '../components/Words.astro';
 import Base from '../layouts/Base.astro';
 import Eyebrow from '../components/Eyebrow.astro';
 import Button from '../components/Button.astro';
@@ -12,7 +13,7 @@ const description = 'Deze pagina bestaat niet (meer). Ga naar de homepage, bekij
 	<section class="section notfound">
 		<div class="container notfound__inner">
 			<Eyebrow>Foutmelding</Eyebrow>
-			<h1>Pagina niet gevonden</h1>
+			<h1><Words text="Pagina niet gevonden" /></h1>
 			<p>
 				De pagina die u zoekt bestaat niet of is verplaatst. Ga terug naar de homepage of bekijk een
 				van onderstaande links.

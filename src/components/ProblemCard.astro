@@ -1,67 +1,283 @@
 ---
+// One "what's your problem?" card. The featured card (first in the bento) is the urgent one: it gets a
+// dark treatment plus a direct call button. Stretched-link pattern keeps one real link per card
+// (a nested <a> inside <a> is invalid), with the call button lifted above it.
 import Icon from './Icon.astro';
+import { site } from '../data/site';
 
 interface Props {
 	icon: string;
 	question: string;
 	line: string;
 	href: string;
+	featured?: boolean;
 }
-const { icon, question, line, href } = Astro.props;
+const { icon, question, line, href, featured = false } = Astro.props;
 ---
 
-<a class="problem-card tilt" href={href}>
-	<Icon name={icon as any} class="problem-card__icon" />
-	<h3>{question}</h3>
-	<p>{line}</p>
-	<span class="problem-card__arrow"><Icon name="arrow" /></span>
-</a>
+{
+	featured ? (
+		<div class="problem-card problem-card--featured" data-spot style="--spot: rgba(217, 50, 60, 0.22)">
+			<span class="problem-card__tile">
+				<Icon name={icon as any} />
+			</span>
+			<div class="problem-card__body">
+				<h3>
+					<a class="problem-card__link" href={href}>
+						{question}
+					</a>
+				</h3>
+				<p>{line}</p>
+			</div>
+			<div class="problem-card__actions">
+				<a class="btn btn--primary btn--icon-left problem-card__call" href={`tel:${site.phoneE164}`}>
+					<Icon name="phone" />
+					Bel {site.phoneDisplay}
+				</a>
+				<span class="problem-card__more" aria-hidden="true">
+					Meer info <Icon name="arrow" />
+				</span>
+			</div>
+		</div>
+	) : (
+		<a class="problem-card" href={href} data-spot>
+			<span class="problem-card__top">
+				<span class="problem-card__tile">
+					<Icon name={icon as any} />
+				</span>
+				<span class="problem-card__arrow" aria-hidden="true">
+					<Icon name="arrow" />
+				</span>
+			</span>
+			<span class="problem-card__body">
+				<h3>{question}</h3>
+				<p>{line}</p>
+			</span>
+		</a>
+	)
+}
 
 <style>
 	.problem-card {
+		position: relative;
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
-		padding: 1.5rem 1.25rem 1.75rem;
+		justify-content: space-between;
+		gap: 1.5rem;
+		min-height: 190px;
+		padding: 1.4rem 1.4rem 1.5rem;
 		background: var(--white);
 		border: var(--border-light);
-		border-top: 3px solid transparent;
 		border-radius: var(--radius);
-		position: relative;
-		transition: border-top-color var(--dur-base) var(--ease);
+		overflow: hidden;
+		isolation: isolate;
+		transition: transform 420ms var(--ease-out), box-shadow 420ms var(--ease-out), border-color var(--dur-base) var(--ease);
+	}
+
+	/* red bar draws across the top edge on hover */
+	.problem-card::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		height: 3px;
+		background: var(--red-600);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 520ms var(--ease-out);
+		z-index: 2;
 	}
 
 	.problem-card:hover,
 	.problem-card:focus-visible {
-		border-top-color: var(--red-600);
+		transform: translateY(-5px);
+		border-color: rgba(10, 10, 10, 0.12);
+		box-shadow: 0 26px 40px -26px rgba(10, 10, 10, 0.45);
 	}
 
-	.problem-card :global(.problem-card__icon) {
+	.problem-card:hover::after,
+	.problem-card:focus-visible::after {
+		transform: scaleX(1);
+	}
+
+	.problem-card__top {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.problem-card__tile {
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		border-radius: 8px;
+		background: rgba(197, 31, 42, 0.07);
 		color: var(--red-600);
+		transition: background var(--dur-base) var(--ease), color var(--dur-base) var(--ease),
+			transform 420ms var(--ease-spring);
+	}
+
+	.problem-card:hover .problem-card__tile,
+	.problem-card:focus-visible .problem-card__tile {
+		background: var(--red-600);
+		color: var(--white);
+		transform: rotate(-6deg) scale(1.07);
+	}
+
+	.problem-card__arrow {
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		border: 1.5px solid var(--grey-200);
+		color: var(--ink);
+		transition: transform 420ms var(--ease-out), background var(--dur-base) var(--ease),
+			border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease);
+	}
+
+	.problem-card__arrow :global(.icon) {
+		width: 18px;
+		height: 18px;
+	}
+
+	.problem-card:hover .problem-card__arrow,
+	.problem-card:focus-visible .problem-card__arrow {
+		transform: rotate(-45deg);
+		background: var(--ink);
+		border-color: var(--ink);
+		color: var(--white);
+	}
+
+	.problem-card__body {
+		position: relative;
+		z-index: 1;
+		display: grid;
+		gap: 0.5rem;
 	}
 
 	.problem-card h3 {
-		font-size: 1.05rem;
+		font-size: 1.15rem;
+		line-height: 1.2;
 	}
 
 	.problem-card p {
 		color: var(--grey-500);
 		font-size: 0.95rem;
-		flex-grow: 1;
 	}
 
-	.problem-card__arrow {
+	/* ---------- Featured (urgent) ---------- */
+	.problem-card--featured {
+		min-height: 300px;
+		padding: clamp(1.5rem, 1rem + 1.6vw, 2.4rem);
+		background: radial-gradient(90% 90% at 100% 0%, rgba(217, 50, 60, 0.42), transparent 62%), var(--charcoal);
+		color: var(--white);
+		border-color: transparent;
+	}
+
+	.problem-card--featured::after {
+		display: none;
+	}
+
+	.problem-card--featured:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 30px 50px -26px rgba(10, 10, 10, 0.7);
+	}
+
+	.problem-card--featured .problem-card__tile {
+		background: rgba(255, 255, 255, 0.08);
+		color: var(--red-400);
+		width: 56px;
+		height: 56px;
+	}
+
+	.problem-card--featured:hover .problem-card__tile {
+		background: var(--red-600);
+		color: var(--white);
+	}
+
+	.problem-card--featured h3 {
+		font-family: var(--font-display);
+		text-transform: uppercase;
+		font-size: clamp(2.75rem, 1.7rem + 3vw, 4.75rem);
+		line-height: 0.9;
+		max-width: 8ch;
+		letter-spacing: -0.005em;
+	}
+
+	.problem-card--featured p {
+		color: rgba(255, 255, 255, 0.82);
+		font-size: 1.05rem;
+		max-width: 26rem;
+	}
+
+	/* the whole featured card is clickable through the heading link: its ::after must resolve to the card,
+	   so the text block stays static (a positioned ancestor would shrink the click area to itself) */
+	.problem-card--featured .problem-card__body {
+		position: static;
+	}
+
+	.problem-card--featured:has(.problem-card__link:focus-visible) {
+		outline: 3px solid var(--red-600);
+		outline-offset: 3px;
+	}
+
+	.problem-card__link:focus-visible {
+		outline: none;
+	}
+
+	.problem-card__link::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+	}
+
+	.problem-card__actions {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.problem-card__more {
 		display: inline-flex;
-		color: var(--ink);
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: 600;
+		font-size: 0.9rem;
+		color: rgba(255, 255, 255, 0.8);
+		pointer-events: none;
 	}
 
-	.problem-card__arrow :global(.icon) {
-		width: 20px;
-		height: 20px;
-		transition: transform var(--dur-base) var(--ease);
+	.problem-card__more :global(.icon) {
+		width: 18px;
+		height: 18px;
+		transition: transform 420ms var(--ease-out);
 	}
 
-	.problem-card:hover .problem-card__arrow :global(.icon) {
-		transform: translateX(4px);
+	.problem-card--featured:hover .problem-card__more :global(.icon) {
+		transform: translateX(5px);
+	}
+
+	@media (hover: none) {
+		.problem-card:hover {
+			transform: none;
+			box-shadow: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.problem-card,
+		.problem-card:hover,
+		.problem-card:focus-visible {
+			transform: none;
+		}
 	}
 </style>

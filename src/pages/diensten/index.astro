@@ -1,4 +1,5 @@
 ---
+import Words from '../../components/Words.astro';
 import Base from '../../layouts/Base.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
 import Button from '../../components/Button.astro';
@@ -12,7 +13,7 @@ import { site } from '../../data/site';
 
 
 const problemCards = [
-	{ icon: 'drop', question: 'Lek in het dak?', line: 'Snel en eerlijk advies bij lekken en dakschade.', href: '/diensten/dakherstellingen/' },
+	{ icon: 'drop', question: 'Lek in het dak?', line: 'Snel en eerlijk advies bij lekken en dakschade. Bel ons rechtstreeks, dan bekijken we de situatie meteen.', href: '/diensten/dakherstellingen/', featured: true },
 	{ icon: 'roof', question: 'Plat dak aan vernieuwing toe?', line: 'Roofing, EPDM en isolatie voor uw platte dak.', href: '/diensten/platte-daken/' },
 	{ icon: 'sun', question: 'Meer daglicht?', line: 'Velux dakramen en lichtkoepels op maat.', href: '/diensten/velux-dakramen/' },
 	{ icon: 'gutter', question: 'Dakgoten versleten of lek?', line: 'Plaatsing en herstelling van dakgoten.', href: '/diensten/dakgoten/' },
@@ -36,7 +37,7 @@ const jsonLd = [
 	<section class="section">
 		<div class="container">
 			<Eyebrow>Aanbod</Eyebrow>
-			<h1>Onze diensten</h1>
+			<h1><Words text="Onze diensten" /></h1>
 			<p class="intro">
 				Van afdichting tot afwerking: Ciya Dakwerken combineert vakmanschap met hoogwaardige
 				materialen. Platte daken zijn onze specialisatie — roofing, EPDM, lichtkoepels en
@@ -65,7 +66,7 @@ const jsonLd = [
 				<SectionHeading eyebrow="Uw dak, uw vraag" title="Waar kunnen we u mee helpen?" />
 				<a class="problem-head__link" href="/dakcheck/">Niet zeker? Doe de dakcheck →</a>
 			</div>
-			<div class="problem-grid">
+			<div class="problem-grid bento">
 				{problemCards.map((card) => <ProblemCard {...card} />)}
 			</div>
 		</div>
@@ -111,22 +112,5 @@ const jsonLd = [
 
 	.problem-head__link:hover {
 		border-bottom-color: var(--red-600);
-	}
-
-	.problem-grid {
-		display: grid;
-		gap: 1.25rem;
-	}
-
-	@media (min-width: 640px) {
-		.problem-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.problem-grid {
-			grid-template-columns: repeat(3, 1fr);
-		}
 	}
 </style>

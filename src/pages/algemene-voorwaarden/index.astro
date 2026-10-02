@@ -1,4 +1,5 @@
 ---
+import Words from '../../components/Words.astro';
 import Base from '../../layouts/Base.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
 import { site } from '../../data/site';
@@ -20,7 +21,7 @@ const jsonLd = [
 	<section class="section">
 		<div class="container legal">
 			<Eyebrow>Juridisch</Eyebrow>
-			<h1>Algemene voorwaarden</h1>
+			<h1><Words text="Algemene voorwaarden" /></h1>
 
 			<div class="legal-block">
 				<h2>Identificatie</h2>
