@@ -12,7 +12,7 @@ import { localBusinessJsonLd, breadcrumbJsonLd } from '../../lib/seo';
 const articles = (await getCollection('kennisbank')).sort((a, b) => a.data.order - b.data.order);
 const readingTime = (body: string) => Math.max(2, Math.round(body.split(/\s+/).length / 200));
 
-const title = 'Kennisbank: advies over platte daken en dakwerken | Ciya Dakwerken';
+const title = 'Kennisbank: advies over platte daken | Ciya Dakwerken';
 const description =
 	'Eerlijk advies van een dakwerker uit Lokeren: EPDM of roofing, wanneer een plat dak vernieuwen, isoleren bij renovatie, en wat te doen bij een lek.';
 

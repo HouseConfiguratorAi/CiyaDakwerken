@@ -2,6 +2,7 @@
 title: "Wanneer is een plat dak aan vernieuwing toe?"
 description: "Blaren, scheuren, plassen die blijven staan, mos en vochtplekken: de signalen dat uw plat dak versleten is — en wanneer herstellen volstaat of vernieuwen loont."
 service: platte-daken
+related: [roofing, epdm, dakisolatie]
 question: "Herstellen of vernieuwen?"
 updated: "2026-09"
 order: 2

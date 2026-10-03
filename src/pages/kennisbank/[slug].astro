@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import Words from '../../components/Words.astro';
 import Base from '../../layouts/Base.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
@@ -24,7 +25,12 @@ const toc = headings.filter((h) => h.depth === 2);
 const words = (article.body ?? '').split(/\s+/).length;
 const minutes = Math.max(2, Math.round(words / 200));
 const all = (await getCollection('kennisbank')).sort((a, b) => a.data.order - b.data.order);
-const others = all.filter((a) => a.id !== article.id).slice(0, 3);
+// Same-topic articles first, then the rest
+const topical = (a: (typeof all)[number]) => (a.data.service === article.data.service || a.data.related.includes(article.data.service) || article.data.related.includes(a.data.service) ? 0 : 1);
+const others = all.filter((a) => a.id !== article.id).sort((a, b) => topical(a) - topical(b) || a.data.order - b.data.order).slice(0, 3);
+const fullTitle = `${article.data.title} | ${site.name}`;
+// Keep <title> within what Google shows (~60 chars): drop the brand suffix when it would overflow
+const pageTitle = fullTitle.length <= 62 ? fullTitle : article.data.title;
 
 const url = `${site.siteUrl}/kennisbank/${article.id}/`;
 const jsonLd = [
@@ -42,14 +48,14 @@ const jsonLd = [
 		inLanguage: 'nl-BE',
 		mainEntityOfPage: url,
 		dateModified: `${article.data.updated}-01`,
-		author: { '@type': 'Person', name: owner.name, jobTitle: owner.role, worksFor: { '@id': `${site.siteUrl}/#business` } },
+		author: { '@type': 'Person', name: owner.name, jobTitle: owner.role, url: `${site.siteUrl}/over-ons/`, worksFor: { '@id': `${site.siteUrl}/#business` } },
 		publisher: { '@id': `${site.siteUrl}/#business` },
 		image: `${site.siteUrl}/brand/og-${service?.slug ?? 'default'}.jpg`,
 	},
 ];
 ---
 
-<Base title={`${article.data.title} | Ciya Dakwerken`} description={article.data.description} path={`/kennisbank/${article.id}/`} {jsonLd} ogImage={`/brand/og-${service?.slug ?? 'default'}.jpg`}>
+<Base title={pageTitle} description={article.data.description} path={`/kennisbank/${article.id}/`} {jsonLd} ogImage={`/brand/og-${service?.slug ?? 'default'}.jpg`}>
 	<nav class="breadcrumb" aria-label="Kruimelpad">
 		<div class="container">
 			<a href="/">Home</a><span aria-hidden="true">/</span>
@@ -94,6 +100,21 @@ const jsonLd = [
 
 			<div class="article__body prose">
 				<Content />
+				{
+					owner.portrait && (
+						<aside class="author" aria-label="Over de auteur">
+							<Image src={owner.portrait} alt={owner.photoAlt} width={88} height={88} widths={[88, 176]} sizes="88px" formats={['webp']} loading="lazy" class="author__img" />
+							<div>
+								<p class="author__label">Advies van</p>
+								<p class="author__name">{owner.name}</p>
+								<p class="author__bio">
+									{owner.role}. {owner.experience}, met platte daken als specialisatie.
+									{' '}<a href="/over-ons/">Meer over {owner.name}</a>
+								</p>
+							</div>
+						</aside>
+					)
+				}
 			</div>
 		</div>
 	</article>
@@ -364,5 +385,64 @@ const jsonLd = [
 	.more strong {
 		font-weight: 600;
 		line-height: 1.35;
+	}
+	.author {
+		display: flex;
+		gap: 1.25rem;
+		align-items: center;
+		margin-top: 3rem;
+		padding: 1.25rem 1.5rem;
+		background: var(--grey-100);
+		border-left: 3px solid var(--red-600);
+		border-radius: var(--radius);
+	}
+
+	.author :global(.author__img) {
+		flex: none;
+		width: 88px;
+		height: 88px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+
+	.author p {
+		margin: 0;
+	}
+
+	.author__label {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		font-size: 0.75rem;
+		color: var(--red-700);
+	}
+
+	.author__name {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		font-size: 1.35rem;
+		line-height: 1.1;
+		margin: 0.15rem 0 0.4rem;
+	}
+
+	.author__bio {
+		font-size: 0.95rem;
+		color: var(--grey-700);
+		max-width: 46ch;
+	}
+
+	.author__bio a {
+		font-weight: 600;
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	@media (max-width: 520px) {
+		.author {
+			flex-direction: column;
+			align-items: flex-start;
+		}
 	}
 </style>

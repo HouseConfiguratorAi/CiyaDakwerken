@@ -2,6 +2,7 @@
 title: "Dakisolatie bij de renovatie van een plat dak: wat u moet weten"
 description: "Waarom een dakvernieuwing hét moment is om te isoleren, hoe een geïsoleerd plat dak is opgebouwd en waar het bij isolatie vaak misloopt."
 service: dakisolatie
+related: [platte-daken, roofing]
 question: "Isoleren tijdens de renovatie?"
 updated: "2026-09"
 order: 3

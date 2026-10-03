@@ -16,6 +16,7 @@ import RoofLayers from '../../components/RoofLayers.astro';
 import Gallery from '../../components/Gallery.astro';
 import Compare from '../../components/Compare.astro';
 import { gallery } from '../../data/projects';
+import { getCollection } from 'astro:content';
 import { services, getService, getRelatedServices } from '../../data/services';
 import { site } from '../../data/site';
 import { localBusinessJsonLd, serviceJsonLd, breadcrumbJsonLd, faqJsonLd } from '../../lib/seo';
@@ -29,6 +30,10 @@ export function getStaticPaths() {
 
 const { service } = Astro.props;
 const related = getRelatedServices(service);
+const advice = (await getCollection('kennisbank'))
+	.filter((a) => a.data.service === service.slug || a.data.related.includes(service.slug))
+	.sort((a, b) => Number(b.data.service === service.slug) - Number(a.data.service === service.slug) || a.data.order - b.data.order)
+	.slice(0, 3);
 
 // Which layer of the flat-roof build-up this service is about (shown as the 3D section), if any.
 const roofHighlight: Record<string, string> = {
@@ -255,6 +260,27 @@ const jsonLd = [
 			<Faq items={service.faq} schema={true} />
 		</div>
 	</section>
+
+	{
+		advice.length > 0 && (
+			<section class="section section--tight advice">
+				<div class="container">
+					<SectionHeading level="h2" eyebrow="Kennisbank" title={`Advies over ${service.name.toLowerCase()}`} />
+					<ul class="advice__list">
+						{advice.map((a) => (
+							<li>
+								<a href={`/kennisbank/${a.id}/`} class="advice__card">
+									<span class="advice__q">{a.data.question}</span>
+									<strong>{a.data.title}</strong>
+									<span class="advice__more">Lees verder <Icon name="arrow" /></span>
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			</section>
+		)
+	}
 
 	<section class="section section--tight">
 		<div class="container">
@@ -555,5 +581,62 @@ const jsonLd = [
 		.related-grid {
 			grid-template-columns: repeat(3, 1fr);
 		}
+	}
+	.advice__list {
+		display: grid;
+		gap: 1rem;
+	}
+
+	@media (min-width: 900px) {
+		.advice__list {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	.advice__card {
+		display: grid;
+		gap: 0.55rem;
+		height: 100%;
+		padding: 1.4rem;
+		border: var(--border-light);
+		border-top: 3px solid transparent;
+		border-radius: var(--radius);
+		transition: border-top-color var(--dur-base) var(--ease), transform 420ms var(--ease-out), box-shadow 420ms var(--ease-out);
+	}
+
+	.advice__card:hover {
+		border-top-color: var(--red-600);
+		transform: translateY(-4px);
+		box-shadow: 0 22px 36px -26px rgba(10, 10, 10, 0.45);
+	}
+
+	.advice__q {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		font-size: 0.78rem;
+		color: var(--red-700);
+	}
+
+	.advice__card strong {
+		font-weight: 600;
+		font-size: 1.05rem;
+		line-height: 1.35;
+	}
+
+	.advice__more {
+		margin-top: auto;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-weight: 700;
+		font-size: 0.9rem;
+	}
+
+	.advice__more :global(.icon) {
+		width: 16px;
+		height: 16px;
+		color: var(--red-600);
 	}
 </style>

@@ -2,6 +2,7 @@
 title: "Onderhoud van een plat dak: wat, waarom en hoe vaak?"
 description: "Regelmatig onderhoud verlengt de levensduur van uw plat dak. Wat een controle inhoudt, waarom afvoeren cruciaal zijn en wanneer u na storm laat nakijken."
 service: dakonderhoud
+related: [platte-daken, dakgoten]
 question: "Hoe houd ik mijn dak in goede staat?"
 updated: "2026-09"
 order: 5

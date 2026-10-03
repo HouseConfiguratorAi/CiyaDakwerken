@@ -10,6 +10,8 @@ const kennisbank = defineCollection({
 		description: z.string().min(120).max(160),
 		/** Related service slug (see data/services.ts). */
 		service: z.string(),
+		/** Other service slugs this article is relevant to (feeds the advice block on those service pages). */
+		related: z.array(z.string()).default([]),
 		/** Short question the article answers — used as card teaser. */
 		question: z.string(),
 		updated: z.string(), // YYYY-MM

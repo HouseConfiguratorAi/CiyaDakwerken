@@ -2,6 +2,7 @@
 title: "EPDM of roofing: welke dakbedekking past bij uw plat dak?"
 description: "Roofing (bitumen) of EPDM (rubber) voor uw platte dak? De verschillen in plaatsing, naden, levensduur en herstelbaarheid — en hoe u de juiste keuze maakt."
 service: platte-daken
+related: [epdm, roofing, vloeibare-dakbedekking]
 question: "Roofing of EPDM — wat kies ik?"
 updated: "2026-09"
 order: 1

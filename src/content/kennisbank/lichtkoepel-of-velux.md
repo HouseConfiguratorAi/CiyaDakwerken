@@ -2,6 +2,7 @@
 title: "Lichtkoepel of Velux dakraam: meer daglicht in uw woning"
 description: "Meer daglicht via het dak: lichtkoepel of lichtstraat op een plat dak, Velux dakraam in een hellend dak — de verschillen en waarom de aansluiting telt."
 service: lichtkoepels
+related: [velux-dakramen, platte-daken]
 question: "Koepel of dakraam?"
 updated: "2026-09"
 order: 6

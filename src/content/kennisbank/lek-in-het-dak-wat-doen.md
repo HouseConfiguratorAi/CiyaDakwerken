@@ -2,6 +2,7 @@
 title: "Lek in het dak: wat doet u eerst, en wat beter niet?"
 description: "Water binnen of een vochtplek? De juiste eerste stappen bij een lekkend dak, waarom het lek zelden zit waar de vlek zit, en hoe de oorzaak wordt gevonden."
 service: dakherstellingen
+related: [dakgoten, platte-daken, zinkwerken]
 question: "Er komt water binnen — en nu?"
 updated: "2026-09"
 order: 4
